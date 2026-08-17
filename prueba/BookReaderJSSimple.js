@@ -12,7 +12,7 @@ function instantiateBookReader(selector, extraOptions) {
         {
           width: 1165,
           height: 1653,
-          uri: 'page001.jpg'
+          uri: 'pages/page001.jpg'
         }
       ],
 
@@ -20,12 +20,12 @@ function instantiateBookReader(selector, extraOptions) {
         {
           width: 1165,
           height: 1653,
-          uri: 'page002.jpg'
+          uri: 'pages/page002.jpg'
         },
         {
           width: 1165,
           height: 1653,
-          uri: 'page003.jpg'
+          uri: 'pages/page003.jpg'
         }
       ],
 
@@ -33,12 +33,12 @@ function instantiateBookReader(selector, extraOptions) {
         {
           width: 1165,
           height: 1653,
-          uri: 'page004.jpg'
+          uri: 'pages/page004.jpg'
         },
         {
           width: 1165,
           height: 1653,
-          uri: 'page005.jpg'
+          uri: 'pages/page005.jpg'
         }
       ],
 
@@ -46,12 +46,12 @@ function instantiateBookReader(selector, extraOptions) {
         {
           width: 1165,
           height: 1653,
-          uri: 'page006.jpg'
+          uri: 'pages/page006.jpg'
         },
         {
           width: 1165,
           height: 1653,
-          uri: 'page007.jpg'
+          uri: 'pages/page007.jpg'
         }
       ],
 
@@ -59,12 +59,12 @@ function instantiateBookReader(selector, extraOptions) {
         {
           width: 1165,
           height: 1653,
-          uri: 'page008.jpg'
+          uri: 'pages/page008.jpg'
         },
         {
           width: 1165,
           height: 1653,
-          uri: 'page009.jpg'
+          uri: 'pages/page009.jpg'
         }
       ],
 
@@ -72,12 +72,12 @@ function instantiateBookReader(selector, extraOptions) {
         {
           width: 1165,
           height: 1653,
-          uri: 'page010.jpg'
+          uri: 'pages/page010.jpg'
         },
         {
           width: 1165,
           height: 1653,
-          uri: 'page011.jpg'
+          uri: 'pages/page011.jpg'
         }
       ],
 
@@ -85,14 +85,14 @@ function instantiateBookReader(selector, extraOptions) {
         {
           width: 1165,
           height: 1653,
-          uri: 'page012.jpg'
+          uri: 'pages/page012.jpg'
         }
       ]
     ],
 
     bookTitle: 'Archivo de vida',
 
-    thumbnail: 'page001.jpg',
+    thumbnail: 'pages/page001.jpg',
 
     metadata: [
       {
