@@ -1,1 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
 
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Archivo de vida</title>
+
+  <!-- Dependencias de BookReader -->
+  <script src="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/webcomponents-bundle.js"></script>
+
+  <script src="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/jquery-3.js"></script>
+
+  <!-- BookReader -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/BookReader.css"
+  >
+
+  <script src="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/BookReader.js"></script>
+
+  <style>
+
+    html {
+      font-size: 10px;
+      font-family: sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #939598;
+    }
+
+    #BookReader,
+    .BookReader {
+      height: 100vh;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div id="BookReader">
+    Cargando Archivo de vida...
+  </div>
+
+  <script src="BookReaderJSSimple.js"></script>
+
+  <script>
+    instantiateBookReader('#BookReader');
+  </script>
+
+</body>
+
+</html>
