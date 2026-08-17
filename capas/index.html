@@ -92,7 +92,7 @@
     }
 
 
-    /* BOTONES DE MODO */
+    /* BOTONES */
 
     .modos {
       display: flex;
@@ -101,9 +101,8 @@
       margin-top: 6px;
     }
 
-    .modo {
-      flex: 1;
-
+    .modo,
+    .restablecer {
       border: 1px solid #999;
       background: white;
 
@@ -113,10 +112,19 @@
       border-radius: 4px;
     }
 
+    .modo {
+      flex: 1;
+    }
+
     .modo.activo {
       background: #222;
       color: white;
       border-color: #222;
+    }
+
+    .restablecer {
+      width: 100%;
+      margin-top: 6px;
     }
 
 
@@ -149,36 +157,27 @@
 
       transform-origin: center;
 
-      pointer-events: none;
+      cursor: grab;
+
+      user-select: none;
+      -webkit-user-select: none;
+
+      touch-action: none;
 
       transition:
         opacity 0.2s ease,
-        visibility 0.2s ease,
-        transform 0.25s ease;
+        visibility 0.2s ease;
+    }
+
+    .pagina.arrastrando {
+      cursor: grabbing;
     }
 
 
-    /* SOMBRA DEL BLOQUE COMPLETO */
-
-    .mesa::after {
-      content: "";
-
-      position: absolute;
-      inset: 0;
-
-      pointer-events: none;
-
-      box-shadow:
-        0 4px 14px rgba(0, 0, 0, 0.12);
-
-      z-index: 100;
-    }
-
-
-    /* INFORMACIÓN INFERIOR */
+    /* ESTADO */
 
     .estado {
-      margin-top: 18px;
+      margin-top: 22px;
 
       font-size: 12px;
       color: #666;
@@ -198,7 +197,7 @@
       }
 
       .mesa {
-        width: 96vw;
+        width: 94vw;
       }
 
     }
@@ -308,10 +307,24 @@
 
     </div>
 
+
+    <!-- RESTABLECER -->
+
+    <div class="control">
+
+      <button
+        id="restablecer"
+        class="restablecer"
+      >
+        Restablecer posición de las capas
+      </button>
+
+    </div>
+
   </div>
 
 
-  <!-- PILA DE PÁGINAS -->
+  <!-- PILA -->
 
   <div
     id="mesa"
@@ -323,7 +336,7 @@
     id="estado"
     class="estado"
   >
-    Páginas 1–12 superpuestas
+    Páginas 1–12 superpuestas · arrastrá las láminas para separarlas
   </div>
 
 </div>
@@ -333,7 +346,8 @@
 
   const TOTAL_PAGINAS = 12;
 
-  const mesa = document.getElementById("mesa");
+  const mesa =
+    document.getElementById("mesa");
 
   const controlPaginas =
     document.getElementById("controlPaginas");
@@ -359,11 +373,17 @@
   const botonIndividual =
     document.getElementById("modoIndividual");
 
+  const botonRestablecer =
+    document.getElementById("restablecer");
+
 
   let modo = "acumulacion";
 
+  let zSuperior = 100;
 
-  /* DESFACE SUAVE ENTRE CAPAS */
+
+  /* DESFASE INICIAL */
+
   const offsets = [
     { x: 0,  y: 0  },
     { x: 2,  y: 0  },
@@ -380,7 +400,16 @@
   ];
 
 
-  /* CREAR AUTOMÁTICAMENTE LAS 12 PÁGINAS */
+  /* POSICIONES MODIFICABLES */
+
+  const posiciones =
+    offsets.map(offset => ({
+      x: offset.x,
+      y: offset.y
+    }));
+
+
+  /* CREAR PÁGINAS */
 
   for (
     let numero = 1;
@@ -406,6 +435,15 @@
     imagen.dataset.pagina =
       numero;
 
+    imagen.dataset.indice =
+      numero - 1;
+
+    imagen.draggable =
+      false;
+
+    imagen.style.zIndex =
+      numero;
+
     mesa.appendChild(imagen);
 
   }
@@ -414,6 +452,24 @@
   const paginas =
     [...document.querySelectorAll(".pagina")];
 
+
+  /* ACTUALIZAR POSICIÓN */
+
+  function colocarPagina(
+    pagina,
+    indice
+  ) {
+
+    const posicion =
+      posiciones[indice];
+
+    pagina.style.transform =
+      `translate(${posicion.x}px, ${posicion.y}px)`;
+
+  }
+
+
+  /* ACTUALIZAR VISOR */
 
   function actualizarVisor() {
 
@@ -429,9 +485,6 @@
       const numero =
         indice + 1;
 
-      const offset =
-        offsets[indice] || { x: 0, y: 0 };
-
 
       if (modo === "acumulacion") {
 
@@ -440,25 +493,27 @@
           pagina.style.visibility =
             "visible";
 
+          pagina.style.pointerEvents =
+            "auto";
+
           pagina.style.opacity =
             opacidad;
 
-          pagina.style.transform =
-            `translate(${offset.x}px, ${offset.y}px)`;
-
-          pagina.style.zIndex =
-            numero;
+          colocarPagina(
+            pagina,
+            indice
+          );
 
         } else {
 
           pagina.style.visibility =
             "hidden";
 
+          pagina.style.pointerEvents =
+            "none";
+
           pagina.style.opacity =
             0;
-
-          pagina.style.transform =
-            "translate(0px, 0px)";
 
         }
 
@@ -472,25 +527,25 @@
           pagina.style.visibility =
             "visible";
 
+          pagina.style.pointerEvents =
+            "auto";
+
           pagina.style.opacity =
             1;
 
           pagina.style.transform =
             "translate(0px, 0px)";
-
-          pagina.style.zIndex =
-            1;
 
         } else {
 
           pagina.style.visibility =
             "hidden";
 
+          pagina.style.pointerEvents =
+            "none";
+
           pagina.style.opacity =
             0;
-
-          pagina.style.transform =
-            "translate(0px, 0px)";
 
         }
 
@@ -514,10 +569,13 @@
       controlOpacidad.disabled =
         false;
 
+      botonRestablecer.disabled =
+        false;
+
       estado.textContent =
         paginaSeleccionada === 1
-        ? "Página 1"
-        : `Páginas 1–${paginaSeleccionada} superpuestas`;
+        ? "Página 1 · arrastrá la lámina"
+        : `Páginas 1–${paginaSeleccionada} superpuestas · arrastrá las láminas para separarlas`;
 
     }
 
@@ -530,6 +588,9 @@
       controlOpacidad.disabled =
         true;
 
+      botonRestablecer.disabled =
+        true;
+
       estado.textContent =
         `Página ${paginaSeleccionada}`;
 
@@ -538,13 +599,211 @@
   }
 
 
+  /* ARRASTRAR CAPAS */
+
+  paginas.forEach((pagina) => {
+
+    let arrastrando =
+      false;
+
+    let inicioMouseX =
+      0;
+
+    let inicioMouseY =
+      0;
+
+    let inicioPaginaX =
+      0;
+
+    let inicioPaginaY =
+      0;
+
+
+    pagina.addEventListener(
+      "pointerdown",
+      (evento) => {
+
+        if (
+          modo !== "acumulacion"
+        ) {
+          return;
+        }
+
+        const indice =
+          Number(
+            pagina.dataset.indice
+          );
+
+
+        arrastrando =
+          true;
+
+
+        inicioMouseX =
+          evento.clientX;
+
+        inicioMouseY =
+          evento.clientY;
+
+
+        inicioPaginaX =
+          posiciones[indice].x;
+
+        inicioPaginaY =
+          posiciones[indice].y;
+
+
+        /* LA CAPA TOCADA PASA AL FRENTE */
+
+        zSuperior++;
+
+        pagina.style.zIndex =
+          zSuperior;
+
+
+        pagina.classList.add(
+          "arrastrando"
+        );
+
+
+        pagina.setPointerCapture(
+          evento.pointerId
+        );
+
+      }
+    );
+
+
+    pagina.addEventListener(
+      "pointermove",
+      (evento) => {
+
+        if (!arrastrando) {
+          return;
+        }
+
+
+        const indice =
+          Number(
+            pagina.dataset.indice
+          );
+
+
+        const diferenciaX =
+          evento.clientX -
+          inicioMouseX;
+
+        const diferenciaY =
+          evento.clientY -
+          inicioMouseY;
+
+
+        posiciones[indice].x =
+          inicioPaginaX +
+          diferenciaX;
+
+        posiciones[indice].y =
+          inicioPaginaY +
+          diferenciaY;
+
+
+        colocarPagina(
+          pagina,
+          indice
+        );
+
+      }
+    );
+
+
+    function terminarArrastre(
+      evento
+    ) {
+
+      if (!arrastrando) {
+        return;
+      }
+
+
+      arrastrando =
+        false;
+
+
+      pagina.classList.remove(
+        "arrastrando"
+      );
+
+
+      if (
+        pagina.hasPointerCapture(
+          evento.pointerId
+        )
+      ) {
+
+        pagina.releasePointerCapture(
+          evento.pointerId
+        );
+
+      }
+
+    }
+
+
+    pagina.addEventListener(
+      "pointerup",
+      terminarArrastre
+    );
+
+
+    pagina.addEventListener(
+      "pointercancel",
+      terminarArrastre
+    );
+
+  });
+
+
+  /* RESTABLECER */
+
+  botonRestablecer.addEventListener(
+    "click",
+    () => {
+
+      posiciones.forEach(
+        (posicion, indice) => {
+
+          posicion.x =
+            offsets[indice].x;
+
+          posicion.y =
+            offsets[indice].y;
+
+
+          paginas[indice].style.zIndex =
+            indice + 1;
+
+        }
+      );
+
+
+      zSuperior =
+        100;
+
+
+      actualizarVisor();
+
+    }
+  );
+
+
   /* CAMBIO DE MODO */
 
   botonAcumulacion.addEventListener(
     "click",
     () => {
 
-      modo = "acumulacion";
+      modo =
+        "acumulacion";
 
       botonAcumulacion.classList.add(
         "activo"
@@ -564,7 +823,8 @@
     "click",
     () => {
 
-      modo = "individual";
+      modo =
+        "individual";
 
       botonIndividual.classList.add(
         "activo"
@@ -586,6 +846,7 @@
     "input",
     actualizarVisor
   );
+
 
   controlOpacidad.addEventListener(
     "input",
