@@ -130,6 +130,8 @@
       aspect-ratio: 1165 / 1653;
 
       isolation: isolate;
+
+      overflow: visible;
     }
 
     .pagina {
@@ -151,7 +153,8 @@
 
       transition:
         opacity 0.2s ease,
-        visibility 0.2s ease;
+        visibility 0.2s ease,
+        transform 0.25s ease;
     }
 
 
@@ -360,6 +363,23 @@
   let modo = "acumulacion";
 
 
+  /* DESFACE SUAVE ENTRE CAPAS */
+  const offsets = [
+    { x: 0,  y: 0  },
+    { x: 2,  y: 0  },
+    { x: -1, y: 1  },
+    { x: 1,  y: -1 },
+    { x: -2, y: 1  },
+    { x: 0,  y: -2 },
+    { x: 2,  y: 1  },
+    { x: -1, y: -2 },
+    { x: 1,  y: 2  },
+    { x: -2, y: 0  },
+    { x: 2,  y: -1 },
+    { x: 0,  y: 2  }
+  ];
+
+
   /* CREAR AUTOMÁTICAMENTE LAS 12 PÁGINAS */
 
   for (
@@ -409,6 +429,9 @@
       const numero =
         indice + 1;
 
+      const offset =
+        offsets[indice] || { x: 0, y: 0 };
+
 
       if (modo === "acumulacion") {
 
@@ -420,6 +443,12 @@
           pagina.style.opacity =
             opacidad;
 
+          pagina.style.transform =
+            `translate(${offset.x}px, ${offset.y}px)`;
+
+          pagina.style.zIndex =
+            numero;
+
         } else {
 
           pagina.style.visibility =
@@ -427,6 +456,9 @@
 
           pagina.style.opacity =
             0;
+
+          pagina.style.transform =
+            "translate(0px, 0px)";
 
         }
 
@@ -443,6 +475,12 @@
           pagina.style.opacity =
             1;
 
+          pagina.style.transform =
+            "translate(0px, 0px)";
+
+          pagina.style.zIndex =
+            1;
+
         } else {
 
           pagina.style.visibility =
@@ -450,6 +488,9 @@
 
           pagina.style.opacity =
             0;
+
+          pagina.style.transform =
+            "translate(0px, 0px)";
 
         }
 
