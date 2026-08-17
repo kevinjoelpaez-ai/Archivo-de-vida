@@ -1,1 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
 
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Archivo de vida — Visor de capas</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #e9e9e9;
+      color: #222;
+    }
+
+    .visor {
+      min-height: 100vh;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      padding: 24px;
+    }
+
+
+    /* CONTROLES */
+
+    .controles {
+      width: min(100%, 700px);
+
+      background: rgba(255, 255, 255, 0.92);
+
+      padding: 18px 22px;
+      margin-bottom: 24px;
+
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 8px;
+    }
+
+    .titulo {
+      font-size: 18px;
+      font-weight: bold;
+
+      margin-bottom: 18px;
+    }
+
+    .control {
+      margin-bottom: 16px;
+    }
+
+    .control:last-child {
+      margin-bottom: 0;
+    }
+
+    .fila {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      margin-bottom: 6px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .valor {
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+
+    /* BOTONES DE MODO */
+
+    .modos {
+      display: flex;
+      gap: 8px;
+
+      margin-top: 6px;
+    }
+
+    .modo {
+      flex: 1;
+
+      border: 1px solid #999;
+      background: white;
+
+      padding: 8px 12px;
+
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .modo.activo {
+      background: #222;
+      color: white;
+      border-color: #222;
+    }
+
+
+    /* ÁREA DE LAS PÁGINAS */
+
+    .mesa {
+      width: min(90vw, 700px);
+
+      position: relative;
+
+      aspect-ratio: 1165 / 1653;
+
+      isolation: isolate;
+    }
+
+    .pagina {
+      position: absolute;
+
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 100%;
+
+      object-fit: contain;
+
+      mix-blend-mode: multiply;
+
+      transform-origin: center;
+
+      pointer-events: none;
+
+      transition:
+        opacity 0.2s ease,
+        visibility 0.2s ease;
+    }
+
+
+    /* SOMBRA DEL BLOQUE COMPLETO */
+
+    .mesa::after {
+      content: "";
+
+      position: absolute;
+      inset: 0;
+
+      pointer-events: none;
+
+      box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.12);
+
+      z-index: 100;
+    }
+
+
+    /* INFORMACIÓN INFERIOR */
+
+    .estado {
+      margin-top: 18px;
+
+      font-size: 12px;
+      color: #666;
+
+      text-align: center;
+    }
+
+
+    @media (max-width: 600px) {
+
+      .visor {
+        padding: 12px;
+      }
+
+      .controles {
+        padding: 14px;
+      }
+
+      .mesa {
+        width: 96vw;
+      }
+
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+<div class="visor">
+
+  <div class="controles">
+
+    <div class="titulo">
+      Archivo de vida — capas
+    </div>
+
+
+    <!-- MODO -->
+
+    <div class="control">
+
+      <div class="fila">
+        <label>Modo de visualización</label>
+      </div>
+
+      <div class="modos">
+
+        <button
+          id="modoAcumulacion"
+          class="modo activo"
+        >
+          Acumulación
+        </button>
+
+        <button
+          id="modoIndividual"
+          class="modo"
+        >
+          Página individual
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- PÁGINAS -->
+
+    <div class="control">
+
+      <div class="fila">
+
+        <label id="etiquetaPaginas">
+          Capas visibles
+        </label>
+
+        <span
+          id="valorPaginas"
+          class="valor"
+        >
+          12 / 12
+        </span>
+
+      </div>
+
+      <input
+        id="controlPaginas"
+        type="range"
+        min="1"
+        max="12"
+        value="12"
+        step="1"
+      >
+
+    </div>
+
+
+    <!-- TRANSPARENCIA -->
+
+    <div class="control">
+
+      <div class="fila">
+
+        <label>
+          Opacidad de cada capa
+        </label>
+
+        <span
+          id="valorOpacidad"
+          class="valor"
+        >
+          25%
+        </span>
+
+      </div>
+
+      <input
+        id="controlOpacidad"
+        type="range"
+        min="5"
+        max="100"
+        value="25"
+        step="1"
+      >
+
+    </div>
+
+  </div>
+
+
+  <!-- PILA DE PÁGINAS -->
+
+  <div
+    id="mesa"
+    class="mesa"
+  ></div>
+
+
+  <div
+    id="estado"
+    class="estado"
+  >
+    Páginas 1–12 superpuestas
+  </div>
+
+</div>
+
+
+<script>
+
+  const TOTAL_PAGINAS = 12;
+
+  const mesa = document.getElementById("mesa");
+
+  const controlPaginas =
+    document.getElementById("controlPaginas");
+
+  const controlOpacidad =
+    document.getElementById("controlOpacidad");
+
+  const valorPaginas =
+    document.getElementById("valorPaginas");
+
+  const valorOpacidad =
+    document.getElementById("valorOpacidad");
+
+  const etiquetaPaginas =
+    document.getElementById("etiquetaPaginas");
+
+  const estado =
+    document.getElementById("estado");
+
+  const botonAcumulacion =
+    document.getElementById("modoAcumulacion");
+
+  const botonIndividual =
+    document.getElementById("modoIndividual");
+
+
+  let modo = "acumulacion";
+
+
+  /* CREAR AUTOMÁTICAMENTE LAS 12 PÁGINAS */
+
+  for (
+    let numero = 1;
+    numero <= TOTAL_PAGINAS;
+    numero++
+  ) {
+
+    const imagen =
+      document.createElement("img");
+
+    const numeroArchivo =
+      String(numero).padStart(3, "0");
+
+    imagen.src =
+      `../prueba/pages/page${numeroArchivo}.jpg`;
+
+    imagen.alt =
+      `Página ${numero}`;
+
+    imagen.className =
+      "pagina";
+
+    imagen.dataset.pagina =
+      numero;
+
+    mesa.appendChild(imagen);
+
+  }
+
+
+  const paginas =
+    [...document.querySelectorAll(".pagina")];
+
+
+  function actualizarVisor() {
+
+    const paginaSeleccionada =
+      Number(controlPaginas.value);
+
+    const opacidad =
+      Number(controlOpacidad.value) / 100;
+
+
+    paginas.forEach((pagina, indice) => {
+
+      const numero =
+        indice + 1;
+
+
+      if (modo === "acumulacion") {
+
+        if (numero <= paginaSeleccionada) {
+
+          pagina.style.visibility =
+            "visible";
+
+          pagina.style.opacity =
+            opacidad;
+
+        } else {
+
+          pagina.style.visibility =
+            "hidden";
+
+          pagina.style.opacity =
+            0;
+
+        }
+
+      }
+
+
+      if (modo === "individual") {
+
+        if (numero === paginaSeleccionada) {
+
+          pagina.style.visibility =
+            "visible";
+
+          pagina.style.opacity =
+            1;
+
+        } else {
+
+          pagina.style.visibility =
+            "hidden";
+
+          pagina.style.opacity =
+            0;
+
+        }
+
+      }
+
+    });
+
+
+    valorPaginas.textContent =
+      `${paginaSeleccionada} / ${TOTAL_PAGINAS}`;
+
+    valorOpacidad.textContent =
+      `${controlOpacidad.value}%`;
+
+
+    if (modo === "acumulacion") {
+
+      etiquetaPaginas.textContent =
+        "Capas visibles";
+
+      controlOpacidad.disabled =
+        false;
+
+      estado.textContent =
+        paginaSeleccionada === 1
+        ? "Página 1"
+        : `Páginas 1–${paginaSeleccionada} superpuestas`;
+
+    }
+
+
+    if (modo === "individual") {
+
+      etiquetaPaginas.textContent =
+        "Página";
+
+      controlOpacidad.disabled =
+        true;
+
+      estado.textContent =
+        `Página ${paginaSeleccionada}`;
+
+    }
+
+  }
+
+
+  /* CAMBIO DE MODO */
+
+  botonAcumulacion.addEventListener(
+    "click",
+    () => {
+
+      modo = "acumulacion";
+
+      botonAcumulacion.classList.add(
+        "activo"
+      );
+
+      botonIndividual.classList.remove(
+        "activo"
+      );
+
+      actualizarVisor();
+
+    }
+  );
+
+
+  botonIndividual.addEventListener(
+    "click",
+    () => {
+
+      modo = "individual";
+
+      botonIndividual.classList.add(
+        "activo"
+      );
+
+      botonAcumulacion.classList.remove(
+        "activo"
+      );
+
+      actualizarVisor();
+
+    }
+  );
+
+
+  /* SLIDERS */
+
+  controlPaginas.addEventListener(
+    "input",
+    actualizarVisor
+  );
+
+  controlOpacidad.addEventListener(
+    "input",
+    actualizarVisor
+  );
+
+
+  actualizarVisor();
+
+</script>
+
+</body>
+
+</html>
