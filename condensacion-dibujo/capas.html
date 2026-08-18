@@ -31,11 +31,14 @@ body {
 }
 
 .visor {
+  width: 100%;
   min-height: 100vh;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24px;
+
+  padding: 24px 0 40px;
 }
 
 
@@ -44,10 +47,13 @@ body {
 ========================= */
 
 .controles {
-  width: min(100%, 700px);
-  background: rgba(255,255,255,.94);
+  width: min(calc(100% - 32px), 720px);
+
+  background: rgba(255,255,255,.95);
+
   padding: 18px 22px;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
+
   border: 1px solid rgba(0,0,0,.12);
   border-radius: 8px;
 }
@@ -70,6 +76,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   margin-bottom: 7px;
 }
 
@@ -80,6 +87,7 @@ label {
 
 .valor {
   font-size: 13px;
+  font-variant-numeric: tabular-nums;
 }
 
 input[type="range"] {
@@ -99,7 +107,10 @@ input[type="range"] {
 button {
   border: 1px solid #999;
   background: white;
+  color: #222;
+
   padding: 8px 12px;
+
   border-radius: 4px;
   cursor: pointer;
 }
@@ -120,38 +131,60 @@ button {
 
 
 /* =========================
-   ZONA DE TRABAJO
+   ZONA DESPLAZABLE
 ========================= */
 
-.zona-mesa {
-  width: min(100%, 1000px);
-  min-height: 900px;
+.zona-scroll {
+  width: 100%;
 
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  overflow-x: auto;
+  overflow-y: visible;
 
-  overflow: visible;
-  position: relative;
+  padding-bottom: 20px;
+
+  scrollbar-gutter: stable;
 }
 
 
 /* =========================
-   PILA
+   MESA GRANDE
+========================= */
+
+.zona-mesa {
+  position: relative;
+
+  width: 1600px;
+  height: 1250px;
+
+  margin: 0 auto;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(255,255,255,.4),
+      rgba(255,255,255,0) 60%
+    );
+}
+
+
+/* =========================
+   PILA DE LÁMINAS
 ========================= */
 
 .mesa {
-  position: relative;
+  position: absolute;
 
-  width: 55%;
-  max-width: 700px;
+  top: 40px;
+  left: 50%;
+
+  width: 440px;
 
   aspect-ratio: 1165 / 1653;
 
+  transform: translateX(-50%);
+
   isolation: isolate;
   overflow: visible;
-
-  margin: 10px auto 180px;
 }
 
 
@@ -192,13 +225,17 @@ button {
 
 
 /* =========================
-   TEXTO INFERIOR
+   ESTADO
 ========================= */
 
 .estado {
-  margin-top: 10px;
+  width: min(calc(100% - 32px), 720px);
+
+  margin-top: 12px;
+
   font-size: 12px;
   color: #666;
+
   text-align: center;
 }
 
@@ -210,16 +247,17 @@ button {
 @media (max-width:600px) {
 
   .visor {
-    padding: 12px;
+    padding-top: 12px;
+  }
+
+  .controles {
+    width: calc(100% - 20px);
+    padding: 14px;
   }
 
   .zona-mesa {
-    min-height: 700px;
-  }
-
-  .mesa {
-    width: 72%;
-    margin-bottom: 120px;
+    width: 1200px;
+    height: 1100px;
   }
 
 }
@@ -232,6 +270,9 @@ button {
 <body>
 
 <div class="visor">
+
+
+  <!-- CONTROLES -->
 
   <div class="controles">
 
@@ -269,7 +310,7 @@ button {
     </div>
 
 
-    <!-- CAPAS VISIBLES -->
+    <!-- CAPAS -->
 
     <div class="control">
 
@@ -345,7 +386,7 @@ button {
           id="valorTamano"
           class="valor"
         >
-          55%
+          440 px
         </span>
 
       </div>
@@ -353,10 +394,10 @@ button {
       <input
         id="controlTamano"
         type="range"
-        min="35"
-        max="100"
-        value="55"
-        step="1"
+        min="250"
+        max="800"
+        value="440"
+        step="10"
       >
 
     </div>
@@ -375,14 +416,21 @@ button {
   </div>
 
 
-  <!-- ZONA DE TRABAJO -->
+  <!-- MESA GRANDE -->
 
-  <div class="zona-mesa">
+  <div
+    id="zonaScroll"
+    class="zona-scroll"
+  >
 
-    <div
-      id="mesa"
-      class="mesa"
-    ></div>
+    <div class="zona-mesa">
+
+      <div
+        id="mesa"
+        class="mesa"
+      ></div>
+
+    </div>
 
   </div>
 
@@ -391,8 +439,9 @@ button {
     id="estado"
     class="estado"
   >
-    Páginas 1–16 superpuestas · arrastrá las láminas para separarlas
+    Páginas 1–16 superpuestas · arrastrá las láminas para dispersarlas sobre la mesa
   </div>
+
 
 </div>
 
@@ -407,6 +456,9 @@ const TOTAL_PAGINAS = 16;
 
 const mesa =
   document.getElementById("mesa");
+
+const zonaScroll =
+  document.getElementById("zonaScroll");
 
 const controlPaginas =
   document.getElementById("controlPaginas");
@@ -442,6 +494,7 @@ const botonRestablecer =
   document.getElementById("restablecer");
 
 let modo = "acumulacion";
+
 let zSuperior = 100;
 
 
@@ -450,6 +503,7 @@ let zSuperior = 100;
 ========================= */
 
 const offsets = [
+
   { x:  0, y:  0 },
   { x:  2, y:  0 },
   { x: -1, y:  1 },
@@ -469,7 +523,9 @@ const offsets = [
   { x:  1, y: -2 },
   { x: -2, y: -1 },
   { x:  2, y:  2 }
+
 ];
+
 
 const posiciones =
   offsets.map(offset => ({
@@ -479,7 +535,7 @@ const posiciones =
 
 
 /* =========================
-   CREAR LAS 16 PÁGINAS
+   CREAR PÁGINAS
 ========================= */
 
 for (
@@ -519,31 +575,44 @@ for (
 
 }
 
+
 const paginas =
   [...document.querySelectorAll(".pagina")];
 
 
 /* =========================
-   POSICIONAR PÁGINA
+   POSICIONAR
 ========================= */
 
 function colocarPagina(
   pagina,
   indice
 ) {
+
   pagina.style.transform =
-    `translate(${posiciones[indice].x}px, ${posiciones[indice].y}px)`;
+    `translate(
+      ${posiciones[indice].x}px,
+      ${posiciones[indice].y}px
+    )`;
+
 }
 
 
 /* =========================
-   TAMAÑO DE LA PILA
+   TAMAÑO
 ========================= */
 
-function actualizarTamanoMesa() {
-  const tamano = controlTamano.value;
-  mesa.style.width = `${tamano}%`;
-  valorTamano.textContent = `${tamano}%`;
+function actualizarTamano() {
+
+  const tamano =
+    Number(controlTamano.value);
+
+  mesa.style.width =
+    `${tamano}px`;
+
+  valorTamano.textContent =
+    `${tamano} px`;
+
 }
 
 
@@ -559,54 +628,98 @@ function actualizarVisor() {
   const opacidad =
     Number(controlOpacidad.value) / 100;
 
-  paginas.forEach((pagina, indice) => {
 
-    const numero =
-      indice + 1;
+  paginas.forEach(
+    (pagina, indice) => {
 
-    if (modo === "acumulacion") {
+      const numero =
+        indice + 1;
 
-      if (numero <= seleccion) {
 
-        pagina.style.visibility = "visible";
-        pagina.style.pointerEvents = "auto";
-        pagina.style.opacity = opacidad;
+      /* ACUMULACIÓN */
 
-        colocarPagina(
-          pagina,
-          indice
-        );
+      if (
+        modo === "acumulacion"
+      ) {
 
-      } else {
+        if (
+          numero <= seleccion
+        ) {
 
-        pagina.style.visibility = "hidden";
-        pagina.style.pointerEvents = "none";
-        pagina.style.opacity = 0;
+          pagina.style.visibility =
+            "visible";
+
+          pagina.style.pointerEvents =
+            "auto";
+
+          pagina.style.opacity =
+            opacidad;
+
+          colocarPagina(
+            pagina,
+            indice
+          );
+
+        }
+
+        else {
+
+          pagina.style.visibility =
+            "hidden";
+
+          pagina.style.pointerEvents =
+            "none";
+
+          pagina.style.opacity =
+            0;
+
+        }
+
+      }
+
+
+      /* INDIVIDUAL */
+
+      if (
+        modo === "individual"
+      ) {
+
+        if (
+          numero === seleccion
+        ) {
+
+          pagina.style.visibility =
+            "visible";
+
+          pagina.style.pointerEvents =
+            "auto";
+
+          pagina.style.opacity =
+            1;
+
+          pagina.style.transform =
+            "translate(0px,0px)";
+
+        }
+
+        else {
+
+          pagina.style.visibility =
+            "hidden";
+
+          pagina.style.pointerEvents =
+            "none";
+
+          pagina.style.opacity =
+            0;
+
+        }
 
       }
 
     }
+  );
 
-    if (modo === "individual") {
-
-      if (numero === seleccion) {
-
-        pagina.style.visibility = "visible";
-        pagina.style.pointerEvents = "auto";
-        pagina.style.opacity = 1;
-        pagina.style.transform = "translate(0px,0px)";
-
-      } else {
-
-        pagina.style.visibility = "hidden";
-        pagina.style.pointerEvents = "none";
-        pagina.style.opacity = 0;
-
-      }
-
-    }
-
-  });
 
   valorPaginas.textContent =
     `${seleccion} / ${TOTAL_PAGINAS}`;
@@ -614,138 +727,218 @@ function actualizarVisor() {
   valorOpacidad.textContent =
     `${controlOpacidad.value}%`;
 
-  if (modo === "acumulacion") {
+
+  if (
+    modo === "acumulacion"
+  ) {
 
     etiquetaPaginas.textContent =
       "Capas visibles";
 
-    controlOpacidad.disabled = false;
-    botonRestablecer.disabled = false;
+    controlOpacidad.disabled =
+      false;
+
+    botonRestablecer.disabled =
+      false;
 
     estado.textContent =
       seleccion === 1
-      ? "Página 1 · arrastrá la lámina"
-      : `Páginas 1–${seleccion} superpuestas · arrastrá las láminas para separarlas`;
+      ? "Página 1 · arrastrá la lámina sobre la mesa"
+      : `Páginas 1–${seleccion} superpuestas · arrastrá las láminas para dispersarlas`;
 
   }
 
-  if (modo === "individual") {
+
+  if (
+    modo === "individual"
+  ) {
 
     etiquetaPaginas.textContent =
       "Página";
 
-    controlOpacidad.disabled = true;
-    botonRestablecer.disabled = true;
+    controlOpacidad.disabled =
+      true;
+
+    botonRestablecer.disabled =
+      true;
 
     estado.textContent =
       `Página ${seleccion}`;
 
   }
 
-  actualizarTamanoMesa();
+
+  actualizarTamano();
 
 }
 
 
 /* =========================
-   ARRASTRAR CAPAS
+   ARRASTRAR
 ========================= */
 
-paginas.forEach(pagina => {
+paginas.forEach(
+  pagina => {
 
-  let arrastrando = false;
+    let arrastrando =
+      false;
 
-  let inicioMouseX = 0;
-  let inicioMouseY = 0;
+    let inicioMouseX =
+      0;
 
-  let inicioPaginaX = 0;
-  let inicioPaginaY = 0;
+    let inicioMouseY =
+      0;
 
-  pagina.addEventListener(
-    "pointerdown",
-    evento => {
+    let inicioPaginaX =
+      0;
 
-      if (modo !== "acumulacion") {
+    let inicioPaginaY =
+      0;
+
+
+    pagina.addEventListener(
+      "pointerdown",
+      evento => {
+
+        if (
+          modo !== "acumulacion"
+        ) {
+          return;
+        }
+
+
+        evento.preventDefault();
+
+
+        const indice =
+          Number(
+            pagina.dataset.indice
+          );
+
+
+        arrastrando =
+          true;
+
+
+        inicioMouseX =
+          evento.clientX;
+
+        inicioMouseY =
+          evento.clientY;
+
+
+        inicioPaginaX =
+          posiciones[indice].x;
+
+        inicioPaginaY =
+          posiciones[indice].y;
+
+
+        zSuperior++;
+
+        pagina.style.zIndex =
+          zSuperior;
+
+
+        pagina.classList.add(
+          "arrastrando"
+        );
+
+
+        pagina.setPointerCapture(
+          evento.pointerId
+        );
+
+      }
+    );
+
+
+    pagina.addEventListener(
+      "pointermove",
+      evento => {
+
+        if (
+          !arrastrando
+        ) {
+          return;
+        }
+
+
+        const indice =
+          Number(
+            pagina.dataset.indice
+          );
+
+
+        posiciones[indice].x =
+          inicioPaginaX +
+          evento.clientX -
+          inicioMouseX;
+
+
+        posiciones[indice].y =
+          inicioPaginaY +
+          evento.clientY -
+          inicioMouseY;
+
+
+        colocarPagina(
+          pagina,
+          indice
+        );
+
+      }
+    );
+
+
+    function terminarArrastre(
+      evento
+    ) {
+
+      if (
+        !arrastrando
+      ) {
         return;
       }
 
-      const indice =
-        Number(pagina.dataset.indice);
 
-      arrastrando = true;
+      arrastrando =
+        false;
 
-      inicioMouseX = evento.clientX;
-      inicioMouseY = evento.clientY;
 
-      inicioPaginaX = posiciones[indice].x;
-      inicioPaginaY = posiciones[indice].y;
-
-      zSuperior++;
-      pagina.style.zIndex = zSuperior;
-
-      pagina.classList.add("arrastrando");
-
-      pagina.setPointerCapture(evento.pointerId);
-
-    }
-  );
-
-  pagina.addEventListener(
-    "pointermove",
-    evento => {
-
-      if (!arrastrando) {
-        return;
-      }
-
-      const indice =
-        Number(pagina.dataset.indice);
-
-      posiciones[indice].x =
-        inicioPaginaX +
-        evento.clientX -
-        inicioMouseX;
-
-      posiciones[indice].y =
-        inicioPaginaY +
-        evento.clientY -
-        inicioMouseY;
-
-      colocarPagina(
-        pagina,
-        indice
+      pagina.classList.remove(
+        "arrastrando"
       );
 
+
+      if (
+        pagina.hasPointerCapture(
+          evento.pointerId
+        )
+      ) {
+
+        pagina.releasePointerCapture(
+          evento.pointerId
+        );
+
+      }
+
     }
-  );
 
-  function terminarArrastre(evento) {
 
-    if (!arrastrando) {
-      return;
-    }
+    pagina.addEventListener(
+      "pointerup",
+      terminarArrastre
+    );
 
-    arrastrando = false;
 
-    pagina.classList.remove("arrastrando");
-
-    if (pagina.hasPointerCapture(evento.pointerId)) {
-      pagina.releasePointerCapture(evento.pointerId);
-    }
+    pagina.addEventListener(
+      "pointercancel",
+      terminarArrastre
+    );
 
   }
-
-  pagina.addEventListener(
-    "pointerup",
-    terminarArrastre
-  );
-
-  pagina.addEventListener(
-    "pointercancel",
-    terminarArrastre
-  );
-
-});
+);
 
 
 /* =========================
@@ -756,17 +949,26 @@ botonRestablecer.addEventListener(
   "click",
   () => {
 
-    posiciones.forEach((posicion, indice) => {
+    posiciones.forEach(
+      (posicion, indice) => {
 
-      posicion.x = offsets[indice].x;
-      posicion.y = offsets[indice].y;
+        posicion.x =
+          offsets[indice].x;
 
-      paginas[indice].style.zIndex =
-        indice + 1;
+        posicion.y =
+          offsets[indice].y;
 
-    });
 
-    zSuperior = 100;
+        paginas[indice].style.zIndex =
+          indice + 1;
+
+      }
+    );
+
+
+    zSuperior =
+      100;
+
 
     actualizarVisor();
 
@@ -775,31 +977,50 @@ botonRestablecer.addEventListener(
 
 
 /* =========================
-   CAMBIO DE MODO
+   MODOS
 ========================= */
 
 botonAcumulacion.addEventListener(
   "click",
   () => {
 
-    modo = "acumulacion";
+    modo =
+      "acumulacion";
 
-    botonAcumulacion.classList.add("activo");
-    botonIndividual.classList.remove("activo");
+
+    botonAcumulacion.classList.add(
+      "activo"
+    );
+
+
+    botonIndividual.classList.remove(
+      "activo"
+    );
+
 
     actualizarVisor();
 
   }
 );
 
+
 botonIndividual.addEventListener(
   "click",
   () => {
 
-    modo = "individual";
+    modo =
+      "individual";
 
-    botonIndividual.classList.add("activo");
-    botonAcumulacion.classList.remove("activo");
+
+    botonIndividual.classList.add(
+      "activo"
+    );
+
+
+    botonAcumulacion.classList.remove(
+      "activo"
+    );
+
 
     actualizarVisor();
 
@@ -816,15 +1037,32 @@ controlPaginas.addEventListener(
   actualizarVisor
 );
 
+
 controlOpacidad.addEventListener(
   "input",
   actualizarVisor
 );
 
+
 controlTamano.addEventListener(
   "input",
-  actualizarTamanoMesa
+  actualizarTamano
 );
+
+
+/* =========================
+   CENTRAR MESA AL ABRIR
+========================= */
+
+function centrarZona() {
+
+  zonaScroll.scrollLeft =
+    (
+      zonaScroll.scrollWidth -
+      zonaScroll.clientWidth
+    ) / 2;
+
+}
 
 
 /* =========================
@@ -832,6 +1070,11 @@ controlTamano.addEventListener(
 ========================= */
 
 actualizarVisor();
+
+
+requestAnimationFrame(
+  centrarZona
+);
 
 </script>
 
