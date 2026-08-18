@@ -1,1 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Condensación de Dibujo</title>
+
+  <script src="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/webcomponents-bundle.js"></script>
+  <script src="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/jquery-3.js"></script>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/BookReader.css"
+  >
+
+  <script src="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/BookReader.js"></script>
+
+  <style>
+    html {
+      font-size: 10px;
+      font-family: sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #939598;
+    }
+
+    #BookReader,
+    .BookReader {
+      height: 100vh;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div id="BookReader">
+    Cargando Condensación de Dibujo...
+  </div>
+
+  <script>
+
+    function instantiateBookReader(selector, extraOptions) {
+
+      selector = selector || '#BookReader';
+      extraOptions = extraOptions || {};
+
+      var options = {
+
+        ppi: 100,
+
+        data: [
+
+          [
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page001.jpg'
+            }
+          ],
+
+          [
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page002.jpg'
+            },
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page003.jpg'
+            }
+          ],
+
+          [
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page004.jpg'
+            },
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page005.jpg'
+            }
+          ],
+
+          [
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page006.jpg'
+            },
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page007.jpg'
+            }
+          ],
+
+          [
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page008.jpg'
+            },
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page009.jpg'
+            }
+          ],
+
+          [
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page010.jpg'
+            },
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page011.jpg'
+            }
+          ],
+
+          [
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page012.jpg'
+            },
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page013.jpg'
+            }
+          ],
+
+          [
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page014.jpg'
+            },
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page015.jpg'
+            }
+          ],
+
+          [
+            {
+              width: 1165,
+              height: 1653,
+              uri: 'pages/page016.jpg'
+            }
+          ]
+
+        ],
+
+        bookTitle: 'Condensación de Dibujo',
+
+        thumbnail: 'pages/page001.jpg',
+
+        metadata: [
+          {
+            label: 'Título',
+            value: 'Condensación de Dibujo'
+          }
+        ],
+
+        ui: 'full',
+
+        el: selector
+      };
+
+      $.extend(options, extraOptions);
+
+      var br = new BookReader(options);
+      br.init();
+    }
+
+    instantiateBookReader('#BookReader');
+
+  </script>
+
+</body>
+
+</html>
