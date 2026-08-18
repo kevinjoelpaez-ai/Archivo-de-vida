@@ -21,16 +21,25 @@
     body {
       margin: 0;
       padding: 0;
+
       width: 100%;
-      min-height: 100%;
-      font-family: Arial, Helvetica, sans-serif;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
       background: #e9e9e9;
     }
+
 
     .lector {
       width: 100%;
       margin: 0 auto;
     }
+
+
+    /* BARRA DE MODOS */
 
     .barra {
       display: flex;
@@ -40,51 +49,79 @@
       padding: 12px;
 
       background: #f4f4f4;
-      border-bottom: 1px solid #ccc;
+
+      border-bottom:
+        1px solid #ccc;
     }
+
 
     .boton {
-      border: 1px solid #999;
-      background: white;
-      color: #222;
+      border:
+        1px solid #999;
 
-      padding: 9px 18px;
+      background:
+        white;
 
-      border-radius: 4px;
+      color:
+        #222;
 
-      font-size: 13px;
-      cursor: pointer;
+      padding:
+        9px 18px;
+
+      border-radius:
+        4px;
+
+      font-size:
+        13px;
+
+      cursor:
+        pointer;
     }
+
 
     .boton.activo {
-      background: #222;
-      color: white;
-      border-color: #222;
+      background:
+        #222;
+
+      color:
+        white;
+
+      border-color:
+        #222;
     }
+
+
+    /* VISOR */
 
     #visor {
       display: block;
 
       width: 100%;
+
       height: 820px;
 
       border: 0;
-      background: #e9e9e9;
+
+      background:
+        #e9e9e9;
+
+      transition:
+        height .25s ease;
     }
 
-    @media (max-width: 600px) {
+
+    @media (max-width:600px) {
 
       .barra {
         padding: 8px;
       }
 
+
       .boton {
         flex: 1;
-        padding: 9px 6px;
-      }
 
-      #visor {
-        height: 760px;
+        padding:
+          9px 6px;
       }
 
     }
@@ -98,7 +135,9 @@
 
 <div class="lector">
 
+
   <div class="barra">
+
 
     <button
       id="botonLibro"
@@ -108,6 +147,7 @@
       Hojear
     </button>
 
+
     <button
       id="botonCapas"
       class="boton"
@@ -115,6 +155,7 @@
     >
       Superponer capas
     </button>
+
 
   </div>
 
@@ -125,19 +166,28 @@
     allowfullscreen
   ></iframe>
 
+
 </div>
 
 
 <script>
 
   const visor =
-    document.getElementById("visor");
+    document.getElementById(
+      "visor"
+    );
+
 
   const botonLibro =
-    document.getElementById("botonLibro");
+    document.getElementById(
+      "botonLibro"
+    );
+
 
   const botonCapas =
-    document.getElementById("botonCapas");
+    document.getElementById(
+      "botonCapas"
+    );
 
 
   function mostrarLibro() {
@@ -145,9 +195,15 @@
     visor.src =
       "index.html";
 
+
+    visor.style.height =
+      "820px";
+
+
     botonLibro.classList.add(
       "activo"
     );
+
 
     botonCapas.classList.remove(
       "activo"
@@ -159,11 +215,22 @@
   function mostrarCapas() {
 
     visor.src =
-      "capas";
+      "capas.html";
+
+
+    /*
+      MÁS ESPACIO PARA
+      MANIPULAR LAS LÁMINAS
+    */
+
+    visor.style.height =
+      "1200px";
+
 
     botonCapas.classList.add(
       "activo"
     );
+
 
     botonLibro.classList.remove(
       "activo"
@@ -172,6 +239,7 @@
   }
 
 </script>
+
 
 </body>
 
