@@ -1,1 +1,858 @@
+<!DOCTYPE html>
+<html lang="es">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>Condensación de Dibujo — Capas</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: #e9e9e9;
+  color: #222;
+}
+
+.visor {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 24px;
+}
+
+
+/* CONTROLES */
+
+.controles {
+  width: min(100%, 700px);
+
+  background: rgba(255,255,255,.94);
+
+  padding: 18px 22px;
+  margin-bottom: 28px;
+
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 8px;
+}
+
+.titulo {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 18px;
+}
+
+.control {
+  margin-bottom: 16px;
+}
+
+.control:last-child {
+  margin-bottom: 0;
+}
+
+.fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 7px;
+}
+
+label {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.valor {
+  font-size: 13px;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+
+/* BOTONES */
+
+.modos {
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  border: 1px solid #999;
+  background: white;
+
+  padding: 8px 12px;
+
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modo {
+  flex: 1;
+}
+
+.modo.activo {
+  background: #222;
+  color: white;
+  border-color: #222;
+}
+
+#restablecer {
+  width: 100%;
+}
+
+
+/* PILA */
+
+.mesa {
+  position: relative;
+
+  width: min(90vw, 700px);
+
+  aspect-ratio: 1165 / 1653;
+
+  isolation: isolate;
+
+  overflow: visible;
+}
+
+.pagina {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  mix-blend-mode: multiply;
+
+  transform-origin: center;
+
+  cursor: grab;
+
+  user-select: none;
+  -webkit-user-select: none;
+
+  touch-action: none;
+
+  transition:
+    opacity .2s ease,
+    visibility .2s ease;
+}
+
+.pagina.arrastrando {
+  cursor: grabbing;
+}
+
+
+/* TEXTO INFERIOR */
+
+.estado {
+  margin-top: 24px;
+
+  font-size: 12px;
+  color: #666;
+
+  text-align: center;
+}
+
+
+@media (max-width:600px) {
+
+  .visor {
+    padding: 12px;
+  }
+
+  .mesa {
+    width: 94vw;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="visor">
+
+  <div class="controles">
+
+    <div class="titulo">
+      Condensación de Dibujo — capas
+    </div>
+
+
+    <div class="control">
+
+      <div class="fila">
+        <label>Modo de visualización</label>
+      </div>
+
+      <div class="modos">
+
+        <button
+          id="modoAcumulacion"
+          class="modo activo"
+        >
+          Acumulación
+        </button>
+
+        <button
+          id="modoIndividual"
+          class="modo"
+        >
+          Página individual
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="control">
+
+      <div class="fila">
+
+        <label id="etiquetaPaginas">
+          Capas visibles
+        </label>
+
+        <span
+          id="valorPaginas"
+          class="valor"
+        >
+          16 / 16
+        </span>
+
+      </div>
+
+      <input
+        id="controlPaginas"
+        type="range"
+        min="1"
+        max="16"
+        value="16"
+        step="1"
+      >
+
+    </div>
+
+
+    <div class="control">
+
+      <div class="fila">
+
+        <label>
+          Opacidad de cada capa
+        </label>
+
+        <span
+          id="valorOpacidad"
+          class="valor"
+        >
+          25%
+        </span>
+
+      </div>
+
+      <input
+        id="controlOpacidad"
+        type="range"
+        min="5"
+        max="100"
+        value="25"
+        step="1"
+      >
+
+    </div>
+
+
+    <div class="control">
+
+      <button id="restablecer">
+        Restablecer posición de las capas
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="mesa"
+    class="mesa"
+  ></div>
+
+
+  <div
+    id="estado"
+    class="estado"
+  >
+    Páginas 1–16 superpuestas · arrastrá las láminas para separarlas
+  </div>
+
+</div>
+
+
+<script>
+
+const TOTAL_PAGINAS = 16;
+
+
+const mesa =
+  document.getElementById("mesa");
+
+const controlPaginas =
+  document.getElementById("controlPaginas");
+
+const controlOpacidad =
+  document.getElementById("controlOpacidad");
+
+const valorPaginas =
+  document.getElementById("valorPaginas");
+
+const valorOpacidad =
+  document.getElementById("valorOpacidad");
+
+const etiquetaPaginas =
+  document.getElementById("etiquetaPaginas");
+
+const estado =
+  document.getElementById("estado");
+
+const botonAcumulacion =
+  document.getElementById("modoAcumulacion");
+
+const botonIndividual =
+  document.getElementById("modoIndividual");
+
+const botonRestablecer =
+  document.getElementById("restablecer");
+
+
+let modo = "acumulacion";
+
+let zSuperior = 100;
+
+
+/* DESFASE INICIAL */
+
+const offsets = [
+
+  { x: 0,  y: 0  },
+  { x: 2,  y: 0  },
+  { x:-1,  y: 1  },
+  { x: 1,  y:-1  },
+
+  { x:-2,  y: 1  },
+  { x: 0,  y:-2  },
+  { x: 2,  y: 1  },
+  { x:-1,  y:-2  },
+
+  { x: 1,  y: 2  },
+  { x:-2,  y: 0  },
+  { x: 2,  y:-1  },
+  { x: 0,  y: 2  },
+
+  { x:-1,  y: 1  },
+  { x: 1,  y:-2  },
+  { x:-2,  y:-1  },
+  { x: 2,  y: 2  }
+
+];
+
+
+const posiciones =
+  offsets.map(
+    offset => ({
+      x: offset.x,
+      y: offset.y
+    })
+  );
+
+
+/* CREAR LAS 16 PÁGINAS */
+
+for (
+  let numero = 1;
+  numero <= TOTAL_PAGINAS;
+  numero++
+) {
+
+  const imagen =
+    document.createElement("img");
+
+  const numeroArchivo =
+    String(numero).padStart(3,"0");
+
+  imagen.src =
+    `pages/page${numeroArchivo}.jpg`;
+
+  imagen.alt =
+    `Página ${numero}`;
+
+  imagen.className =
+    "pagina";
+
+  imagen.dataset.pagina =
+    numero;
+
+  imagen.dataset.indice =
+    numero - 1;
+
+  imagen.draggable =
+    false;
+
+  imagen.style.zIndex =
+    numero;
+
+  mesa.appendChild(imagen);
+
+}
+
+
+const paginas =
+  [...document.querySelectorAll(".pagina")];
+
+
+/* COLOCAR PÁGINA */
+
+function colocarPagina(
+  pagina,
+  indice
+) {
+
+  pagina.style.transform =
+    `translate(
+      ${posiciones[indice].x}px,
+      ${posiciones[indice].y}px
+    )`;
+
+}
+
+
+/* ACTUALIZAR VISOR */
+
+function actualizarVisor() {
+
+  const seleccion =
+    Number(controlPaginas.value);
+
+  const opacidad =
+    Number(controlOpacidad.value) / 100;
+
+
+  paginas.forEach(
+    (pagina, indice) => {
+
+      const numero =
+        indice + 1;
+
+
+      if (
+        modo === "acumulacion"
+      ) {
+
+        if (
+          numero <= seleccion
+        ) {
+
+          pagina.style.visibility =
+            "visible";
+
+          pagina.style.pointerEvents =
+            "auto";
+
+          pagina.style.opacity =
+            opacidad;
+
+          colocarPagina(
+            pagina,
+            indice
+          );
+
+        }
+
+        else {
+
+          pagina.style.visibility =
+            "hidden";
+
+          pagina.style.pointerEvents =
+            "none";
+
+          pagina.style.opacity =
+            0;
+
+        }
+
+      }
+
+
+      if (
+        modo === "individual"
+      ) {
+
+        if (
+          numero === seleccion
+        ) {
+
+          pagina.style.visibility =
+            "visible";
+
+          pagina.style.pointerEvents =
+            "auto";
+
+          pagina.style.opacity =
+            1;
+
+          pagina.style.transform =
+            "translate(0px,0px)";
+
+        }
+
+        else {
+
+          pagina.style.visibility =
+            "hidden";
+
+          pagina.style.pointerEvents =
+            "none";
+
+          pagina.style.opacity =
+            0;
+
+        }
+
+      }
+
+    }
+  );
+
+
+  valorPaginas.textContent =
+    `${seleccion} / ${TOTAL_PAGINAS}`;
+
+  valorOpacidad.textContent =
+    `${controlOpacidad.value}%`;
+
+
+  if (
+    modo === "acumulacion"
+  ) {
+
+    etiquetaPaginas.textContent =
+      "Capas visibles";
+
+    controlOpacidad.disabled =
+      false;
+
+    botonRestablecer.disabled =
+      false;
+
+    estado.textContent =
+      seleccion === 1
+      ? "Página 1 · arrastrá la lámina"
+      : `Páginas 1–${seleccion} superpuestas · arrastrá las láminas para separarlas`;
+
+  }
+
+
+  if (
+    modo === "individual"
+  ) {
+
+    etiquetaPaginas.textContent =
+      "Página";
+
+    controlOpacidad.disabled =
+      true;
+
+    botonRestablecer.disabled =
+      true;
+
+    estado.textContent =
+      `Página ${seleccion}`;
+
+  }
+
+}
+
+
+/* ARRASTRAR */
+
+paginas.forEach(
+  pagina => {
+
+    let arrastrando = false;
+
+    let inicioMouseX = 0;
+    let inicioMouseY = 0;
+
+    let inicioPaginaX = 0;
+    let inicioPaginaY = 0;
+
+
+    pagina.addEventListener(
+      "pointerdown",
+      evento => {
+
+        if (
+          modo !== "acumulacion"
+        ) {
+          return;
+        }
+
+
+        const indice =
+          Number(
+            pagina.dataset.indice
+          );
+
+
+        arrastrando =
+          true;
+
+
+        inicioMouseX =
+          evento.clientX;
+
+        inicioMouseY =
+          evento.clientY;
+
+
+        inicioPaginaX =
+          posiciones[indice].x;
+
+        inicioPaginaY =
+          posiciones[indice].y;
+
+
+        zSuperior++;
+
+        pagina.style.zIndex =
+          zSuperior;
+
+
+        pagina.classList.add(
+          "arrastrando"
+        );
+
+
+        pagina.setPointerCapture(
+          evento.pointerId
+        );
+
+      }
+    );
+
+
+    pagina.addEventListener(
+      "pointermove",
+      evento => {
+
+        if (!arrastrando) {
+          return;
+        }
+
+
+        const indice =
+          Number(
+            pagina.dataset.indice
+          );
+
+
+        posiciones[indice].x =
+          inicioPaginaX +
+          evento.clientX -
+          inicioMouseX;
+
+
+        posiciones[indice].y =
+          inicioPaginaY +
+          evento.clientY -
+          inicioMouseY;
+
+
+        colocarPagina(
+          pagina,
+          indice
+        );
+
+      }
+    );
+
+
+    function terminarArrastre(
+      evento
+    ) {
+
+      if (!arrastrando) {
+        return;
+      }
+
+
+      arrastrando =
+        false;
+
+
+      pagina.classList.remove(
+        "arrastrando"
+      );
+
+
+      if (
+        pagina.hasPointerCapture(
+          evento.pointerId
+        )
+      ) {
+
+        pagina.releasePointerCapture(
+          evento.pointerId
+        );
+
+      }
+
+    }
+
+
+    pagina.addEventListener(
+      "pointerup",
+      terminarArrastre
+    );
+
+
+    pagina.addEventListener(
+      "pointercancel",
+      terminarArrastre
+    );
+
+  }
+);
+
+
+/* RESTABLECER */
+
+botonRestablecer.addEventListener(
+  "click",
+  () => {
+
+    posiciones.forEach(
+      (posicion, indice) => {
+
+        posicion.x =
+          offsets[indice].x;
+
+        posicion.y =
+          offsets[indice].y;
+
+
+        paginas[indice].style.zIndex =
+          indice + 1;
+
+      }
+    );
+
+
+    zSuperior =
+      100;
+
+
+    actualizarVisor();
+
+  }
+);
+
+
+/* MODOS */
+
+botonAcumulacion.addEventListener(
+  "click",
+  () => {
+
+    modo =
+      "acumulacion";
+
+    botonAcumulacion.classList.add(
+      "activo"
+    );
+
+    botonIndividual.classList.remove(
+      "activo"
+    );
+
+    actualizarVisor();
+
+  }
+);
+
+
+botonIndividual.addEventListener(
+  "click",
+  () => {
+
+    modo =
+      "individual";
+
+    botonIndividual.classList.add(
+      "activo"
+    );
+
+    botonAcumulacion.classList.remove(
+      "activo"
+    );
+
+    actualizarVisor();
+
+  }
+);
+
+
+/* SLIDERS */
+
+controlPaginas.addEventListener(
+  "input",
+  actualizarVisor
+);
+
+
+controlOpacidad.addEventListener(
+  "input",
+  actualizarVisor
+);
+
+
+actualizarVisor();
+
+</script>
+
+</body>
+
+</html>
