@@ -12,23 +12,31 @@
 
 <title>Condensación de Dibujo — Capas</title>
 
+
 <style>
 
 * {
   box-sizing: border-box;
 }
 
+
 html,
 body {
   margin: 0;
   min-height: 100%;
-  font-family: Arial, Helvetica, sans-serif;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 }
+
 
 body {
   background: #e9e9e9;
   color: #222;
 }
+
 
 .visor {
   min-height: 100vh;
@@ -41,154 +49,254 @@ body {
 }
 
 
-/* CONTROLES */
+/* =========================
+   CONTROLES
+========================= */
 
 .controles {
   width: min(100%, 700px);
 
-  background: rgba(255,255,255,.94);
+  background:
+    rgba(255,255,255,.94);
 
-  padding: 18px 22px;
-  margin-bottom: 28px;
+  padding:
+    18px 22px;
 
-  border: 1px solid rgba(0,0,0,.12);
-  border-radius: 8px;
+  margin-bottom:
+    28px;
+
+  border:
+    1px solid rgba(0,0,0,.12);
+
+  border-radius:
+    8px;
 }
+
 
 .titulo {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 18px;
+  font-size:
+    18px;
+
+  font-weight:
+    bold;
+
+  margin-bottom:
+    18px;
 }
+
 
 .control {
-  margin-bottom: 16px;
+  margin-bottom:
+    16px;
 }
+
 
 .control:last-child {
-  margin-bottom: 0;
+  margin-bottom:
+    0;
 }
+
 
 .fila {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display:
+    flex;
 
-  margin-bottom: 7px;
+  justify-content:
+    space-between;
+
+  align-items:
+    center;
+
+  margin-bottom:
+    7px;
 }
+
 
 label {
-  font-size: 13px;
-  font-weight: bold;
+  font-size:
+    13px;
+
+  font-weight:
+    bold;
 }
+
 
 .valor {
-  font-size: 13px;
+  font-size:
+    13px;
 }
+
 
 input[type="range"] {
-  width: 100%;
+  width:
+    100%;
 }
 
 
-/* BOTONES */
+/* =========================
+   BOTONES
+========================= */
 
 .modos {
-  display: flex;
-  gap: 8px;
+  display:
+    flex;
+
+  gap:
+    8px;
 }
+
 
 button {
-  border: 1px solid #999;
-  background: white;
+  border:
+    1px solid #999;
 
-  padding: 8px 12px;
+  background:
+    white;
 
-  border-radius: 4px;
-  cursor: pointer;
+  padding:
+    8px 12px;
+
+  border-radius:
+    4px;
+
+  cursor:
+    pointer;
 }
+
 
 .modo {
-  flex: 1;
+  flex:
+    1;
 }
+
 
 .modo.activo {
-  background: #222;
-  color: white;
-  border-color: #222;
+  background:
+    #222;
+
+  color:
+    white;
+
+  border-color:
+    #222;
 }
+
 
 #restablecer {
-  width: 100%;
+  width:
+    100%;
 }
 
 
-/* PILA */
+/* =========================
+   ÁREA DE CAPAS
+========================= */
 
 .mesa {
-  position: relative;
+  position:
+    relative;
 
-  width: min(90vw, 700px);
+  width:
+    min(90vw, 700px);
 
-  aspect-ratio: 1165 / 1653;
+  aspect-ratio:
+    1165 / 1653;
 
-  isolation: isolate;
+  isolation:
+    isolate;
 
-  overflow: visible;
+  overflow:
+    visible;
 }
 
+
+/* =========================
+   PÁGINAS
+========================= */
+
 .pagina {
-  position: absolute;
+  position:
+    absolute;
 
-  top: 0;
-  left: 0;
+  top:
+    0;
 
-  width: 100%;
-  height: 100%;
+  left:
+    0;
 
-  object-fit: contain;
+  width:
+    100%;
 
-  mix-blend-mode: multiply;
+  height:
+    100%;
 
-  transform-origin: center;
+  object-fit:
+    contain;
 
-  cursor: grab;
+  mix-blend-mode:
+    multiply;
 
-  user-select: none;
-  -webkit-user-select: none;
+  transform-origin:
+    center;
 
-  touch-action: none;
+  cursor:
+    grab;
+
+  user-select:
+    none;
+
+  -webkit-user-select:
+    none;
+
+  touch-action:
+    none;
 
   transition:
     opacity .2s ease,
     visibility .2s ease;
 }
 
+
 .pagina.arrastrando {
-  cursor: grabbing;
+  cursor:
+    grabbing;
 }
 
 
-/* TEXTO INFERIOR */
+/* =========================
+   TEXTO INFERIOR
+========================= */
 
 .estado {
-  margin-top: 24px;
+  margin-top:
+    24px;
 
-  font-size: 12px;
-  color: #666;
+  font-size:
+    12px;
 
-  text-align: center;
+  color:
+    #666;
+
+  text-align:
+    center;
 }
 
+
+/* =========================
+   MÓVIL
+========================= */
 
 @media (max-width:600px) {
 
   .visor {
-    padding: 12px;
+    padding:
+      12px;
   }
 
+
   .mesa {
-    width: 94vw;
+    width:
+      94vw;
   }
 
 }
@@ -200,22 +308,35 @@ button {
 
 <body>
 
+
 <div class="visor">
 
+
   <div class="controles">
+
 
     <div class="titulo">
       Condensación de Dibujo — capas
     </div>
 
 
+    <!-- MODO -->
+
+
     <div class="control">
 
+
       <div class="fila">
-        <label>Modo de visualización</label>
+
+        <label>
+          Modo de visualización
+        </label>
+
       </div>
 
+
       <div class="modos">
+
 
         <button
           id="modoAcumulacion"
@@ -224,6 +345,7 @@ button {
           Acumulación
         </button>
 
+
         <button
           id="modoIndividual"
           class="modo"
@@ -231,18 +353,26 @@ button {
           Página individual
         </button>
 
+
       </div>
+
 
     </div>
 
 
+    <!-- CANTIDAD DE CAPAS -->
+
+
     <div class="control">
 
+
       <div class="fila">
+
 
         <label id="etiquetaPaginas">
           Capas visibles
         </label>
+
 
         <span
           id="valorPaginas"
@@ -251,7 +381,9 @@ button {
           16 / 16
         </span>
 
+
       </div>
+
 
       <input
         id="controlPaginas"
@@ -262,16 +394,23 @@ button {
         step="1"
       >
 
+
     </div>
+
+
+    <!-- OPACIDAD -->
 
 
     <div class="control">
 
+
       <div class="fila">
+
 
         <label>
           Opacidad de cada capa
         </label>
+
 
         <span
           id="valorOpacidad"
@@ -280,7 +419,9 @@ button {
           25%
         </span>
 
+
       </div>
+
 
       <input
         id="controlOpacidad"
@@ -291,18 +432,30 @@ button {
         step="1"
       >
 
+
     </div>
+
+
+    <!-- RESTABLECER -->
 
 
     <div class="control">
 
+
       <button id="restablecer">
+
         Restablecer posición de las capas
+
       </button>
+
 
     </div>
 
+
   </div>
+
+
+  <!-- PILA -->
 
 
   <div
@@ -318,136 +471,225 @@ button {
     Páginas 1–16 superpuestas · arrastrá las láminas para separarlas
   </div>
 
+
 </div>
+
 
 
 <script>
 
-const TOTAL_PAGINAS = 16;
+
+/* =========================
+   CONFIGURACIÓN
+========================= */
+
+
+const TOTAL_PAGINAS =
+  16;
 
 
 const mesa =
-  document.getElementById("mesa");
+  document.getElementById(
+    "mesa"
+  );
+
 
 const controlPaginas =
-  document.getElementById("controlPaginas");
+  document.getElementById(
+    "controlPaginas"
+  );
+
 
 const controlOpacidad =
-  document.getElementById("controlOpacidad");
+  document.getElementById(
+    "controlOpacidad"
+  );
+
 
 const valorPaginas =
-  document.getElementById("valorPaginas");
+  document.getElementById(
+    "valorPaginas"
+  );
+
 
 const valorOpacidad =
-  document.getElementById("valorOpacidad");
+  document.getElementById(
+    "valorOpacidad"
+  );
+
 
 const etiquetaPaginas =
-  document.getElementById("etiquetaPaginas");
+  document.getElementById(
+    "etiquetaPaginas"
+  );
+
 
 const estado =
-  document.getElementById("estado");
+  document.getElementById(
+    "estado"
+  );
+
 
 const botonAcumulacion =
-  document.getElementById("modoAcumulacion");
+  document.getElementById(
+    "modoAcumulacion"
+  );
+
 
 const botonIndividual =
-  document.getElementById("modoIndividual");
+  document.getElementById(
+    "modoIndividual"
+  );
+
 
 const botonRestablecer =
-  document.getElementById("restablecer");
+  document.getElementById(
+    "restablecer"
+  );
 
 
-let modo = "acumulacion";
+let modo =
+  "acumulacion";
 
-let zSuperior = 100;
+
+let zSuperior =
+  100;
 
 
-/* DESFASE INICIAL */
+
+/* =========================
+   DESFASE INICIAL
+========================= */
+
 
 const offsets = [
 
-  { x: 0,  y: 0  },
-  { x: 2,  y: 0  },
-  { x:-1,  y: 1  },
-  { x: 1,  y:-1  },
+  { x:  0, y:  0 },
+  { x:  2, y:  0 },
+  { x: -1, y:  1 },
+  { x:  1, y: -1 },
 
-  { x:-2,  y: 1  },
-  { x: 0,  y:-2  },
-  { x: 2,  y: 1  },
-  { x:-1,  y:-2  },
+  { x: -2, y:  1 },
+  { x:  0, y: -2 },
+  { x:  2, y:  1 },
+  { x: -1, y: -2 },
 
-  { x: 1,  y: 2  },
-  { x:-2,  y: 0  },
-  { x: 2,  y:-1  },
-  { x: 0,  y: 2  },
+  { x:  1, y:  2 },
+  { x: -2, y:  0 },
+  { x:  2, y: -1 },
+  { x:  0, y:  2 },
 
-  { x:-1,  y: 1  },
-  { x: 1,  y:-2  },
-  { x:-2,  y:-1  },
-  { x: 2,  y: 2  }
+  { x: -1, y:  1 },
+  { x:  1, y: -2 },
+  { x: -2, y: -1 },
+  { x:  2, y:  2 }
 
 ];
 
 
 const posiciones =
   offsets.map(
+
     offset => ({
+
       x: offset.x,
       y: offset.y
+
     })
+
   );
 
 
-/* CREAR LAS 16 PÁGINAS */
+
+/* =========================
+   CREAR LAS 16 PÁGINAS
+========================= */
+
 
 for (
+
   let numero = 1;
+
   numero <= TOTAL_PAGINAS;
+
   numero++
+
 ) {
 
+
   const imagen =
-    document.createElement("img");
+    document.createElement(
+      "img"
+    );
+
 
   const numeroArchivo =
-    String(numero).padStart(3,"0");
+    String(numero).padStart(
+      3,
+      "0"
+    );
+
+
+  /*
+    IMPORTANTE:
+    LAS IMÁGENES SON PNG
+  */
 
   imagen.src =
-    `pages/page${numeroArchivo}.jpg`;
+    `pages/page${numeroArchivo}.png`;
+
 
   imagen.alt =
     `Página ${numero}`;
 
+
   imagen.className =
     "pagina";
+
 
   imagen.dataset.pagina =
     numero;
 
+
   imagen.dataset.indice =
     numero - 1;
+
 
   imagen.draggable =
     false;
 
+
   imagen.style.zIndex =
     numero;
 
-  mesa.appendChild(imagen);
+
+  mesa.appendChild(
+    imagen
+  );
 
 }
 
 
+
 const paginas =
-  [...document.querySelectorAll(".pagina")];
+  [
+    ...document.querySelectorAll(
+      ".pagina"
+    )
+  ];
 
 
-/* COLOCAR PÁGINA */
+
+/* =========================
+   POSICIONAR PÁGINA
+========================= */
+
 
 function colocarPagina(
   pagina,
   indice
 ) {
+
 
   pagina.style.transform =
     `translate(
@@ -458,177 +700,277 @@ function colocarPagina(
 }
 
 
-/* ACTUALIZAR VISOR */
+
+/* =========================
+   ACTUALIZAR VISOR
+========================= */
+
 
 function actualizarVisor() {
 
+
   const seleccion =
-    Number(controlPaginas.value);
+    Number(
+      controlPaginas.value
+    );
+
 
   const opacidad =
-    Number(controlOpacidad.value) / 100;
+    Number(
+      controlOpacidad.value
+    ) / 100;
+
 
 
   paginas.forEach(
+
     (pagina, indice) => {
+
 
       const numero =
         indice + 1;
 
 
+
+      /* ACUMULACIÓN */
+
+
       if (
-        modo === "acumulacion"
+        modo ===
+        "acumulacion"
       ) {
 
+
         if (
-          numero <= seleccion
+          numero <=
+          seleccion
         ) {
+
 
           pagina.style.visibility =
             "visible";
 
+
           pagina.style.pointerEvents =
             "auto";
 
+
           pagina.style.opacity =
             opacidad;
+
 
           colocarPagina(
             pagina,
             indice
           );
 
+
         }
 
+
         else {
+
 
           pagina.style.visibility =
             "hidden";
 
+
           pagina.style.pointerEvents =
             "none";
+
 
           pagina.style.opacity =
             0;
 
+
         }
+
 
       }
 
 
+
+      /* PÁGINA INDIVIDUAL */
+
+
       if (
-        modo === "individual"
+        modo ===
+        "individual"
       ) {
 
+
         if (
-          numero === seleccion
+          numero ===
+          seleccion
         ) {
+
 
           pagina.style.visibility =
             "visible";
 
+
           pagina.style.pointerEvents =
             "auto";
+
 
           pagina.style.opacity =
             1;
 
+
           pagina.style.transform =
             "translate(0px,0px)";
 
+
         }
 
+
         else {
+
 
           pagina.style.visibility =
             "hidden";
 
+
           pagina.style.pointerEvents =
             "none";
+
 
           pagina.style.opacity =
             0;
 
+
         }
+
 
       }
 
+
     }
+
   );
+
 
 
   valorPaginas.textContent =
     `${seleccion} / ${TOTAL_PAGINAS}`;
 
+
   valorOpacidad.textContent =
     `${controlOpacidad.value}%`;
 
 
+
   if (
-    modo === "acumulacion"
+    modo ===
+    "acumulacion"
   ) {
+
 
     etiquetaPaginas.textContent =
       "Capas visibles";
 
+
     controlOpacidad.disabled =
       false;
+
 
     botonRestablecer.disabled =
       false;
 
+
     estado.textContent =
+
       seleccion === 1
-      ? "Página 1 · arrastrá la lámina"
-      : `Páginas 1–${seleccion} superpuestas · arrastrá las láminas para separarlas`;
+
+      ?
+
+      "Página 1 · arrastrá la lámina"
+
+      :
+
+      `Páginas 1–${seleccion} superpuestas · arrastrá las láminas para separarlas`;
+
 
   }
 
 
+
   if (
-    modo === "individual"
+    modo ===
+    "individual"
   ) {
+
 
     etiquetaPaginas.textContent =
       "Página";
 
+
     controlOpacidad.disabled =
       true;
+
 
     botonRestablecer.disabled =
       true;
 
+
     estado.textContent =
       `Página ${seleccion}`;
 
+
   }
+
 
 }
 
 
-/* ARRASTRAR */
+
+/* =========================
+   ARRASTRAR CAPAS
+========================= */
+
 
 paginas.forEach(
+
   pagina => {
 
-    let arrastrando = false;
 
-    let inicioMouseX = 0;
-    let inicioMouseY = 0;
+    let arrastrando =
+      false;
 
-    let inicioPaginaX = 0;
-    let inicioPaginaY = 0;
+
+    let inicioMouseX =
+      0;
+
+
+    let inicioMouseY =
+      0;
+
+
+    let inicioPaginaX =
+      0;
+
+
+    let inicioPaginaY =
+      0;
+
 
 
     pagina.addEventListener(
+
       "pointerdown",
+
       evento => {
 
+
         if (
-          modo !== "acumulacion"
+          modo !==
+          "acumulacion"
         ) {
+
           return;
+
         }
+
 
 
         const indice =
@@ -637,28 +979,42 @@ paginas.forEach(
           );
 
 
+
         arrastrando =
           true;
+
 
 
         inicioMouseX =
           evento.clientX;
 
+
         inicioMouseY =
           evento.clientY;
+
 
 
         inicioPaginaX =
           posiciones[indice].x;
 
+
         inicioPaginaY =
           posiciones[indice].y;
 
 
+
+        /*
+          LA CAPA TOCADA
+          PASA AL FRENTE
+        */
+
+
         zSuperior++;
+
 
         pagina.style.zIndex =
           zSuperior;
+
 
 
         pagina.classList.add(
@@ -666,21 +1022,33 @@ paginas.forEach(
         );
 
 
+
         pagina.setPointerCapture(
           evento.pointerId
         );
 
+
       }
+
     );
 
 
+
     pagina.addEventListener(
+
       "pointermove",
+
       evento => {
 
-        if (!arrastrando) {
+
+        if (
+          !arrastrando
+        ) {
+
           return;
+
         }
+
 
 
         const indice =
@@ -689,16 +1057,33 @@ paginas.forEach(
           );
 
 
+
         posiciones[indice].x =
-          inicioPaginaX +
-          evento.clientX -
+
+          inicioPaginaX
+
+          +
+
+          evento.clientX
+
+          -
+
           inicioMouseX;
 
 
+
         posiciones[indice].y =
-          inicioPaginaY +
-          evento.clientY -
+
+          inicioPaginaY
+
+          +
+
+          evento.clientY
+
+          -
+
           inicioMouseY;
+
 
 
         colocarPagina(
@@ -706,21 +1091,31 @@ paginas.forEach(
           indice
         );
 
+
       }
+
     );
+
 
 
     function terminarArrastre(
       evento
     ) {
 
-      if (!arrastrando) {
+
+      if (
+        !arrastrando
+      ) {
+
         return;
+
       }
+
 
 
       arrastrando =
         false;
+
 
 
       pagina.classList.remove(
@@ -728,19 +1123,26 @@ paginas.forEach(
       );
 
 
+
       if (
+
         pagina.hasPointerCapture(
           evento.pointerId
         )
+
       ) {
+
 
         pagina.releasePointerCapture(
           evento.pointerId
         );
 
+
       }
 
+
     }
+
 
 
     pagina.addEventListener(
@@ -754,88 +1156,132 @@ paginas.forEach(
       terminarArrastre
     );
 
+
   }
+
 );
 
 
-/* RESTABLECER */
+
+/* =========================
+   RESTABLECER
+========================= */
+
 
 botonRestablecer.addEventListener(
+
   "click",
+
   () => {
 
+
     posiciones.forEach(
+
       (posicion, indice) => {
+
 
         posicion.x =
           offsets[indice].x;
+
 
         posicion.y =
           offsets[indice].y;
 
 
+
         paginas[indice].style.zIndex =
           indice + 1;
 
+
       }
+
     );
+
 
 
     zSuperior =
       100;
 
 
+
     actualizarVisor();
 
+
   }
+
 );
 
 
-/* MODOS */
+
+/* =========================
+   CAMBIO DE MODO
+========================= */
+
 
 botonAcumulacion.addEventListener(
+
   "click",
+
   () => {
+
 
     modo =
       "acumulacion";
+
 
     botonAcumulacion.classList.add(
       "activo"
     );
 
+
     botonIndividual.classList.remove(
       "activo"
     );
 
+
     actualizarVisor();
 
+
   }
+
 );
 
 
+
 botonIndividual.addEventListener(
+
   "click",
+
   () => {
+
 
     modo =
       "individual";
+
 
     botonIndividual.classList.add(
       "activo"
     );
 
+
     botonAcumulacion.classList.remove(
       "activo"
     );
 
+
     actualizarVisor();
 
+
   }
+
 );
 
 
-/* SLIDERS */
+
+/* =========================
+   SLIDERS
+========================= */
+
 
 controlPaginas.addEventListener(
   "input",
@@ -849,9 +1295,17 @@ controlOpacidad.addEventListener(
 );
 
 
+
+/* =========================
+   INICIAR
+========================= */
+
+
 actualizarVisor();
 
+
 </script>
+
 
 </body>
 
