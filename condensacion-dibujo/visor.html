@@ -2,136 +2,144 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+<meta charset="UTF-8">
 
-  <title>Condensación de Dibujo</title>
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
 
-  <style>
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-
-      width: 100%;
-
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-      background: #e9e9e9;
-    }
+<title>Condensación de Dibujo</title>
 
 
-    .lector {
-      width: 100%;
-      margin: 0 auto;
-    }
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+
+  width: 100%;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  background: #e9e9e9;
+}
 
 
-    /* BARRA DE MODOS */
-
-    .barra {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-
-      padding: 12px;
-
-      background: #f4f4f4;
-
-      border-bottom:
-        1px solid #ccc;
-    }
+.lector {
+  width: 100%;
+}
 
 
-    .boton {
-      border:
-        1px solid #999;
+/* =========================
+   SELECTOR DE MODO
+========================= */
 
-      background:
-        white;
+.barra {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
 
-      color:
-        #222;
+  padding: 12px;
 
-      padding:
-        9px 18px;
+  background: #f4f4f4;
 
-      border-radius:
-        4px;
-
-      font-size:
-        13px;
-
-      cursor:
-        pointer;
-    }
+  border-bottom:
+    1px solid #ccc;
+}
 
 
-    .boton.activo {
-      background:
-        #222;
+.boton {
+  border:
+    1px solid #999;
 
-      color:
-        white;
+  background:
+    white;
 
-      border-color:
-        #222;
-    }
+  color:
+    #222;
 
+  padding:
+    9px 18px;
 
-    /* VISOR */
+  border-radius:
+    4px;
 
-    #visor {
-      display: block;
+  font-size:
+    13px;
 
-      width: 100%;
-
-      height: 820px;
-
-      border: 0;
-
-      background:
-        #e9e9e9;
-
-      transition:
-        height .25s ease;
-    }
+  cursor:
+    pointer;
+}
 
 
-    @media (max-width:600px) {
+.boton.activo {
+  background:
+    #222;
 
-      .barra {
-        padding: 8px;
-      }
+  color:
+    white;
+
+  border-color:
+    #222;
+}
 
 
-      .boton {
-        flex: 1;
+/* =========================
+   VISOR
+========================= */
 
-        padding:
-          9px 6px;
-      }
+#visor {
+  display: block;
 
-    }
+  width: 100%;
 
-  </style>
+  height: 820px;
+
+  border: 0;
+
+  background: #e9e9e9;
+
+  transition:
+    height .25s ease;
+}
+
+
+/* =========================
+   MÓVIL
+========================= */
+
+@media (max-width:600px) {
+
+  .barra {
+    padding: 8px;
+  }
+
+  .boton {
+    flex: 1;
+
+    padding:
+      9px 6px;
+  }
+
+}
+
+</style>
 
 </head>
 
 
 <body>
+
 
 <div class="lector">
 
@@ -142,7 +150,6 @@
     <button
       id="botonLibro"
       class="boton activo"
-      onclick="mostrarLibro()"
     >
       Hojear
     </button>
@@ -151,7 +158,6 @@
     <button
       id="botonCapas"
       class="boton"
-      onclick="mostrarCapas()"
     >
       Superponer capas
     </button>
@@ -172,74 +178,85 @@
 
 <script>
 
-  const visor =
-    document.getElementById(
-      "visor"
-    );
+const visor =
+  document.getElementById(
+    "visor"
+  );
 
 
-  const botonLibro =
-    document.getElementById(
-      "botonLibro"
-    );
+const botonLibro =
+  document.getElementById(
+    "botonLibro"
+  );
 
 
-  const botonCapas =
-    document.getElementById(
-      "botonCapas"
-    );
+const botonCapas =
+  document.getElementById(
+    "botonCapas"
+  );
 
 
-  function mostrarLibro() {
+function mostrarLibro() {
 
-    visor.src =
-      "index.html";
-
-
-    visor.style.height =
-      "820px";
+  visor.src =
+    "index.html";
 
 
-    botonLibro.classList.add(
-      "activo"
-    );
+  visor.style.height =
+    "820px";
 
 
-    botonCapas.classList.remove(
-      "activo"
-    );
-
-  }
+  botonLibro.classList.add(
+    "activo"
+  );
 
 
-  function mostrarCapas() {
+  botonCapas.classList.remove(
+    "activo"
+  );
 
-    visor.src =
-      "capas.html";
-
-
-    /*
-      MÁS ESPACIO PARA
-      MANIPULAR LAS LÁMINAS
-    */
-
-    visor.style.height =
-      "1200px";
+}
 
 
-    botonCapas.classList.add(
-      "activo"
-    );
+function mostrarCapas() {
+
+  visor.src =
+    "capas.html";
 
 
-    botonLibro.classList.remove(
-      "activo"
-    );
+  /*
+    ALTURA GRANDE PARA
+    LA MESA DE LÁMINAS
+  */
 
-  }
+  visor.style.height =
+    "1650px";
+
+
+  botonCapas.classList.add(
+    "activo"
+  );
+
+
+  botonLibro.classList.remove(
+    "activo"
+  );
+
+}
+
+
+botonLibro.addEventListener(
+  "click",
+  mostrarLibro
+);
+
+
+botonCapas.addEventListener(
+  "click",
+  mostrarCapas
+);
 
 </script>
-
 
 </body>
 
