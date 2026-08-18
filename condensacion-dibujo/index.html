@@ -7,9 +7,12 @@
 
   <title>Condensación de Dibujo</title>
 
+  <!-- Dependencias de BookReader -->
   <script src="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/webcomponents-bundle.js"></script>
+
   <script src="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/jquery-3.js"></script>
 
+  <!-- BookReader -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/BookReader.css"
@@ -18,6 +21,7 @@
   <script src="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/BookReader.js"></script>
 
   <style>
+
     html {
       font-size: 10px;
       font-family: sans-serif;
@@ -34,15 +38,18 @@
       overflow: hidden;
       margin: 0 auto;
     }
+
   </style>
 
 </head>
+
 
 <body>
 
   <div id="BookReader">
     Cargando Condensación de Dibujo...
   </div>
+
 
   <script>
 
@@ -61,7 +68,7 @@
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page001.jpg'
+              uri: 'pages/page001.png'
             }
           ],
 
@@ -69,12 +76,12 @@
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page002.jpg'
+              uri: 'pages/page002.png'
             },
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page003.jpg'
+              uri: 'pages/page003.png'
             }
           ],
 
@@ -82,12 +89,12 @@
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page004.jpg'
+              uri: 'pages/page004.png'
             },
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page005.jpg'
+              uri: 'pages/page005.png'
             }
           ],
 
@@ -95,12 +102,12 @@
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page006.jpg'
+              uri: 'pages/page006.png'
             },
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page007.jpg'
+              uri: 'pages/page007.png'
             }
           ],
 
@@ -108,12 +115,12 @@
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page008.jpg'
+              uri: 'pages/page008.png'
             },
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page009.jpg'
+              uri: 'pages/page009.png'
             }
           ],
 
@@ -121,12 +128,12 @@
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page010.jpg'
+              uri: 'pages/page010.png'
             },
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page011.jpg'
+              uri: 'pages/page011.png'
             }
           ],
 
@@ -134,12 +141,12 @@
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page012.jpg'
+              uri: 'pages/page012.png'
             },
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page013.jpg'
+              uri: 'pages/page013.png'
             }
           ],
 
@@ -147,12 +154,12 @@
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page014.jpg'
+              uri: 'pages/page014.png'
             },
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page015.jpg'
+              uri: 'pages/page015.png'
             }
           ],
 
@@ -160,7 +167,7 @@
             {
               width: 1165,
               height: 1653,
-              uri: 'pages/page016.jpg'
+              uri: 'pages/page016.png'
             }
           ]
 
@@ -168,7 +175,7 @@
 
         bookTitle: 'Condensación de Dibujo',
 
-        thumbnail: 'pages/page001.jpg',
+        thumbnail: 'pages/page001.png',
 
         metadata: [
           {
@@ -182,11 +189,15 @@
         el: selector
       };
 
+
       $.extend(options, extraOptions);
 
       var br = new BookReader(options);
+
       br.init();
+
     }
+
 
     instantiateBookReader('#BookReader');
 
