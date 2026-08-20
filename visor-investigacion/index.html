@@ -31,7 +31,7 @@ body {
 }
 
 .app {
-  width: min(900px, calc(100% - 32px));
+  width: min(1000px, calc(100% - 32px));
   margin: 0 auto;
   padding: 50px 0;
 }
@@ -48,14 +48,14 @@ h1 {
 
 
 /* =========================
-   ZONA DE CARGA
+   CARGA
 ========================= */
 
 .carga {
   display: block;
 
   width: 100%;
-  min-height: 260px;
+  min-height: 250px;
 
   border: 2px dashed #999;
   border-radius: 12px;
@@ -67,10 +67,6 @@ h1 {
   text-align: center;
 
   cursor: pointer;
-
-  transition:
-    border-color .2s ease,
-    background .2s ease;
 }
 
 .carga.arrastrando {
@@ -116,7 +112,21 @@ h1 {
 
 
 /* =========================
-   RESULTADO
+   ESTADO
+========================= */
+
+.estado {
+  margin-top: 18px;
+
+  min-height: 22px;
+
+  font-size: 13px;
+  color: #666;
+}
+
+
+/* =========================
+   INFORMACIÓN
 ========================= */
 
 .resultado {
@@ -137,8 +147,8 @@ h1 {
 }
 
 .resultado h2 {
-  font-size: 18px;
   margin: 0 0 18px;
+  font-size: 18px;
 }
 
 .dato {
@@ -166,16 +176,106 @@ h1 {
 
 
 /* =========================
-   ESTADO
+   VISTA PREVIA
 ========================= */
 
-.estado {
-  margin-top: 18px;
+.previsualizacion {
+  display: none;
 
-  font-size: 13px;
+  margin-top: 30px;
+}
+
+.previsualizacion.visible {
+  display: block;
+}
+
+.previsualizacion h2 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.explicacion {
+  margin: 0 0 20px;
+
   color: #666;
+  font-size: 13px;
+}
 
-  min-height: 20px;
+.paginas-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fill,
+      minmax(150px, 1fr)
+    );
+
+  gap: 18px;
+}
+
+.pagina {
+  background: white;
+
+  border: 1px solid #ccc;
+  border-radius: 7px;
+
+  overflow: hidden;
+}
+
+.pagina-imagen {
+  width: 100%;
+
+  aspect-ratio: 1165 / 1653;
+
+  object-fit: contain;
+
+  display: block;
+
+  background: #ddd;
+}
+
+.pagina-info {
+  padding: 9px 10px;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.pagina-numero {
+  font-weight: bold;
+}
+
+
+/* =========================
+   PROGRESO
+========================= */
+
+.progreso {
+  display: none;
+
+  width: 100%;
+  height: 8px;
+
+  margin-top: 12px;
+
+  background: #ddd;
+
+  border-radius: 999px;
+
+  overflow: hidden;
+}
+
+.progreso.visible {
+  display: block;
+}
+
+.progreso-barra {
+  width: 0%;
+  height: 100%;
+
+  background: #222;
+
+  transition: width .1s linear;
 }
 
 
@@ -183,7 +283,7 @@ h1 {
    MÓVIL
 ========================= */
 
-@media (max-width: 600px) {
+@media (max-width:600px) {
 
   .app {
     width: calc(100% - 20px);
@@ -203,6 +303,11 @@ h1 {
     text-align: left;
   }
 
+  .paginas-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
 }
 
 </style>
@@ -220,9 +325,11 @@ h1 {
 
   <p class="intro">
     Cargá un PDF o una serie de imágenes.
-    Los archivos se procesan localmente en tu navegador.
+    Todo se procesa localmente en tu navegador.
   </p>
 
+
+  <!-- CARGA -->
 
   <label
     id="zonaCarga"
@@ -253,11 +360,30 @@ h1 {
   >
 
 
+  <!-- ESTADO -->
+
   <div
     id="estado"
     class="estado"
   ></div>
 
+
+  <!-- PROGRESO -->
+
+  <div
+    id="progreso"
+    class="progreso"
+  >
+
+    <div
+      id="progresoBarra"
+      class="progreso-barra"
+    ></div>
+
+  </div>
+
+
+  <!-- INFORMACIÓN -->
 
   <section
     id="resultado"
@@ -265,7 +391,7 @@ h1 {
   >
 
     <h2>
-      Documento detectado
+      Documento preparado
     </h2>
 
 
@@ -304,7 +430,7 @@ h1 {
       </span>
 
       <span
-        id="paginas"
+        id="cantidadPaginas"
         class="valor"
       ></span>
 
@@ -314,17 +440,40 @@ h1 {
     <div class="dato">
 
       <span class="etiqueta">
-        Estado
+        Primera página
       </span>
 
       <span
-        id="estadoDocumento"
+        id="dimensiones"
         class="valor"
-      >
-        Listo para visualizar
-      </span>
+      ></span>
 
     </div>
+
+
+  </section>
+
+
+  <!-- VISTA PREVIA -->
+
+  <section
+    id="previsualizacion"
+    class="previsualizacion"
+  >
+
+    <h2>
+      Páginas detectadas
+    </h2>
+
+    <p class="explicacion">
+      Estas son las páginas internas que después utilizarán
+      tanto el modo Hojear como el modo Superponer capas.
+    </p>
+
+    <div
+      id="paginasGrid"
+      class="paginas-grid"
+    ></div>
 
   </section>
 
@@ -341,17 +490,27 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/build/pdf.worker.mjs";
 
 
+/* =========================
+   ELEMENTOS
+========================= */
+
 const input =
   document.getElementById("archivo");
 
 const zonaCarga =
   document.getElementById("zonaCarga");
 
-const resultado =
-  document.getElementById("resultado");
-
 const estado =
   document.getElementById("estado");
+
+const progreso =
+  document.getElementById("progreso");
+
+const progresoBarra =
+  document.getElementById("progresoBarra");
+
+const resultado =
+  document.getElementById("resultado");
 
 const tipo =
   document.getElementById("tipo");
@@ -359,18 +518,48 @@ const tipo =
 const nombre =
   document.getElementById("nombre");
 
-const paginas =
-  document.getElementById("paginas");
+const cantidadPaginas =
+  document.getElementById("cantidadPaginas");
 
+const dimensiones =
+  document.getElementById("dimensiones");
+
+const previsualizacion =
+  document.getElementById("previsualizacion");
+
+const paginasGrid =
+  document.getElementById("paginasGrid");
+
+
+/* =========================
+   DOCUMENTO NORMALIZADO
+========================= */
 
 /*
-  Más adelante esta variable será
-  la fuente común para BookReader
-  y el visor de capas.
+
+Esta va a ser la estructura central
+de toda la aplicación.
+
+Tanto un PDF como una serie de imágenes
+terminarán convertidos a:
+
+documentoActual.paginas = [
+
+  {
+    numero: 1,
+    src: "...",
+    width: 1165,
+    height: 1653
+  },
+
+  ...
+]
+
 */
 
 let documentoActual = {
   tipo: null,
+  nombre: null,
   paginas: []
 };
 
@@ -437,10 +626,8 @@ zonaCarga.addEventListener(
       "arrastrando"
     );
 
-
     const archivos =
       [...evento.dataTransfer.files];
-
 
     if (
       archivos.length > 0
@@ -457,19 +644,81 @@ zonaCarga.addEventListener(
 
 
 /* =========================
-   PROCESAR
+   LIMPIAR
+========================= */
+
+function limpiarAnterior() {
+
+  /*
+    Liberamos las URLs temporales
+    generadas anteriormente.
+  */
+
+  if (
+    documentoActual.paginas
+  ) {
+
+    documentoActual.paginas.forEach(
+      pagina => {
+
+        if (
+          pagina.src &&
+          pagina.src.startsWith("blob:")
+        ) {
+
+          URL.revokeObjectURL(
+            pagina.src
+          );
+
+        }
+
+      }
+    );
+
+  }
+
+
+  documentoActual = {
+    tipo: null,
+    nombre: null,
+    paginas: []
+  };
+
+
+  paginasGrid.innerHTML =
+    "";
+
+
+  resultado.classList.remove(
+    "visible"
+  );
+
+
+  previsualizacion.classList.remove(
+    "visible"
+  );
+
+
+  progreso.classList.remove(
+    "visible"
+  );
+
+
+  progresoBarra.style.width =
+    "0%";
+
+}
+
+
+/* =========================
+   PROCESAR ARCHIVOS
 ========================= */
 
 async function procesarArchivos(
   archivos
 ) {
 
-  resultado.classList.remove(
-    "visible"
-  );
-
-  estado.textContent =
-    "Leyendo documento...";
+  limpiarAnterior();
 
 
   const pdfs =
@@ -489,11 +738,6 @@ async function procesarArchivos(
     );
 
 
-  /*
-    PRIMERA REGLA:
-    un PDF solo
-  */
-
   if (
     pdfs.length === 1 &&
     archivos.length === 1
@@ -508,13 +752,9 @@ async function procesarArchivos(
   }
 
 
-  /*
-    SEGUNDA REGLA:
-    múltiples imágenes
-  */
-
   if (
-    imagenes.length === archivos.length
+    imagenes.length ===
+    archivos.length
   ) {
 
     await procesarImagenes(
@@ -542,6 +782,15 @@ async function procesarPDF(
 
   try {
 
+    estado.textContent =
+      "Leyendo PDF...";
+
+
+    progreso.classList.add(
+      "visible"
+    );
+
+
     const buffer =
       await archivo.arrayBuffer();
 
@@ -558,20 +807,23 @@ async function procesarPDF(
 
 
     documentoActual = {
-      tipo: "pdf",
-      archivo: archivo,
-      pdf: pdf,
+      tipo: "PDF",
+      nombre: archivo.name,
       paginas: []
     };
 
 
     /*
-      Por ahora solamente registramos
-      la cantidad de páginas.
+      Escala de renderizado.
 
-      En el siguiente paso vamos a
-      convertirlas en páginas utilizables.
+      2 produce imágenes suficientemente
+      grandes para dibujos, bitácoras,
+      textos y documentos visuales.
     */
+
+    const ESCALA_PDF =
+      2;
+
 
     for (
       let numero = 1;
@@ -579,38 +831,173 @@ async function procesarPDF(
       numero++
     ) {
 
+      estado.textContent =
+        `Preparando página ${numero} de ${pdf.numPages}...`;
+
+
+      const paginaPDF =
+        await pdf.getPage(
+          numero
+        );
+
+
+      const viewport =
+        paginaPDF.getViewport({
+          scale:
+            ESCALA_PDF
+        });
+
+
+      const canvas =
+        document.createElement(
+          "canvas"
+        );
+
+
+      const contexto =
+        canvas.getContext(
+          "2d"
+        );
+
+
+      canvas.width =
+        Math.round(
+          viewport.width
+        );
+
+
+      canvas.height =
+        Math.round(
+          viewport.height
+        );
+
+
+      await paginaPDF.render({
+        canvasContext:
+          contexto,
+
+        viewport:
+          viewport
+      }).promise;
+
+
+      /*
+        Convertimos el canvas en un Blob.
+
+        Esto evita guardar enormes cadenas
+        base64 en memoria.
+      */
+
+      const blob =
+        await canvasABlob(
+          canvas
+        );
+
+
+      const url =
+        URL.createObjectURL(
+          blob
+        );
+
+
       documentoActual.paginas.push({
-        numero: numero
+
+        numero:
+          numero,
+
+        src:
+          url,
+
+        width:
+          canvas.width,
+
+        height:
+          canvas.height
+
       });
+
+
+      const porcentaje =
+        (
+          numero /
+          pdf.numPages
+        ) * 100;
+
+
+      progresoBarra.style.width =
+        `${porcentaje}%`;
 
     }
 
 
-    mostrarResultado({
-      tipo:
-        "PDF",
-
-      nombre:
-        archivo.name,
-
-      paginas:
-        pdf.numPages
-    });
-
-
     estado.textContent =
-      "PDF leído correctamente.";
+      "PDF preparado correctamente.";
+
+
+    mostrarDocumento();
 
   }
 
-  catch (error) {
+  catch (
+    error
+  ) {
 
-    console.error(error);
+    console.error(
+      error
+    );
+
 
     estado.textContent =
-      "No se pudo leer el PDF.";
+      "No se pudo preparar el PDF.";
 
   }
+
+}
+
+
+/* =========================
+   CANVAS → BLOB
+========================= */
+
+function canvasABlob(
+  canvas
+) {
+
+  return new Promise(
+    (resolve, reject) => {
+
+      canvas.toBlob(
+
+        blob => {
+
+          if (
+            blob
+          ) {
+
+            resolve(
+              blob
+            );
+
+          }
+
+          else {
+
+            reject(
+              new Error(
+                "No se pudo convertir la página."
+              )
+            );
+
+          }
+
+        },
+
+        "image/png"
+
+      );
+
+    }
+  );
 
 }
 
@@ -623,14 +1010,27 @@ async function procesarImagenes(
   archivos
 ) {
 
+  estado.textContent =
+    "Preparando imágenes...";
+
+
+  progreso.classList.add(
+    "visible"
+  );
+
+
   /*
-    Ordenamos por nombre para que:
+    Orden natural:
 
-    page001
-    page002
-    page003
+    page1
+    page2
+    page10
 
-    mantengan su secuencia.
+    en lugar de:
+
+    page1
+    page10
+    page2
   */
 
   archivos.sort(
@@ -647,66 +1047,257 @@ async function procesarImagenes(
 
 
   documentoActual = {
-    tipo: "imagenes",
-    paginas: archivos.map(
-      (archivo, indice) => ({
-        numero:
-          indice + 1,
-
-        archivo:
-          archivo,
-
-        url:
-          URL.createObjectURL(
-            archivo
-          )
-      })
-    )
-  };
-
-
-  mostrarResultado({
-
-    tipo:
-      "Serie de imágenes",
+    tipo: "Serie de imágenes",
 
     nombre:
       archivos.length === 1
       ? archivos[0].name
       : `${archivos[0].name} … ${archivos[archivos.length - 1].name}`,
 
-    paginas:
-      archivos.length
+    paginas: []
+  };
 
-  });
+
+  for (
+    let indice = 0;
+    indice < archivos.length;
+    indice++
+  ) {
+
+    const archivo =
+      archivos[indice];
+
+
+    estado.textContent =
+      `Preparando imagen ${indice + 1} de ${archivos.length}...`;
+
+
+    const url =
+      URL.createObjectURL(
+        archivo
+      );
+
+
+    const tamano =
+      await obtenerDimensionesImagen(
+        url
+      );
+
+
+    documentoActual.paginas.push({
+
+      numero:
+        indice + 1,
+
+      src:
+        url,
+
+      width:
+        tamano.width,
+
+      height:
+        tamano.height
+
+    });
+
+
+    const porcentaje =
+      (
+        (indice + 1) /
+        archivos.length
+      ) * 100;
+
+
+    progresoBarra.style.width =
+      `${porcentaje}%`;
+
+  }
 
 
   estado.textContent =
-    "Imágenes leídas correctamente.";
+    "Imágenes preparadas correctamente.";
+
+
+  mostrarDocumento();
 
 }
 
 
 /* =========================
-   MOSTRAR INFORMACIÓN
+   DIMENSIONES
 ========================= */
 
-function mostrarResultado(
-  datos
+function obtenerDimensionesImagen(
+  src
 ) {
 
+  return new Promise(
+    (resolve, reject) => {
+
+      const imagen =
+        new Image();
+
+
+      imagen.onload =
+        () => {
+
+          resolve({
+
+            width:
+              imagen.naturalWidth,
+
+            height:
+              imagen.naturalHeight
+
+          });
+
+        };
+
+
+      imagen.onerror =
+        reject;
+
+
+      imagen.src =
+        src;
+
+    }
+  );
+
+}
+
+
+/* =========================
+   MOSTRAR DOCUMENTO
+========================= */
+
+function mostrarDocumento() {
+
+  const paginas =
+    documentoActual.paginas;
+
+
   tipo.textContent =
-    datos.tipo;
+    documentoActual.tipo;
+
 
   nombre.textContent =
-    datos.nombre;
+    documentoActual.nombre;
 
-  paginas.textContent =
-    datos.paginas;
+
+  cantidadPaginas.textContent =
+    paginas.length;
+
+
+  if (
+    paginas.length > 0
+  ) {
+
+    dimensiones.textContent =
+      `${paginas[0].width} × ${paginas[0].height} px`;
+
+  }
 
 
   resultado.classList.add(
     "visible"
+  );
+
+
+  renderizarMiniaturas();
+
+
+  previsualizacion.classList.add(
+    "visible"
+  );
+
+
+  progreso.classList.remove(
+    "visible"
+  );
+
+}
+
+
+/* =========================
+   MINIATURAS
+========================= */
+
+function renderizarMiniaturas() {
+
+  paginasGrid.innerHTML =
+    "";
+
+
+  documentoActual.paginas.forEach(
+    pagina => {
+
+
+      const tarjeta =
+        document.createElement(
+          "article"
+        );
+
+
+      tarjeta.className =
+        "pagina";
+
+
+      const imagen =
+        document.createElement(
+          "img"
+        );
+
+
+      imagen.className =
+        "pagina-imagen";
+
+
+      imagen.src =
+        pagina.src;
+
+
+      imagen.alt =
+        `Página ${pagina.numero}`;
+
+
+      const info =
+        document.createElement(
+          "div"
+        );
+
+
+      info.className =
+        "pagina-info";
+
+
+      info.innerHTML =
+        `
+          <div class="pagina-numero">
+            Página ${pagina.numero}
+          </div>
+
+          <div>
+            ${pagina.width} × ${pagina.height} px
+          </div>
+        `;
+
+
+      tarjeta.appendChild(
+        imagen
+      );
+
+
+      tarjeta.appendChild(
+        info
+      );
+
+
+      paginasGrid.appendChild(
+        tarjeta
+      );
+
+    }
   );
 
 }
