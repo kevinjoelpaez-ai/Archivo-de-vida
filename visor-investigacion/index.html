@@ -1,1 +1,718 @@
+<!DOCTYPE html>
+<html lang="es">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>Visor para investigación artística</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: #eeeeee;
+  color: #222;
+}
+
+.app {
+  width: min(900px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 50px 0;
+}
+
+h1 {
+  font-size: 26px;
+  margin: 0 0 8px;
+}
+
+.intro {
+  color: #666;
+  margin: 0 0 32px;
+}
+
+
+/* =========================
+   ZONA DE CARGA
+========================= */
+
+.carga {
+  display: block;
+
+  width: 100%;
+  min-height: 260px;
+
+  border: 2px dashed #999;
+  border-radius: 12px;
+
+  background: white;
+
+  padding: 40px;
+
+  text-align: center;
+
+  cursor: pointer;
+
+  transition:
+    border-color .2s ease,
+    background .2s ease;
+}
+
+.carga.arrastrando {
+  border-color: #222;
+  background: #f5f5f5;
+}
+
+.carga-titulo {
+  display: block;
+
+  font-size: 18px;
+  font-weight: bold;
+
+  margin-bottom: 10px;
+}
+
+.carga-ayuda {
+  display: block;
+
+  color: #666;
+  font-size: 14px;
+
+  margin-bottom: 20px;
+}
+
+.boton {
+  display: inline-block;
+
+  border: 1px solid #222;
+  border-radius: 5px;
+
+  padding: 10px 18px;
+
+  background: #222;
+  color: white;
+
+  font-size: 14px;
+}
+
+#archivo {
+  display: none;
+}
+
+
+/* =========================
+   RESULTADO
+========================= */
+
+.resultado {
+  display: none;
+
+  margin-top: 28px;
+
+  padding: 22px;
+
+  background: white;
+
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.resultado.visible {
+  display: block;
+}
+
+.resultado h2 {
+  font-size: 18px;
+  margin: 0 0 18px;
+}
+
+.dato {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 10px 0;
+
+  border-bottom: 1px solid #eee;
+}
+
+.dato:last-child {
+  border-bottom: 0;
+}
+
+.etiqueta {
+  font-weight: bold;
+}
+
+.valor {
+  text-align: right;
+  color: #555;
+}
+
+
+/* =========================
+   ESTADO
+========================= */
+
+.estado {
+  margin-top: 18px;
+
+  font-size: 13px;
+  color: #666;
+
+  min-height: 20px;
+}
+
+
+/* =========================
+   MÓVIL
+========================= */
+
+@media (max-width: 600px) {
+
+  .app {
+    width: calc(100% - 20px);
+    padding-top: 25px;
+  }
+
+  .carga {
+    padding: 30px 15px;
+  }
+
+  .dato {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .valor {
+    text-align: left;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<main class="app">
+
+  <h1>
+    Visor para investigación artística
+  </h1>
+
+  <p class="intro">
+    Cargá un PDF o una serie de imágenes.
+    Los archivos se procesan localmente en tu navegador.
+  </p>
+
+
+  <label
+    id="zonaCarga"
+    class="carga"
+    for="archivo"
+  >
+
+    <span class="carga-titulo">
+      Arrastrá tu documento acá
+    </span>
+
+    <span class="carga-ayuda">
+      PDF, PNG, JPG, JPEG o WebP
+    </span>
+
+    <span class="boton">
+      Seleccionar archivo
+    </span>
+
+  </label>
+
+
+  <input
+    id="archivo"
+    type="file"
+    accept=".pdf,image/png,image/jpeg,image/webp"
+    multiple
+  >
+
+
+  <div
+    id="estado"
+    class="estado"
+  ></div>
+
+
+  <section
+    id="resultado"
+    class="resultado"
+  >
+
+    <h2>
+      Documento detectado
+    </h2>
+
+
+    <div class="dato">
+
+      <span class="etiqueta">
+        Tipo
+      </span>
+
+      <span
+        id="tipo"
+        class="valor"
+      ></span>
+
+    </div>
+
+
+    <div class="dato">
+
+      <span class="etiqueta">
+        Nombre
+      </span>
+
+      <span
+        id="nombre"
+        class="valor"
+      ></span>
+
+    </div>
+
+
+    <div class="dato">
+
+      <span class="etiqueta">
+        Páginas
+      </span>
+
+      <span
+        id="paginas"
+        class="valor"
+      ></span>
+
+    </div>
+
+
+    <div class="dato">
+
+      <span class="etiqueta">
+        Estado
+      </span>
+
+      <span
+        id="estadoDocumento"
+        class="valor"
+      >
+        Listo para visualizar
+      </span>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<script type="module">
+
+import * as pdfjsLib from
+  "https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/build/pdf.mjs";
+
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/build/pdf.worker.mjs";
+
+
+const input =
+  document.getElementById("archivo");
+
+const zonaCarga =
+  document.getElementById("zonaCarga");
+
+const resultado =
+  document.getElementById("resultado");
+
+const estado =
+  document.getElementById("estado");
+
+const tipo =
+  document.getElementById("tipo");
+
+const nombre =
+  document.getElementById("nombre");
+
+const paginas =
+  document.getElementById("paginas");
+
+
+/*
+  Más adelante esta variable será
+  la fuente común para BookReader
+  y el visor de capas.
+*/
+
+let documentoActual = {
+  tipo: null,
+  paginas: []
+};
+
+
+/* =========================
+   INPUT
+========================= */
+
+input.addEventListener(
+  "change",
+  () => {
+
+    if (
+      input.files.length > 0
+    ) {
+
+      procesarArchivos(
+        [...input.files]
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================
+   DRAG & DROP
+========================= */
+
+zonaCarga.addEventListener(
+  "dragover",
+  evento => {
+
+    evento.preventDefault();
+
+    zonaCarga.classList.add(
+      "arrastrando"
+    );
+
+  }
+);
+
+
+zonaCarga.addEventListener(
+  "dragleave",
+  () => {
+
+    zonaCarga.classList.remove(
+      "arrastrando"
+    );
+
+  }
+);
+
+
+zonaCarga.addEventListener(
+  "drop",
+  evento => {
+
+    evento.preventDefault();
+
+    zonaCarga.classList.remove(
+      "arrastrando"
+    );
+
+
+    const archivos =
+      [...evento.dataTransfer.files];
+
+
+    if (
+      archivos.length > 0
+    ) {
+
+      procesarArchivos(
+        archivos
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================
+   PROCESAR
+========================= */
+
+async function procesarArchivos(
+  archivos
+) {
+
+  resultado.classList.remove(
+    "visible"
+  );
+
+  estado.textContent =
+    "Leyendo documento...";
+
+
+  const pdfs =
+    archivos.filter(
+      archivo =>
+        archivo.type ===
+        "application/pdf"
+    );
+
+
+  const imagenes =
+    archivos.filter(
+      archivo =>
+        archivo.type.startsWith(
+          "image/"
+        )
+    );
+
+
+  /*
+    PRIMERA REGLA:
+    un PDF solo
+  */
+
+  if (
+    pdfs.length === 1 &&
+    archivos.length === 1
+  ) {
+
+    await procesarPDF(
+      pdfs[0]
+    );
+
+    return;
+
+  }
+
+
+  /*
+    SEGUNDA REGLA:
+    múltiples imágenes
+  */
+
+  if (
+    imagenes.length === archivos.length
+  ) {
+
+    await procesarImagenes(
+      imagenes
+    );
+
+    return;
+
+  }
+
+
+  estado.textContent =
+    "Elegí un único PDF o un conjunto de imágenes.";
+
+}
+
+
+/* =========================
+   PDF
+========================= */
+
+async function procesarPDF(
+  archivo
+) {
+
+  try {
+
+    const buffer =
+      await archivo.arrayBuffer();
+
+
+    const tarea =
+      pdfjsLib.getDocument({
+        data:
+          new Uint8Array(buffer)
+      });
+
+
+    const pdf =
+      await tarea.promise;
+
+
+    documentoActual = {
+      tipo: "pdf",
+      archivo: archivo,
+      pdf: pdf,
+      paginas: []
+    };
+
+
+    /*
+      Por ahora solamente registramos
+      la cantidad de páginas.
+
+      En el siguiente paso vamos a
+      convertirlas en páginas utilizables.
+    */
+
+    for (
+      let numero = 1;
+      numero <= pdf.numPages;
+      numero++
+    ) {
+
+      documentoActual.paginas.push({
+        numero: numero
+      });
+
+    }
+
+
+    mostrarResultado({
+      tipo:
+        "PDF",
+
+      nombre:
+        archivo.name,
+
+      paginas:
+        pdf.numPages
+    });
+
+
+    estado.textContent =
+      "PDF leído correctamente.";
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    estado.textContent =
+      "No se pudo leer el PDF.";
+
+  }
+
+}
+
+
+/* =========================
+   IMÁGENES
+========================= */
+
+async function procesarImagenes(
+  archivos
+) {
+
+  /*
+    Ordenamos por nombre para que:
+
+    page001
+    page002
+    page003
+
+    mantengan su secuencia.
+  */
+
+  archivos.sort(
+    (a, b) =>
+      a.name.localeCompare(
+        b.name,
+        undefined,
+        {
+          numeric: true,
+          sensitivity: "base"
+        }
+      )
+  );
+
+
+  documentoActual = {
+    tipo: "imagenes",
+    paginas: archivos.map(
+      (archivo, indice) => ({
+        numero:
+          indice + 1,
+
+        archivo:
+          archivo,
+
+        url:
+          URL.createObjectURL(
+            archivo
+          )
+      })
+    )
+  };
+
+
+  mostrarResultado({
+
+    tipo:
+      "Serie de imágenes",
+
+    nombre:
+      archivos.length === 1
+      ? archivos[0].name
+      : `${archivos[0].name} … ${archivos[archivos.length - 1].name}`,
+
+    paginas:
+      archivos.length
+
+  });
+
+
+  estado.textContent =
+    "Imágenes leídas correctamente.";
+
+}
+
+
+/* =========================
+   MOSTRAR INFORMACIÓN
+========================= */
+
+function mostrarResultado(
+  datos
+) {
+
+  tipo.textContent =
+    datos.tipo;
+
+  nombre.textContent =
+    datos.nombre;
+
+  paginas.textContent =
+    datos.paginas;
+
+
+  resultado.classList.add(
+    "visible"
+  );
+
+}
+
+</script>
+
+</body>
+
+</html>
