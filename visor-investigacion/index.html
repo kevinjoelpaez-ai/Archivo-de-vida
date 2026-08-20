@@ -31,10 +31,15 @@ body {
 }
 
 .app {
-  width: min(1000px, calc(100% - 32px));
+  width: min(1100px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 50px 0;
+  padding: 40px 0;
 }
+
+
+/* =========================
+   ENCABEZADO
+========================= */
 
 h1 {
   font-size: 26px;
@@ -43,7 +48,7 @@ h1 {
 
 .intro {
   color: #666;
-  margin: 0 0 32px;
+  margin: 0 0 28px;
 }
 
 
@@ -55,14 +60,14 @@ h1 {
   display: block;
 
   width: 100%;
-  min-height: 250px;
+  min-height: 220px;
 
   border: 2px dashed #999;
   border-radius: 12px;
 
   background: white;
 
-  padding: 40px;
+  padding: 35px;
 
   text-align: center;
 
@@ -76,23 +81,19 @@ h1 {
 
 .carga-titulo {
   display: block;
-
   font-size: 18px;
   font-weight: bold;
-
   margin-bottom: 10px;
 }
 
 .carga-ayuda {
   display: block;
-
   color: #666;
   font-size: 14px;
-
   margin-bottom: 20px;
 }
 
-.boton {
+.boton-carga {
   display: inline-block;
 
   border: 1px solid #222;
@@ -112,143 +113,16 @@ h1 {
 
 
 /* =========================
-   ESTADO
+   ESTADO / PROGRESO
 ========================= */
 
 .estado {
-  margin-top: 18px;
-
-  min-height: 22px;
+  margin-top: 15px;
+  min-height: 20px;
 
   font-size: 13px;
   color: #666;
 }
-
-
-/* =========================
-   INFORMACIÓN
-========================= */
-
-.resultado {
-  display: none;
-
-  margin-top: 28px;
-
-  padding: 22px;
-
-  background: white;
-
-  border: 1px solid #ccc;
-  border-radius: 10px;
-}
-
-.resultado.visible {
-  display: block;
-}
-
-.resultado h2 {
-  margin: 0 0 18px;
-  font-size: 18px;
-}
-
-.dato {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-
-  padding: 10px 0;
-
-  border-bottom: 1px solid #eee;
-}
-
-.dato:last-child {
-  border-bottom: 0;
-}
-
-.etiqueta {
-  font-weight: bold;
-}
-
-.valor {
-  text-align: right;
-  color: #555;
-}
-
-
-/* =========================
-   VISTA PREVIA
-========================= */
-
-.previsualizacion {
-  display: none;
-
-  margin-top: 30px;
-}
-
-.previsualizacion.visible {
-  display: block;
-}
-
-.previsualizacion h2 {
-  font-size: 18px;
-  margin-bottom: 8px;
-}
-
-.explicacion {
-  margin: 0 0 20px;
-
-  color: #666;
-  font-size: 13px;
-}
-
-.paginas-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(
-      auto-fill,
-      minmax(150px, 1fr)
-    );
-
-  gap: 18px;
-}
-
-.pagina {
-  background: white;
-
-  border: 1px solid #ccc;
-  border-radius: 7px;
-
-  overflow: hidden;
-}
-
-.pagina-imagen {
-  width: 100%;
-
-  aspect-ratio: 1165 / 1653;
-
-  object-fit: contain;
-
-  display: block;
-
-  background: #ddd;
-}
-
-.pagina-info {
-  padding: 9px 10px;
-
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.pagina-numero {
-  font-weight: bold;
-}
-
-
-/* =========================
-   PROGRESO
-========================= */
 
 .progreso {
   display: none;
@@ -256,7 +130,7 @@ h1 {
   width: 100%;
   height: 8px;
 
-  margin-top: 12px;
+  margin-top: 10px;
 
   background: #ddd;
 
@@ -280,6 +154,335 @@ h1 {
 
 
 /* =========================
+   DOCUMENTO
+========================= */
+
+.documento {
+  display: none;
+  margin-top: 25px;
+}
+
+.documento.visible {
+  display: block;
+}
+
+.info {
+  padding: 18px 20px;
+
+  background: white;
+
+  border: 1px solid #ccc;
+  border-radius: 9px;
+}
+
+.info h2 {
+  margin: 0 0 14px;
+  font-size: 18px;
+}
+
+.dato {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 8px 0;
+
+  border-bottom: 1px solid #eee;
+}
+
+.dato:last-child {
+  border-bottom: 0;
+}
+
+.etiqueta {
+  font-weight: bold;
+}
+
+.valor {
+  color: #555;
+  text-align: right;
+}
+
+
+/* =========================
+   MODOS PRINCIPALES
+========================= */
+
+.modos-principales {
+  display: flex;
+  gap: 8px;
+
+  margin-top: 20px;
+}
+
+.boton-modo {
+  flex: 1;
+
+  border: 1px solid #999;
+  border-radius: 5px;
+
+  background: white;
+  color: #222;
+
+  padding: 11px 16px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+}
+
+.boton-modo.activo {
+  background: #222;
+  color: white;
+  border-color: #222;
+}
+
+
+/* =========================
+   MINIATURAS
+========================= */
+
+.previsualizacion {
+  margin-top: 24px;
+}
+
+.previsualizacion h2 {
+  font-size: 18px;
+  margin-bottom: 7px;
+}
+
+.explicacion {
+  margin: 0 0 18px;
+
+  color: #666;
+  font-size: 13px;
+}
+
+.paginas-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fill,
+      minmax(145px, 1fr)
+    );
+
+  gap: 16px;
+}
+
+.tarjeta-pagina {
+  background: white;
+
+  border: 1px solid #ccc;
+  border-radius: 7px;
+
+  overflow: hidden;
+}
+
+.miniatura {
+  display: block;
+
+  width: 100%;
+  height: 200px;
+
+  object-fit: contain;
+
+  background: #ddd;
+}
+
+.pagina-info {
+  padding: 8px 9px;
+
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+
+/* =========================
+   VISOR DE CAPAS
+========================= */
+
+.visor-capas {
+  display: none;
+  margin-top: 24px;
+}
+
+.visor-capas.visible {
+  display: block;
+}
+
+.controles-capas {
+  width: min(100%, 720px);
+
+  margin: 0 auto 20px;
+
+  padding: 18px 20px;
+
+  background: white;
+
+  border: 1px solid #ccc;
+  border-radius: 9px;
+}
+
+.control {
+  margin-bottom: 15px;
+}
+
+.control:last-child {
+  margin-bottom: 0;
+}
+
+.fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+
+  margin-bottom: 6px;
+}
+
+.fila label {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.valor-control {
+  font-size: 13px;
+  color: #555;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+
+/* =========================
+   MODO CAPAS / INDIVIDUAL
+========================= */
+
+.modos-capas {
+  display: flex;
+  gap: 8px;
+}
+
+.modo-capas {
+  flex: 1;
+
+  border: 1px solid #999;
+  background: white;
+
+  padding: 8px 12px;
+
+  border-radius: 4px;
+
+  cursor: pointer;
+}
+
+.modo-capas.activo {
+  background: #222;
+  color: white;
+  border-color: #222;
+}
+
+#restablecer {
+  width: 100%;
+
+  border: 1px solid #999;
+  background: white;
+
+  padding: 9px;
+
+  border-radius: 4px;
+
+  cursor: pointer;
+}
+
+
+/* =========================
+   ESPACIO DE TRABAJO
+========================= */
+
+.zona-scroll {
+  width: 100%;
+
+  overflow-x: auto;
+  overflow-y: visible;
+
+  padding-bottom: 15px;
+}
+
+.zona-mesa {
+  position: relative;
+
+  width: 1500px;
+  height: 1150px;
+
+  margin: 0 auto;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(255,255,255,.55),
+      rgba(255,255,255,0) 62%
+    );
+}
+
+.mesa {
+  position: absolute;
+
+  top: 40px;
+  left: 50%;
+
+  width: 420px;
+
+  transform: translateX(-50%);
+
+  overflow: visible;
+  isolation: isolate;
+}
+
+
+/* =========================
+   LÁMINAS
+========================= */
+
+.lamina {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  mix-blend-mode: multiply;
+
+  cursor: grab;
+
+  user-select: none;
+  -webkit-user-select: none;
+
+  touch-action: none;
+
+  transform-origin: center;
+}
+
+.lamina.arrastrando {
+  cursor: grabbing;
+}
+
+.estado-capas {
+  margin-top: 12px;
+
+  text-align: center;
+
+  color: #666;
+  font-size: 12px;
+}
+
+
+/* =========================
    MÓVIL
 ========================= */
 
@@ -287,25 +490,34 @@ h1 {
 
   .app {
     width: calc(100% - 20px);
-    padding-top: 25px;
+    padding-top: 20px;
   }
 
   .carga {
-    padding: 30px 15px;
+    min-height: 180px;
+    padding: 25px 15px;
   }
 
   .dato {
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
   }
 
   .valor {
     text-align: left;
   }
 
+  .modos-principales {
+    flex-direction: column;
+  }
+
   .paginas-grid {
     grid-template-columns:
       repeat(2, 1fr);
+  }
+
+  .zona-mesa {
+    width: 1100px;
   }
 
 }
@@ -345,7 +557,7 @@ h1 {
       PDF, PNG, JPG, JPEG o WebP
     </span>
 
-    <span class="boton">
+    <span class="boton-carga">
       Seleccionar archivo
     </span>
 
@@ -360,120 +572,278 @@ h1 {
   >
 
 
-  <!-- ESTADO -->
-
   <div
     id="estado"
     class="estado"
   ></div>
 
 
-  <!-- PROGRESO -->
-
   <div
     id="progreso"
     class="progreso"
   >
-
     <div
       id="progresoBarra"
       class="progreso-barra"
     ></div>
-
   </div>
 
 
-  <!-- INFORMACIÓN -->
+  <!-- DOCUMENTO -->
 
   <section
-    id="resultado"
-    class="resultado"
+    id="documento"
+    class="documento"
   >
 
-    <h2>
-      Documento preparado
-    </h2>
+    <div class="info">
+
+      <h2>
+        Documento preparado
+      </h2>
 
 
-    <div class="dato">
+      <div class="dato">
+        <span class="etiqueta">Tipo</span>
+        <span id="tipo" class="valor"></span>
+      </div>
 
-      <span class="etiqueta">
-        Tipo
-      </span>
 
-      <span
-        id="tipo"
-        class="valor"
-      ></span>
+      <div class="dato">
+        <span class="etiqueta">Nombre</span>
+        <span id="nombre" class="valor"></span>
+      </div>
+
+
+      <div class="dato">
+        <span class="etiqueta">Páginas</span>
+        <span id="cantidadPaginas" class="valor"></span>
+      </div>
+
+
+      <div class="dato">
+        <span class="etiqueta">Primera página</span>
+        <span id="dimensiones" class="valor"></span>
+      </div>
 
     </div>
 
 
-    <div class="dato">
+    <!-- MODOS -->
 
-      <span class="etiqueta">
-        Nombre
-      </span>
+    <div class="modos-principales">
 
-      <span
-        id="nombre"
-        class="valor"
-      ></span>
-
-    </div>
-
-
-    <div class="dato">
-
-      <span class="etiqueta">
+      <button
+        id="botonVistaPrevia"
+        class="boton-modo activo"
+      >
         Páginas
-      </span>
+      </button>
 
-      <span
-        id="cantidadPaginas"
-        class="valor"
-      ></span>
-
-    </div>
-
-
-    <div class="dato">
-
-      <span class="etiqueta">
-        Primera página
-      </span>
-
-      <span
-        id="dimensiones"
-        class="valor"
-      ></span>
+      <button
+        id="botonCapas"
+        class="boton-modo"
+      >
+        Superponer capas
+      </button>
 
     </div>
 
 
-  </section>
+    <!-- MINIATURAS -->
+
+    <section
+      id="previsualizacion"
+      class="previsualizacion"
+    >
+
+      <h2>
+        Páginas detectadas
+      </h2>
+
+      <p class="explicacion">
+        El documento fue convertido a una colección de páginas
+        utilizable por los distintos modos de visualización.
+      </p>
+
+      <div
+        id="paginasGrid"
+        class="paginas-grid"
+      ></div>
+
+    </section>
 
 
-  <!-- VISTA PREVIA -->
+    <!-- CAPAS -->
 
-  <section
-    id="previsualizacion"
-    class="previsualizacion"
-  >
+    <section
+      id="visorCapas"
+      class="visor-capas"
+    >
 
-    <h2>
-      Páginas detectadas
-    </h2>
+      <div class="controles-capas">
 
-    <p class="explicacion">
-      Estas son las páginas internas que después utilizarán
-      tanto el modo Hojear como el modo Superponer capas.
-    </p>
 
-    <div
-      id="paginasGrid"
-      class="paginas-grid"
-    ></div>
+        <!-- MODO -->
+
+        <div class="control">
+
+          <div class="fila">
+            <label>
+              Modo de visualización
+            </label>
+          </div>
+
+          <div class="modos-capas">
+
+            <button
+              id="modoAcumulacion"
+              class="modo-capas activo"
+            >
+              Acumulación
+            </button>
+
+            <button
+              id="modoIndividual"
+              class="modo-capas"
+            >
+              Página individual
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- CAPAS VISIBLES -->
+
+        <div class="control">
+
+          <div class="fila">
+
+            <label id="etiquetaPaginas">
+              Capas visibles
+            </label>
+
+            <span
+              id="valorPaginas"
+              class="valor-control"
+            ></span>
+
+          </div>
+
+          <input
+            id="controlPaginas"
+            type="range"
+            min="1"
+            max="1"
+            value="1"
+            step="1"
+          >
+
+        </div>
+
+
+        <!-- OPACIDAD -->
+
+        <div class="control">
+
+          <div class="fila">
+
+            <label>
+              Opacidad de cada capa
+            </label>
+
+            <span
+              id="valorOpacidad"
+              class="valor-control"
+            >
+              25%
+            </span>
+
+          </div>
+
+          <input
+            id="controlOpacidad"
+            type="range"
+            min="5"
+            max="100"
+            value="25"
+            step="1"
+          >
+
+        </div>
+
+
+        <!-- TAMAÑO -->
+
+        <div class="control">
+
+          <div class="fila">
+
+            <label>
+              Tamaño de las láminas
+            </label>
+
+            <span
+              id="valorTamano"
+              class="valor-control"
+            >
+              420 px
+            </span>
+
+          </div>
+
+          <input
+            id="controlTamano"
+            type="range"
+            min="220"
+            max="800"
+            value="420"
+            step="10"
+          >
+
+        </div>
+
+
+        <!-- RESTABLECER -->
+
+        <div class="control">
+
+          <button id="restablecer">
+            Restablecer posición de las capas
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- MESA -->
+
+      <div
+        id="zonaScroll"
+        class="zona-scroll"
+      >
+
+        <div class="zona-mesa">
+
+          <div
+            id="mesa"
+            class="mesa"
+          ></div>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="estadoCapas"
+        class="estado-capas"
+      ></div>
+
+    </section>
 
   </section>
 
@@ -509,8 +879,8 @@ const progreso =
 const progresoBarra =
   document.getElementById("progresoBarra");
 
-const resultado =
-  document.getElementById("resultado");
+const documento =
+  document.getElementById("documento");
 
 const tipo =
   document.getElementById("tipo");
@@ -524,38 +894,64 @@ const cantidadPaginas =
 const dimensiones =
   document.getElementById("dimensiones");
 
-const previsualizacion =
-  document.getElementById("previsualizacion");
-
 const paginasGrid =
   document.getElementById("paginasGrid");
 
+const previsualizacion =
+  document.getElementById("previsualizacion");
+
+const visorCapas =
+  document.getElementById("visorCapas");
+
+const botonVistaPrevia =
+  document.getElementById("botonVistaPrevia");
+
+const botonCapas =
+  document.getElementById("botonCapas");
+
+const mesa =
+  document.getElementById("mesa");
+
+const zonaScroll =
+  document.getElementById("zonaScroll");
+
+const controlPaginas =
+  document.getElementById("controlPaginas");
+
+const controlOpacidad =
+  document.getElementById("controlOpacidad");
+
+const controlTamano =
+  document.getElementById("controlTamano");
+
+const valorPaginas =
+  document.getElementById("valorPaginas");
+
+const valorOpacidad =
+  document.getElementById("valorOpacidad");
+
+const valorTamano =
+  document.getElementById("valorTamano");
+
+const etiquetaPaginas =
+  document.getElementById("etiquetaPaginas");
+
+const modoAcumulacion =
+  document.getElementById("modoAcumulacion");
+
+const modoIndividual =
+  document.getElementById("modoIndividual");
+
+const restablecer =
+  document.getElementById("restablecer");
+
+const estadoCapas =
+  document.getElementById("estadoCapas");
+
 
 /* =========================
-   DOCUMENTO NORMALIZADO
+   ESTADO GENERAL
 ========================= */
-
-/*
-
-Esta va a ser la estructura central
-de toda la aplicación.
-
-Tanto un PDF como una serie de imágenes
-terminarán convertidos a:
-
-documentoActual.paginas = [
-
-  {
-    numero: 1,
-    src: "...",
-    width: 1165,
-    height: 1653
-  },
-
-  ...
-]
-
-*/
 
 let documentoActual = {
   tipo: null,
@@ -564,8 +960,24 @@ let documentoActual = {
 };
 
 
+let modoCapas =
+  "acumulacion";
+
+
+let posiciones =
+  [];
+
+
+let offsets =
+  [];
+
+
+let zSuperior =
+  100;
+
+
 /* =========================
-   INPUT
+   CARGA
 ========================= */
 
 input.addEventListener(
@@ -585,10 +997,6 @@ input.addEventListener(
   }
 );
 
-
-/* =========================
-   DRAG & DROP
-========================= */
 
 zonaCarga.addEventListener(
   "dragover",
@@ -644,15 +1052,10 @@ zonaCarga.addEventListener(
 
 
 /* =========================
-   LIMPIAR
+   LIMPIAR DOCUMENTO ANTERIOR
 ========================= */
 
 function limpiarAnterior() {
-
-  /*
-    Liberamos las URLs temporales
-    generadas anteriormente.
-  */
 
   if (
     documentoActual.paginas
@@ -689,12 +1092,11 @@ function limpiarAnterior() {
     "";
 
 
-  resultado.classList.remove(
-    "visible"
-  );
+  mesa.innerHTML =
+    "";
 
 
-  previsualizacion.classList.remove(
+  documento.classList.remove(
     "visible"
   );
 
@@ -711,7 +1113,7 @@ function limpiarAnterior() {
 
 
 /* =========================
-   PROCESAR ARCHIVOS
+   PROCESAR
 ========================= */
 
 async function procesarArchivos(
@@ -813,14 +1215,6 @@ async function procesarPDF(
     };
 
 
-    /*
-      Escala de renderizado.
-
-      2 produce imágenes suficientemente
-      grandes para dibujos, bitácoras,
-      textos y documentos visuales.
-    */
-
     const ESCALA_PDF =
       2;
 
@@ -836,9 +1230,7 @@ async function procesarPDF(
 
 
       const paginaPDF =
-        await pdf.getPage(
-          numero
-        );
+        await pdf.getPage(numero);
 
 
       const viewport =
@@ -875,18 +1267,10 @@ async function procesarPDF(
       await paginaPDF.render({
         canvasContext:
           contexto,
-
         viewport:
           viewport
       }).promise;
 
-
-      /*
-        Convertimos el canvas en un Blob.
-
-        Esto evita guardar enormes cadenas
-        base64 en memoria.
-      */
 
       const blob =
         await canvasABlob(
@@ -917,15 +1301,13 @@ async function procesarPDF(
       });
 
 
-      const porcentaje =
-        (
-          numero /
-          pdf.numPages
-        ) * 100;
-
-
       progresoBarra.style.width =
-        `${porcentaje}%`;
+        `${
+          (
+            numero /
+            pdf.numPages
+          ) * 100
+        }%`;
 
     }
 
@@ -934,7 +1316,7 @@ async function procesarPDF(
       "PDF preparado correctamente.";
 
 
-    mostrarDocumento();
+    prepararAplicacion();
 
   }
 
@@ -942,10 +1324,7 @@ async function procesarPDF(
     error
   ) {
 
-    console.error(
-      error
-    );
-
+    console.error(error);
 
     estado.textContent =
       "No se pudo preparar el PDF.";
@@ -956,7 +1335,7 @@ async function procesarPDF(
 
 
 /* =========================
-   CANVAS → BLOB
+   CANVAS A BLOB
 ========================= */
 
 function canvasABlob(
@@ -970,13 +1349,9 @@ function canvasABlob(
 
         blob => {
 
-          if (
-            blob
-          ) {
+          if (blob) {
 
-            resolve(
-              blob
-            );
+            resolve(blob);
 
           }
 
@@ -984,7 +1359,7 @@ function canvasABlob(
 
             reject(
               new Error(
-                "No se pudo convertir la página."
+                "No se pudo convertir una página."
               )
             );
 
@@ -1019,20 +1394,6 @@ async function procesarImagenes(
   );
 
 
-  /*
-    Orden natural:
-
-    page1
-    page2
-    page10
-
-    en lugar de:
-
-    page1
-    page10
-    page2
-  */
-
   archivos.sort(
     (a, b) =>
       a.name.localeCompare(
@@ -1047,14 +1408,18 @@ async function procesarImagenes(
 
 
   documentoActual = {
-    tipo: "Serie de imágenes",
+
+    tipo:
+      "Serie de imágenes",
 
     nombre:
       archivos.length === 1
       ? archivos[0].name
       : `${archivos[0].name} … ${archivos[archivos.length - 1].name}`,
 
-    paginas: []
+    paginas:
+      []
+
   };
 
 
@@ -1066,10 +1431,6 @@ async function procesarImagenes(
 
     const archivo =
       archivos[indice];
-
-
-    estado.textContent =
-      `Preparando imagen ${indice + 1} de ${archivos.length}...`;
 
 
     const url =
@@ -1101,15 +1462,13 @@ async function procesarImagenes(
     });
 
 
-    const porcentaje =
-      (
-        (indice + 1) /
-        archivos.length
-      ) * 100;
-
-
     progresoBarra.style.width =
-      `${porcentaje}%`;
+      `${
+        (
+          (indice + 1) /
+          archivos.length
+        ) * 100
+      }%`;
 
   }
 
@@ -1118,13 +1477,13 @@ async function procesarImagenes(
     "Imágenes preparadas correctamente.";
 
 
-  mostrarDocumento();
+  prepararAplicacion();
 
 }
 
 
 /* =========================
-   DIMENSIONES
+   DIMENSIONES DE IMAGEN
 ========================= */
 
 function obtenerDimensionesImagen(
@@ -1168,10 +1527,10 @@ function obtenerDimensionesImagen(
 
 
 /* =========================
-   MOSTRAR DOCUMENTO
+   DOCUMENTO LISTO
 ========================= */
 
-function mostrarDocumento() {
+function prepararAplicacion() {
 
   const paginas =
     documentoActual.paginas;
@@ -1189,25 +1548,13 @@ function mostrarDocumento() {
     paginas.length;
 
 
-  if (
-    paginas.length > 0
-  ) {
-
-    dimensiones.textContent =
-      `${paginas[0].width} × ${paginas[0].height} px`;
-
-  }
+  dimensiones.textContent =
+    paginas.length
+    ? `${paginas[0].width} × ${paginas[0].height} px`
+    : "—";
 
 
-  resultado.classList.add(
-    "visible"
-  );
-
-
-  renderizarMiniaturas();
-
-
-  previsualizacion.classList.add(
+  documento.classList.add(
     "visible"
   );
 
@@ -1215,6 +1562,15 @@ function mostrarDocumento() {
   progreso.classList.remove(
     "visible"
   );
+
+
+  renderizarMiniaturas();
+
+
+  prepararVisorCapas();
+
+
+  mostrarVistaPrevia();
 
 }
 
@@ -1232,7 +1588,6 @@ function renderizarMiniaturas() {
   documentoActual.paginas.forEach(
     pagina => {
 
-
       const tarjeta =
         document.createElement(
           "article"
@@ -1240,7 +1595,7 @@ function renderizarMiniaturas() {
 
 
       tarjeta.className =
-        "pagina";
+        "tarjeta-pagina";
 
 
       const imagen =
@@ -1250,7 +1605,7 @@ function renderizarMiniaturas() {
 
 
       imagen.className =
-        "pagina-imagen";
+        "miniatura";
 
 
       imagen.src =
@@ -1273,13 +1628,11 @@ function renderizarMiniaturas() {
 
       info.innerHTML =
         `
-          <div class="pagina-numero">
+          <strong>
             Página ${pagina.numero}
-          </div>
-
-          <div>
-            ${pagina.width} × ${pagina.height} px
-          </div>
+          </strong>
+          <br>
+          ${pagina.width} × ${pagina.height} px
         `;
 
 
@@ -1301,6 +1654,789 @@ function renderizarMiniaturas() {
   );
 
 }
+
+
+/* =========================
+   CREAR DESFASES
+========================= */
+
+function crearOffsets(
+  cantidad
+) {
+
+  const patron = [
+
+    {x:0, y:0},
+    {x:2, y:0},
+    {x:-1, y:1},
+    {x:1, y:-1},
+    {x:-2, y:1},
+    {x:0, y:-2},
+    {x:2, y:1},
+    {x:-1, y:-2},
+    {x:1, y:2},
+    {x:-2, y:0},
+    {x:2, y:-1},
+    {x:0, y:2}
+
+  ];
+
+
+  const resultado =
+    [];
+
+
+  for (
+    let i = 0;
+    i < cantidad;
+    i++
+  ) {
+
+    const base =
+      patron[
+        i % patron.length
+      ];
+
+
+    resultado.push({
+
+      x:
+        base.x,
+
+      y:
+        base.y
+
+    });
+
+  }
+
+
+  return resultado;
+
+}
+
+
+/* =========================
+   PREPARAR CAPAS
+========================= */
+
+function prepararVisorCapas() {
+
+  mesa.innerHTML =
+    "";
+
+
+  const paginas =
+    documentoActual.paginas;
+
+
+  offsets =
+    crearOffsets(
+      paginas.length
+    );
+
+
+  posiciones =
+    offsets.map(
+      posicion => ({
+        x:
+          posicion.x,
+
+        y:
+          posicion.y
+      })
+    );
+
+
+  controlPaginas.max =
+    paginas.length;
+
+
+  controlPaginas.value =
+    paginas.length;
+
+
+  valorPaginas.textContent =
+    `${paginas.length} / ${paginas.length}`;
+
+
+  /*
+    La relación de aspecto de la mesa
+    se toma automáticamente de la
+    primera página.
+  */
+
+  if (
+    paginas.length > 0
+  ) {
+
+    mesa.style.aspectRatio =
+      `${paginas[0].width} / ${paginas[0].height}`;
+
+  }
+
+
+  paginas.forEach(
+    (pagina, indice) => {
+
+      const imagen =
+        document.createElement(
+          "img"
+        );
+
+
+      imagen.className =
+        "lamina";
+
+
+      imagen.src =
+        pagina.src;
+
+
+      imagen.alt =
+        `Página ${pagina.numero}`;
+
+
+      imagen.dataset.indice =
+        indice;
+
+
+      imagen.draggable =
+        false;
+
+
+      imagen.style.zIndex =
+        indice + 1;
+
+
+      mesa.appendChild(
+        imagen
+      );
+
+    }
+  );
+
+
+  zSuperior =
+    paginas.length + 100;
+
+
+  configurarArrastre();
+
+
+  actualizarCapas();
+
+}
+
+
+/* =========================
+   COLOCAR CAPA
+========================= */
+
+function colocarPagina(
+  pagina,
+  indice
+) {
+
+  pagina.style.transform =
+    `translate(
+      ${posiciones[indice].x}px,
+      ${posiciones[indice].y}px
+    )`;
+
+}
+
+
+/* =========================
+   ACTUALIZAR CAPAS
+========================= */
+
+function actualizarCapas() {
+
+  const paginas =
+    [
+      ...mesa.querySelectorAll(
+        ".lamina"
+      )
+    ];
+
+
+  const seleccion =
+    Number(
+      controlPaginas.value
+    );
+
+
+  const opacidad =
+    Number(
+      controlOpacidad.value
+    ) / 100;
+
+
+  paginas.forEach(
+    (pagina, indice) => {
+
+      const numero =
+        indice + 1;
+
+
+      if (
+        modoCapas ===
+        "acumulacion"
+      ) {
+
+        if (
+          numero <=
+          seleccion
+        ) {
+
+          pagina.style.visibility =
+            "visible";
+
+          pagina.style.pointerEvents =
+            "auto";
+
+          pagina.style.opacity =
+            opacidad;
+
+
+          colocarPagina(
+            pagina,
+            indice
+          );
+
+        }
+
+        else {
+
+          pagina.style.visibility =
+            "hidden";
+
+          pagina.style.pointerEvents =
+            "none";
+
+          pagina.style.opacity =
+            0;
+
+        }
+
+      }
+
+
+      else {
+
+        if (
+          numero ===
+          seleccion
+        ) {
+
+          pagina.style.visibility =
+            "visible";
+
+          pagina.style.pointerEvents =
+            "auto";
+
+          pagina.style.opacity =
+            1;
+
+          pagina.style.transform =
+            "translate(0px,0px)";
+
+        }
+
+        else {
+
+          pagina.style.visibility =
+            "hidden";
+
+          pagina.style.pointerEvents =
+            "none";
+
+          pagina.style.opacity =
+            0;
+
+        }
+
+      }
+
+    }
+  );
+
+
+  valorPaginas.textContent =
+    `${seleccion} / ${documentoActual.paginas.length}`;
+
+
+  valorOpacidad.textContent =
+    `${controlOpacidad.value}%`;
+
+
+  if (
+    modoCapas ===
+    "acumulacion"
+  ) {
+
+    etiquetaPaginas.textContent =
+      "Capas visibles";
+
+
+    controlOpacidad.disabled =
+      false;
+
+
+    restablecer.disabled =
+      false;
+
+
+    estadoCapas.textContent =
+      seleccion === 1
+      ? "Página 1 · arrastrá la lámina"
+      : `Páginas 1–${seleccion} superpuestas · arrastrá las láminas para separarlas`;
+
+  }
+
+
+  else {
+
+    etiquetaPaginas.textContent =
+      "Página";
+
+
+    controlOpacidad.disabled =
+      true;
+
+
+    restablecer.disabled =
+      true;
+
+
+    estadoCapas.textContent =
+      `Página ${seleccion}`;
+
+  }
+
+
+  actualizarTamano();
+
+}
+
+
+/* =========================
+   TAMAÑO
+========================= */
+
+function actualizarTamano() {
+
+  const tamano =
+    Number(
+      controlTamano.value
+    );
+
+
+  mesa.style.width =
+    `${tamano}px`;
+
+
+  valorTamano.textContent =
+    `${tamano} px`;
+
+}
+
+
+/* =========================
+   ARRASTRE
+========================= */
+
+function configurarArrastre() {
+
+  const paginas =
+    [
+      ...mesa.querySelectorAll(
+        ".lamina"
+      )
+    ];
+
+
+  paginas.forEach(
+    pagina => {
+
+      let arrastrando =
+        false;
+
+
+      let inicioMouseX =
+        0;
+
+
+      let inicioMouseY =
+        0;
+
+
+      let inicioPaginaX =
+        0;
+
+
+      let inicioPaginaY =
+        0;
+
+
+      pagina.addEventListener(
+        "pointerdown",
+        evento => {
+
+          if (
+            modoCapas !==
+            "acumulacion"
+          ) {
+            return;
+          }
+
+
+          evento.preventDefault();
+
+
+          const indice =
+            Number(
+              pagina.dataset.indice
+            );
+
+
+          arrastrando =
+            true;
+
+
+          inicioMouseX =
+            evento.clientX;
+
+
+          inicioMouseY =
+            evento.clientY;
+
+
+          inicioPaginaX =
+            posiciones[indice].x;
+
+
+          inicioPaginaY =
+            posiciones[indice].y;
+
+
+          zSuperior++;
+
+
+          pagina.style.zIndex =
+            zSuperior;
+
+
+          pagina.classList.add(
+            "arrastrando"
+          );
+
+
+          pagina.setPointerCapture(
+            evento.pointerId
+          );
+
+        }
+      );
+
+
+      pagina.addEventListener(
+        "pointermove",
+        evento => {
+
+          if (
+            !arrastrando
+          ) {
+            return;
+          }
+
+
+          const indice =
+            Number(
+              pagina.dataset.indice
+            );
+
+
+          posiciones[indice].x =
+            inicioPaginaX +
+            evento.clientX -
+            inicioMouseX;
+
+
+          posiciones[indice].y =
+            inicioPaginaY +
+            evento.clientY -
+            inicioMouseY;
+
+
+          colocarPagina(
+            pagina,
+            indice
+          );
+
+        }
+      );
+
+
+      function terminar(
+        evento
+      ) {
+
+        if (
+          !arrastrando
+        ) {
+          return;
+        }
+
+
+        arrastrando =
+          false;
+
+
+        pagina.classList.remove(
+          "arrastrando"
+        );
+
+
+        if (
+          pagina.hasPointerCapture(
+            evento.pointerId
+          )
+        ) {
+
+          pagina.releasePointerCapture(
+            evento.pointerId
+          );
+
+        }
+
+      }
+
+
+      pagina.addEventListener(
+        "pointerup",
+        terminar
+      );
+
+
+      pagina.addEventListener(
+        "pointercancel",
+        terminar
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================
+   RESTABLECER
+========================= */
+
+restablecer.addEventListener(
+  "click",
+  () => {
+
+    posiciones.forEach(
+      (posicion, indice) => {
+
+        posicion.x =
+          offsets[indice].x;
+
+
+        posicion.y =
+          offsets[indice].y;
+
+      }
+    );
+
+
+    const paginas =
+      [
+        ...mesa.querySelectorAll(
+          ".lamina"
+        )
+      ];
+
+
+    paginas.forEach(
+      (pagina, indice) => {
+
+        pagina.style.zIndex =
+          indice + 1;
+
+      }
+    );
+
+
+    zSuperior =
+      documentoActual.paginas.length +
+      100;
+
+
+    actualizarCapas();
+
+  }
+);
+
+
+/* =========================
+   MODOS PRINCIPALES
+========================= */
+
+function mostrarVistaPrevia() {
+
+  previsualizacion.style.display =
+    "block";
+
+
+  visorCapas.classList.remove(
+    "visible"
+  );
+
+
+  botonVistaPrevia.classList.add(
+    "activo"
+  );
+
+
+  botonCapas.classList.remove(
+    "activo"
+  );
+
+}
+
+
+function mostrarCapas() {
+
+  previsualizacion.style.display =
+    "none";
+
+
+  visorCapas.classList.add(
+    "visible"
+  );
+
+
+  botonCapas.classList.add(
+    "activo"
+  );
+
+
+  botonVistaPrevia.classList.remove(
+    "activo"
+  );
+
+
+  actualizarCapas();
+
+
+  /*
+    Centramos horizontalmente
+    la mesa grande.
+  */
+
+  requestAnimationFrame(
+    () => {
+
+      zonaScroll.scrollLeft =
+        (
+          zonaScroll.scrollWidth -
+          zonaScroll.clientWidth
+        ) / 2;
+
+    }
+  );
+
+}
+
+
+botonVistaPrevia.addEventListener(
+  "click",
+  mostrarVistaPrevia
+);
+
+
+botonCapas.addEventListener(
+  "click",
+  mostrarCapas
+);
+
+
+/* =========================
+   MODOS DE CAPAS
+========================= */
+
+modoAcumulacion.addEventListener(
+  "click",
+  () => {
+
+    modoCapas =
+      "acumulacion";
+
+
+    modoAcumulacion.classList.add(
+      "activo"
+    );
+
+
+    modoIndividual.classList.remove(
+      "activo"
+    );
+
+
+    actualizarCapas();
+
+  }
+);
+
+
+modoIndividual.addEventListener(
+  "click",
+  () => {
+
+    modoCapas =
+      "individual";
+
+
+    modoIndividual.classList.add(
+      "activo"
+    );
+
+
+    modoAcumulacion.classList.remove(
+      "activo"
+    );
+
+
+    actualizarCapas();
+
+  }
+);
+
+
+/* =========================
+   CONTROLES
+========================= */
+
+controlPaginas.addEventListener(
+  "input",
+  actualizarCapas
+);
+
+
+controlOpacidad.addEventListener(
+  "input",
+  actualizarCapas
+);
+
+
+controlTamano.addEventListener(
+  "input",
+  actualizarTamano
+);
 
 </script>
 
