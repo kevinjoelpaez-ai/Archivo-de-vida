@@ -12,6 +12,23 @@
 
 <title>Visor para investigación artística</title>
 
+
+<!-- =========================================
+     INTERNET ARCHIVE BOOKREADER
+========================================= -->
+
+<script src="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/webcomponents-bundle.js"></script>
+
+<script src="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/jquery-3.js"></script>
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/BookReader.css"
+>
+
+<script src="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/BookReader.js"></script>
+
+
 <style>
 
 * {
@@ -22,7 +39,11 @@ html,
 body {
   margin: 0;
   min-height: 100%;
-  font-family: Arial, Helvetica, sans-serif;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 }
 
 body {
@@ -30,31 +51,37 @@ body {
   color: #222;
 }
 
+
+/* =========================================
+   APP
+========================================= */
+
 .app {
   width: min(1100px, calc(100% - 32px));
+
   margin: 0 auto;
+
   padding: 40px 0;
 }
 
 
-/* =========================
-   ENCABEZADO
-========================= */
-
 h1 {
-  font-size: 26px;
   margin: 0 0 8px;
+
+  font-size: 26px;
 }
+
 
 .intro {
-  color: #666;
   margin: 0 0 28px;
+
+  color: #666;
 }
 
 
-/* =========================
+/* =========================================
    CARGA
-========================= */
+========================================= */
 
 .carga {
   display: block;
@@ -62,44 +89,54 @@ h1 {
   width: 100%;
   min-height: 220px;
 
+  padding: 35px;
+
   border: 2px dashed #999;
   border-radius: 12px;
 
   background: white;
-
-  padding: 35px;
 
   text-align: center;
 
   cursor: pointer;
 }
 
+
 .carga.arrastrando {
   border-color: #222;
+
   background: #f5f5f5;
 }
 
+
 .carga-titulo {
   display: block;
+
+  margin-bottom: 10px;
+
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 10px;
 }
+
 
 .carga-ayuda {
   display: block;
-  color: #666;
-  font-size: 14px;
+
   margin-bottom: 20px;
+
+  color: #666;
+
+  font-size: 14px;
 }
+
 
 .boton-carga {
   display: inline-block;
 
+  padding: 10px 18px;
+
   border: 1px solid #222;
   border-radius: 5px;
-
-  padding: 10px 18px;
 
   background: #222;
   color: white;
@@ -107,22 +144,30 @@ h1 {
   font-size: 14px;
 }
 
+
 #archivo {
   display: none;
 }
 
 
-/* =========================
-   ESTADO / PROGRESO
-========================= */
+/* =========================================
+   ESTADO
+========================================= */
 
 .estado {
-  margin-top: 15px;
   min-height: 20px;
 
-  font-size: 13px;
+  margin-top: 15px;
+
   color: #666;
+
+  font-size: 13px;
 }
+
+
+/* =========================================
+   PROGRESO
+========================================= */
 
 .progreso {
   display: none;
@@ -132,16 +177,18 @@ h1 {
 
   margin-top: 10px;
 
-  background: #ddd;
+  overflow: hidden;
 
   border-radius: 999px;
 
-  overflow: hidden;
+  background: #ddd;
 }
+
 
 .progreso.visible {
   display: block;
 }
+
 
 .progreso-barra {
   width: 0%;
@@ -153,36 +200,44 @@ h1 {
 }
 
 
-/* =========================
+/* =========================================
    DOCUMENTO
-========================= */
+========================================= */
 
 .documento {
   display: none;
+
   margin-top: 25px;
 }
+
 
 .documento.visible {
   display: block;
 }
 
+
 .info {
   padding: 18px 20px;
 
-  background: white;
-
   border: 1px solid #ccc;
   border-radius: 9px;
+
+  background: white;
 }
+
 
 .info h2 {
   margin: 0 0 14px;
+
   font-size: 18px;
 }
 
+
 .dato {
   display: flex;
+
   justify-content: space-between;
+
   gap: 20px;
 
   padding: 8px 0;
@@ -190,33 +245,41 @@ h1 {
   border-bottom: 1px solid #eee;
 }
 
+
 .dato:last-child {
   border-bottom: 0;
 }
+
 
 .etiqueta {
   font-weight: bold;
 }
 
+
 .valor {
   color: #555;
+
   text-align: right;
 }
 
 
-/* =========================
+/* =========================================
    MODOS PRINCIPALES
-========================= */
+========================================= */
 
 .modos-principales {
   display: flex;
+
   gap: 8px;
 
   margin-top: 20px;
 }
 
+
 .boton-modo {
   flex: 1;
+
+  padding: 11px 16px;
 
   border: 1px solid #999;
   border-radius: 5px;
@@ -224,92 +287,69 @@ h1 {
   background: white;
   color: #222;
 
-  padding: 11px 16px;
+  font-size: 14px;
 
   cursor: pointer;
-
-  font-size: 14px;
 }
+
 
 .boton-modo.activo {
+  border-color: #222;
+
   background: #222;
   color: white;
-  border-color: #222;
 }
 
 
-/* =========================
-   MINIATURAS
-========================= */
+/* =========================================
+   VISOR BOOKREADER
+========================================= */
 
-.previsualizacion {
-  margin-top: 24px;
+.visor-libro {
+  display: none;
+
+  margin-top: 22px;
+
+  overflow: hidden;
+
+  border: 1px solid #bbb;
+  border-radius: 8px;
+
+  background: #939598;
 }
 
-.previsualizacion h2 {
-  font-size: 18px;
-  margin-bottom: 7px;
+
+.visor-libro.visible {
+  display: block;
 }
 
-.explicacion {
-  margin: 0 0 18px;
 
-  color: #666;
-  font-size: 13px;
-}
+#BookReader,
+.BookReader {
+  width: 100%;
+  height: 820px;
 
-.paginas-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(
-      auto-fill,
-      minmax(145px, 1fr)
-    );
-
-  gap: 16px;
-}
-
-.tarjeta-pagina {
-  background: white;
-
-  border: 1px solid #ccc;
-  border-radius: 7px;
+  margin: 0 auto;
 
   overflow: hidden;
 }
 
-.miniatura {
-  display: block;
 
-  width: 100%;
-  height: 200px;
-
-  object-fit: contain;
-
-  background: #ddd;
-}
-
-.pagina-info {
-  padding: 8px 9px;
-
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-
-/* =========================
+/* =========================================
    VISOR DE CAPAS
-========================= */
+========================================= */
 
 .visor-capas {
   display: none;
+
   margin-top: 24px;
 }
+
 
 .visor-capas.visible {
   display: block;
 }
+
 
 .controles-capas {
   width: min(100%, 720px);
@@ -318,88 +358,102 @@ h1 {
 
   padding: 18px 20px;
 
-  background: white;
-
   border: 1px solid #ccc;
   border-radius: 9px;
+
+  background: white;
 }
+
 
 .control {
   margin-bottom: 15px;
 }
 
+
 .control:last-child {
   margin-bottom: 0;
 }
 
+
 .fila {
   display: flex;
+
   justify-content: space-between;
+
   gap: 15px;
 
   margin-bottom: 6px;
 }
+
 
 .fila label {
   font-size: 13px;
   font-weight: bold;
 }
 
+
 .valor-control {
-  font-size: 13px;
   color: #555;
+
+  font-size: 13px;
 }
+
 
 input[type="range"] {
   width: 100%;
 }
 
 
-/* =========================
-   MODO CAPAS / INDIVIDUAL
-========================= */
+/* =========================================
+   MODOS INTERNOS DE CAPAS
+========================================= */
 
 .modos-capas {
   display: flex;
+
   gap: 8px;
 }
+
 
 .modo-capas {
   flex: 1;
 
-  border: 1px solid #999;
-  background: white;
-
   padding: 8px 12px;
 
+  border: 1px solid #999;
   border-radius: 4px;
+
+  background: white;
 
   cursor: pointer;
 }
 
+
 .modo-capas.activo {
+  border-color: #222;
+
   background: #222;
   color: white;
-  border-color: #222;
 }
+
 
 #restablecer {
   width: 100%;
 
-  border: 1px solid #999;
-  background: white;
-
   padding: 9px;
 
+  border: 1px solid #999;
   border-radius: 4px;
+
+  background: white;
 
   cursor: pointer;
 }
 
 
-/* =========================
-   ESPACIO DE TRABAJO
-========================= */
+/* =========================================
+   MESA DE CAPAS
+========================================= */
 
 .zona-scroll {
   width: 100%;
@@ -409,6 +463,7 @@ input[type="range"] {
 
   padding-bottom: 15px;
 }
+
 
 .zona-mesa {
   position: relative;
@@ -426,6 +481,7 @@ input[type="range"] {
     );
 }
 
+
 .mesa {
   position: absolute;
 
@@ -437,13 +493,14 @@ input[type="range"] {
   transform: translateX(-50%);
 
   overflow: visible;
+
   isolation: isolate;
 }
 
 
-/* =========================
+/* =========================================
    LÁMINAS
-========================= */
+========================================= */
 
 .lamina {
   position: absolute;
@@ -458,63 +515,75 @@ input[type="range"] {
 
   mix-blend-mode: multiply;
 
+  transform-origin: center;
+
   cursor: grab;
 
   user-select: none;
   -webkit-user-select: none;
 
   touch-action: none;
-
-  transform-origin: center;
 }
+
 
 .lamina.arrastrando {
   cursor: grabbing;
 }
 
+
 .estado-capas {
   margin-top: 12px;
 
-  text-align: center;
-
   color: #666;
+
   font-size: 12px;
+
+  text-align: center;
 }
 
 
-/* =========================
+/* =========================================
    MÓVIL
-========================= */
+========================================= */
 
 @media (max-width:600px) {
 
   .app {
     width: calc(100% - 20px);
+
     padding-top: 20px;
   }
 
+
   .carga {
     min-height: 180px;
+
     padding: 25px 15px;
   }
 
+
   .dato {
     flex-direction: column;
+
     gap: 3px;
   }
+
 
   .valor {
     text-align: left;
   }
 
+
   .modos-principales {
     flex-direction: column;
   }
 
-  .paginas-grid {
-    grid-template-columns:
-      repeat(2, 1fr);
+
+  #BookReader,
+  .BookReader {
+    height: 700px;
   }
+
 
   .zona-mesa {
     width: 1100px;
@@ -531,9 +600,11 @@ input[type="range"] {
 
 <main class="app">
 
+
   <h1>
     Visor para investigación artística
   </h1>
+
 
   <p class="intro">
     Cargá un PDF o una serie de imágenes.
@@ -541,7 +612,9 @@ input[type="range"] {
   </p>
 
 
-  <!-- CARGA -->
+  <!-- =====================================
+       CARGA
+  ====================================== -->
 
   <label
     id="zonaCarga"
@@ -582,19 +655,24 @@ input[type="range"] {
     id="progreso"
     class="progreso"
   >
+
     <div
       id="progresoBarra"
       class="progreso-barra"
     ></div>
+
   </div>
 
 
-  <!-- DOCUMENTO -->
+  <!-- =====================================
+       DOCUMENTO PREPARADO
+  ====================================== -->
 
   <section
     id="documento"
     class="documento"
   >
+
 
     <div class="info">
 
@@ -604,41 +682,77 @@ input[type="range"] {
 
 
       <div class="dato">
-        <span class="etiqueta">Tipo</span>
-        <span id="tipo" class="valor"></span>
+
+        <span class="etiqueta">
+          Tipo
+        </span>
+
+        <span
+          id="tipo"
+          class="valor"
+        ></span>
+
       </div>
 
 
       <div class="dato">
-        <span class="etiqueta">Nombre</span>
-        <span id="nombre" class="valor"></span>
+
+        <span class="etiqueta">
+          Nombre
+        </span>
+
+        <span
+          id="nombre"
+          class="valor"
+        ></span>
+
       </div>
 
 
       <div class="dato">
-        <span class="etiqueta">Páginas</span>
-        <span id="cantidadPaginas" class="valor"></span>
+
+        <span class="etiqueta">
+          Páginas
+        </span>
+
+        <span
+          id="cantidadPaginas"
+          class="valor"
+        ></span>
+
       </div>
 
 
       <div class="dato">
-        <span class="etiqueta">Primera página</span>
-        <span id="dimensiones" class="valor"></span>
+
+        <span class="etiqueta">
+          Primera página
+        </span>
+
+        <span
+          id="dimensiones"
+          class="valor"
+        ></span>
+
       </div>
 
     </div>
 
 
-    <!-- MODOS -->
+    <!-- =================================
+         MODOS PRINCIPALES
+    ================================== -->
 
     <div class="modos-principales">
 
+
       <button
-        id="botonVistaPrevia"
+        id="botonLibro"
         class="boton-modo activo"
       >
-        Páginas
+        Hojear
       </button>
+
 
       <button
         id="botonCapas"
@@ -647,39 +761,37 @@ input[type="range"] {
         Superponer capas
       </button>
 
+
     </div>
 
 
-    <!-- MINIATURAS -->
+    <!-- =================================
+         BOOKREADER
+    ================================== -->
 
     <section
-      id="previsualizacion"
-      class="previsualizacion"
+      id="visorLibro"
+      class="visor-libro"
     >
 
-      <h2>
-        Páginas detectadas
-      </h2>
+      <div id="BookReader">
 
-      <p class="explicacion">
-        El documento fue convertido a una colección de páginas
-        utilizable por los distintos modos de visualización.
-      </p>
+        Preparando libro...
 
-      <div
-        id="paginasGrid"
-        class="paginas-grid"
-      ></div>
+      </div>
 
     </section>
 
 
-    <!-- CAPAS -->
+    <!-- =================================
+         CAPAS
+    ================================== -->
 
     <section
       id="visorCapas"
       class="visor-capas"
     >
+
 
       <div class="controles-capas">
 
@@ -689,12 +801,16 @@ input[type="range"] {
         <div class="control">
 
           <div class="fila">
+
             <label>
               Modo de visualización
             </label>
+
           </div>
 
+
           <div class="modos-capas">
+
 
             <button
               id="modoAcumulacion"
@@ -703,12 +819,14 @@ input[type="range"] {
               Acumulación
             </button>
 
+
             <button
               id="modoIndividual"
               class="modo-capas"
             >
               Página individual
             </button>
+
 
           </div>
 
@@ -725,12 +843,14 @@ input[type="range"] {
               Capas visibles
             </label>
 
+
             <span
               id="valorPaginas"
               class="valor-control"
             ></span>
 
           </div>
+
 
           <input
             id="controlPaginas"
@@ -754,6 +874,7 @@ input[type="range"] {
               Opacidad de cada capa
             </label>
 
+
             <span
               id="valorOpacidad"
               class="valor-control"
@@ -762,6 +883,7 @@ input[type="range"] {
             </span>
 
           </div>
+
 
           <input
             id="controlOpacidad"
@@ -785,6 +907,7 @@ input[type="range"] {
               Tamaño de las láminas
             </label>
 
+
             <span
               id="valorTamano"
               class="valor-control"
@@ -793,6 +916,7 @@ input[type="range"] {
             </span>
 
           </div>
+
 
           <input
             id="controlTamano"
@@ -811,7 +935,9 @@ input[type="range"] {
         <div class="control">
 
           <button id="restablecer">
+
             Restablecer posición de las capas
+
           </button>
 
         </div>
@@ -828,10 +954,12 @@ input[type="range"] {
 
         <div class="zona-mesa">
 
+
           <div
             id="mesa"
             class="mesa"
           ></div>
+
 
         </div>
 
@@ -843,14 +971,27 @@ input[type="range"] {
         class="estado-capas"
       ></div>
 
+
     </section>
 
+
   </section>
+
 
 </main>
 
 
+
+<!-- =========================================
+     APLICACIÓN
+========================================= -->
+
 <script type="module">
+
+
+/* =========================================
+   PDF.JS
+========================================= */
 
 import * as pdfjsLib from
   "https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/build/pdf.mjs";
@@ -860,103 +1001,196 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/build/pdf.worker.mjs";
 
 
-/* =========================
+/* =========================================
    ELEMENTOS
-========================= */
+========================================= */
 
 const input =
-  document.getElementById("archivo");
+  document.getElementById(
+    "archivo"
+  );
+
 
 const zonaCarga =
-  document.getElementById("zonaCarga");
+  document.getElementById(
+    "zonaCarga"
+  );
+
 
 const estado =
-  document.getElementById("estado");
+  document.getElementById(
+    "estado"
+  );
+
 
 const progreso =
-  document.getElementById("progreso");
+  document.getElementById(
+    "progreso"
+  );
+
 
 const progresoBarra =
-  document.getElementById("progresoBarra");
+  document.getElementById(
+    "progresoBarra"
+  );
+
 
 const documento =
-  document.getElementById("documento");
+  document.getElementById(
+    "documento"
+  );
+
 
 const tipo =
-  document.getElementById("tipo");
+  document.getElementById(
+    "tipo"
+  );
+
 
 const nombre =
-  document.getElementById("nombre");
+  document.getElementById(
+    "nombre"
+  );
+
 
 const cantidadPaginas =
-  document.getElementById("cantidadPaginas");
+  document.getElementById(
+    "cantidadPaginas"
+  );
+
 
 const dimensiones =
-  document.getElementById("dimensiones");
+  document.getElementById(
+    "dimensiones"
+  );
 
-const paginasGrid =
-  document.getElementById("paginasGrid");
 
-const previsualizacion =
-  document.getElementById("previsualizacion");
+/* BOOKREADER */
 
-const visorCapas =
-  document.getElementById("visorCapas");
 
-const botonVistaPrevia =
-  document.getElementById("botonVistaPrevia");
+const botonLibro =
+  document.getElementById(
+    "botonLibro"
+  );
+
+
+const visorLibro =
+  document.getElementById(
+    "visorLibro"
+  );
+
+
+const contenedorBookReader =
+  document.getElementById(
+    "BookReader"
+  );
+
+
+/* CAPAS */
+
 
 const botonCapas =
-  document.getElementById("botonCapas");
+  document.getElementById(
+    "botonCapas"
+  );
+
+
+const visorCapas =
+  document.getElementById(
+    "visorCapas"
+  );
+
 
 const mesa =
-  document.getElementById("mesa");
+  document.getElementById(
+    "mesa"
+  );
+
 
 const zonaScroll =
-  document.getElementById("zonaScroll");
+  document.getElementById(
+    "zonaScroll"
+  );
+
 
 const controlPaginas =
-  document.getElementById("controlPaginas");
+  document.getElementById(
+    "controlPaginas"
+  );
+
 
 const controlOpacidad =
-  document.getElementById("controlOpacidad");
+  document.getElementById(
+    "controlOpacidad"
+  );
+
 
 const controlTamano =
-  document.getElementById("controlTamano");
+  document.getElementById(
+    "controlTamano"
+  );
+
 
 const valorPaginas =
-  document.getElementById("valorPaginas");
+  document.getElementById(
+    "valorPaginas"
+  );
+
 
 const valorOpacidad =
-  document.getElementById("valorOpacidad");
+  document.getElementById(
+    "valorOpacidad"
+  );
+
 
 const valorTamano =
-  document.getElementById("valorTamano");
+  document.getElementById(
+    "valorTamano"
+  );
+
 
 const etiquetaPaginas =
-  document.getElementById("etiquetaPaginas");
+  document.getElementById(
+    "etiquetaPaginas"
+  );
+
 
 const modoAcumulacion =
-  document.getElementById("modoAcumulacion");
+  document.getElementById(
+    "modoAcumulacion"
+  );
+
 
 const modoIndividual =
-  document.getElementById("modoIndividual");
+  document.getElementById(
+    "modoIndividual"
+  );
+
 
 const restablecer =
-  document.getElementById("restablecer");
+  document.getElementById(
+    "restablecer"
+  );
+
 
 const estadoCapas =
-  document.getElementById("estadoCapas");
+  document.getElementById(
+    "estadoCapas"
+  );
 
 
-/* =========================
+/* =========================================
    ESTADO GENERAL
-========================= */
+========================================= */
 
 let documentoActual = {
+
   tipo: null,
+
   nombre: null,
+
   paginas: []
+
 };
 
 
@@ -976,120 +1210,239 @@ let zSuperior =
   100;
 
 
-/* =========================
+/* BOOKREADER */
+
+
+let bookReaderActual =
+  null;
+
+
+let bookReaderPreparado =
+  false;
+
+
+/* =========================================
    CARGA
-========================= */
+========================================= */
 
 input.addEventListener(
+
   "change",
+
   () => {
+
 
     if (
       input.files.length > 0
     ) {
 
+
       procesarArchivos(
         [...input.files]
       );
 
+
     }
 
+
   }
+
 );
 
 
+
 zonaCarga.addEventListener(
+
   "dragover",
+
   evento => {
 
+
     evento.preventDefault();
+
 
     zonaCarga.classList.add(
       "arrastrando"
     );
 
+
   }
+
 );
 
 
+
 zonaCarga.addEventListener(
+
   "dragleave",
+
   () => {
+
 
     zonaCarga.classList.remove(
       "arrastrando"
     );
 
+
   }
+
 );
 
 
+
 zonaCarga.addEventListener(
+
   "drop",
+
   evento => {
+
 
     evento.preventDefault();
 
+
     zonaCarga.classList.remove(
       "arrastrando"
     );
 
+
     const archivos =
-      [...evento.dataTransfer.files];
+      [
+        ...evento.dataTransfer.files
+      ];
+
 
     if (
       archivos.length > 0
     ) {
 
+
       procesarArchivos(
         archivos
       );
 
+
     }
 
+
   }
+
 );
 
 
-/* =========================
+/* =========================================
+   DESTRUIR BOOKREADER ANTERIOR
+========================================= */
+
+function limpiarBookReader() {
+
+
+  if (
+    bookReaderActual
+  ) {
+
+
+    try {
+
+
+      if (
+        typeof bookReaderActual.destroy ===
+        "function"
+      ) {
+
+
+        bookReaderActual.destroy();
+
+
+      }
+
+
+    }
+
+    catch (
+      error
+    ) {
+
+
+      console.warn(
+        "No fue necesario destruir BookReader.",
+        error
+      );
+
+
+    }
+
+
+  }
+
+
+  bookReaderActual =
+    null;
+
+
+  bookReaderPreparado =
+    false;
+
+
+  contenedorBookReader.innerHTML =
+    "Preparando libro...";
+
+
+}
+
+
+/* =========================================
    LIMPIAR DOCUMENTO ANTERIOR
-========================= */
+========================================= */
 
 function limpiarAnterior() {
+
+
+  limpiarBookReader();
+
 
   if (
     documentoActual.paginas
   ) {
 
+
     documentoActual.paginas.forEach(
+
       pagina => {
+
 
         if (
           pagina.src &&
-          pagina.src.startsWith("blob:")
+          pagina.src.startsWith(
+            "blob:"
+          )
         ) {
+
 
           URL.revokeObjectURL(
             pagina.src
           );
 
+
         }
 
+
       }
+
     );
+
 
   }
 
 
   documentoActual = {
+
     tipo: null,
+
     nombre: null,
+
     paginas: []
+
   };
-
-
-  paginasGrid.innerHTML =
-    "";
 
 
   mesa.innerHTML =
@@ -1097,6 +1450,16 @@ function limpiarAnterior() {
 
 
   documento.classList.remove(
+    "visible"
+  );
+
+
+  visorLibro.classList.remove(
+    "visible"
+  );
+
+
+  visorCapas.classList.remove(
     "visible"
   );
 
@@ -1109,35 +1472,46 @@ function limpiarAnterior() {
   progresoBarra.style.width =
     "0%";
 
+
 }
 
 
-/* =========================
-   PROCESAR
-========================= */
+/* =========================================
+   PROCESAR ARCHIVOS
+========================================= */
 
 async function procesarArchivos(
   archivos
 ) {
+
 
   limpiarAnterior();
 
 
   const pdfs =
     archivos.filter(
+
       archivo =>
+
         archivo.type ===
         "application/pdf"
+
     );
 
 
   const imagenes =
     archivos.filter(
+
       archivo =>
+
         archivo.type.startsWith(
           "image/"
         )
+
     );
+
+
+  /* UN PDF */
 
 
   if (
@@ -1145,13 +1519,19 @@ async function procesarArchivos(
     archivos.length === 1
   ) {
 
+
     await procesarPDF(
       pdfs[0]
     );
 
+
     return;
 
+
   }
+
+
+  /* VARIAS IMÁGENES */
 
 
   if (
@@ -1159,11 +1539,14 @@ async function procesarArchivos(
     archivos.length
   ) {
 
+
     await procesarImagenes(
       imagenes
     );
 
+
     return;
+
 
   }
 
@@ -1171,18 +1554,21 @@ async function procesarArchivos(
   estado.textContent =
     "Elegí un único PDF o un conjunto de imágenes.";
 
+
 }
 
 
-/* =========================
+/* =========================================
    PDF
-========================= */
+========================================= */
 
 async function procesarPDF(
   archivo
 ) {
 
+
   try {
+
 
     estado.textContent =
       "Leyendo PDF...";
@@ -1199,8 +1585,12 @@ async function procesarPDF(
 
     const tarea =
       pdfjsLib.getDocument({
+
         data:
-          new Uint8Array(buffer)
+          new Uint8Array(
+            buffer
+          )
+
       });
 
 
@@ -1209,10 +1599,24 @@ async function procesarPDF(
 
 
     documentoActual = {
-      tipo: "PDF",
-      nombre: archivo.name,
-      paginas: []
+
+      tipo:
+        "PDF",
+
+      nombre:
+        archivo.name,
+
+      paginas:
+        []
+
     };
+
+
+    /*
+      Escala 2:
+      calidad suficiente para
+      lectura, dibujo y ampliación.
+    */
 
 
     const ESCALA_PDF =
@@ -1220,23 +1624,32 @@ async function procesarPDF(
 
 
     for (
+
       let numero = 1;
+
       numero <= pdf.numPages;
+
       numero++
+
     ) {
+
 
       estado.textContent =
         `Preparando página ${numero} de ${pdf.numPages}...`;
 
 
       const paginaPDF =
-        await pdf.getPage(numero);
+        await pdf.getPage(
+          numero
+        );
 
 
       const viewport =
         paginaPDF.getViewport({
+
           scale:
             ESCALA_PDF
+
         });
 
 
@@ -1265,10 +1678,13 @@ async function procesarPDF(
 
 
       await paginaPDF.render({
+
         canvasContext:
           contexto,
+
         viewport:
           viewport
+
       }).promise;
 
 
@@ -1309,6 +1725,7 @@ async function procesarPDF(
           ) * 100
         }%`;
 
+
     }
 
 
@@ -1318,72 +1735,105 @@ async function procesarPDF(
 
     prepararAplicacion();
 
+
   }
 
   catch (
     error
   ) {
 
-    console.error(error);
+
+    console.error(
+      error
+    );
+
 
     estado.textContent =
       "No se pudo preparar el PDF.";
 
+
   }
+
 
 }
 
 
-/* =========================
-   CANVAS A BLOB
-========================= */
+/* =========================================
+   CANVAS → BLOB
+========================================= */
 
 function canvasABlob(
   canvas
 ) {
 
+
   return new Promise(
-    (resolve, reject) => {
+
+    (
+      resolve,
+      reject
+    ) => {
+
 
       canvas.toBlob(
 
+
         blob => {
 
-          if (blob) {
 
-            resolve(blob);
+          if (
+            blob
+          ) {
+
+
+            resolve(
+              blob
+            );
+
 
           }
+
 
           else {
 
+
             reject(
+
               new Error(
                 "No se pudo convertir una página."
               )
+
             );
+
 
           }
 
+
         },
+
 
         "image/png"
 
+
       );
 
+
     }
+
   );
+
 
 }
 
 
-/* =========================
+/* =========================================
    IMÁGENES
-========================= */
+========================================= */
 
 async function procesarImagenes(
   archivos
 ) {
+
 
   estado.textContent =
     "Preparando imágenes...";
@@ -1394,43 +1844,84 @@ async function procesarImagenes(
   );
 
 
+  /*
+    Orden natural:
+    page1, page2, page10
+  */
+
+
   archivos.sort(
-    (a, b) =>
+
+    (
+      a,
+      b
+    ) =>
+
       a.name.localeCompare(
+
         b.name,
+
         undefined,
+
         {
-          numeric: true,
-          sensitivity: "base"
+
+          numeric:
+            true,
+
+          sensitivity:
+            "base"
+
         }
+
       )
+
   );
 
 
   documentoActual = {
 
+
     tipo:
       "Serie de imágenes",
 
+
     nombre:
+
       archivos.length === 1
-      ? archivos[0].name
-      : `${archivos[0].name} … ${archivos[archivos.length - 1].name}`,
+
+      ?
+
+      archivos[0].name
+
+      :
+
+      `${archivos[0].name} … ${archivos[archivos.length - 1].name}`,
+
 
     paginas:
       []
+
 
   };
 
 
   for (
+
     let indice = 0;
+
     indice < archivos.length;
+
     indice++
+
   ) {
+
 
     const archivo =
       archivos[indice];
+
+
+    estado.textContent =
+      `Preparando imagen ${indice + 1} de ${archivos.length}...`;
 
 
     const url =
@@ -1447,17 +1938,22 @@ async function procesarImagenes(
 
     documentoActual.paginas.push({
 
+
       numero:
         indice + 1,
+
 
       src:
         url,
 
+
       width:
         tamano.width,
 
+
       height:
         tamano.height
+
 
     });
 
@@ -1470,6 +1966,7 @@ async function procesarImagenes(
         ) * 100
       }%`;
 
+
   }
 
 
@@ -1479,19 +1976,26 @@ async function procesarImagenes(
 
   prepararAplicacion();
 
+
 }
 
 
-/* =========================
+/* =========================================
    DIMENSIONES DE IMAGEN
-========================= */
+========================================= */
 
 function obtenerDimensionesImagen(
   src
 ) {
 
+
   return new Promise(
-    (resolve, reject) => {
+
+    (
+      resolve,
+      reject
+    ) => {
+
 
       const imagen =
         new Image();
@@ -1500,15 +2004,20 @@ function obtenerDimensionesImagen(
       imagen.onload =
         () => {
 
+
           resolve({
+
 
             width:
               imagen.naturalWidth,
 
+
             height:
               imagen.naturalHeight
 
+
           });
+
 
         };
 
@@ -1520,17 +2029,21 @@ function obtenerDimensionesImagen(
       imagen.src =
         src;
 
+
     }
+
   );
+
 
 }
 
 
-/* =========================
+/* =========================================
    DOCUMENTO LISTO
-========================= */
+========================================= */
 
 function prepararAplicacion() {
+
 
   const paginas =
     documentoActual.paginas;
@@ -1549,9 +2062,16 @@ function prepararAplicacion() {
 
 
   dimensiones.textContent =
+
     paginas.length
-    ? `${paginas[0].width} × ${paginas[0].height} px`
-    : "—";
+
+    ?
+
+    `${paginas[0].width} × ${paginas[0].height} px`
+
+    :
+
+    "—";
 
 
   documento.classList.add(
@@ -1564,120 +2084,472 @@ function prepararAplicacion() {
   );
 
 
-  renderizarMiniaturas();
-
-
   prepararVisorCapas();
 
 
-  mostrarVistaPrevia();
+  /*
+    El modo inicial será HOJEAR.
+  */
+
+
+  mostrarLibro();
+
 
 }
 
 
-/* =========================
-   MINIATURAS
-========================= */
+/* =========================================
+   CREAR DATOS PARA BOOKREADER
+========================================= */
 
-function renderizarMiniaturas() {
-
-  paginasGrid.innerHTML =
-    "";
+function crearDatosBookReader() {
 
 
-  documentoActual.paginas.forEach(
-    pagina => {
-
-      const tarjeta =
-        document.createElement(
-          "article"
-        );
+  const paginas =
+    documentoActual.paginas;
 
 
-      tarjeta.className =
-        "tarjeta-pagina";
+  const hojas =
+    paginas.map(
+
+      pagina => ({
 
 
-      const imagen =
-        document.createElement(
-          "img"
-        );
+        width:
+          pagina.width,
 
 
-      imagen.className =
-        "miniatura";
+        height:
+          pagina.height,
 
 
-      imagen.src =
-        pagina.src;
+        uri:
+          pagina.src
 
 
-      imagen.alt =
-        `Página ${pagina.numero}`;
+      })
+
+    );
 
 
-      const info =
-        document.createElement(
-          "div"
-        );
+  const data =
+    [];
 
 
-      info.className =
-        "pagina-info";
+  if (
+    hojas.length === 0
+  ) {
 
 
-      info.innerHTML =
-        `
-          <strong>
-            Página ${pagina.numero}
-          </strong>
-          <br>
-          ${pagina.width} × ${pagina.height} px
-        `;
+    return data;
 
 
-      tarjeta.appendChild(
-        imagen
+  }
+
+
+  /*
+    Portada sola.
+  */
+
+
+  data.push([
+    hojas[0]
+  ]);
+
+
+  /*
+    Después:
+    2 + 3
+    4 + 5
+    6 + 7
+    etc.
+  */
+
+
+  for (
+
+    let indice = 1;
+
+    indice < hojas.length;
+
+    indice += 2
+
+  ) {
+
+
+    const pliego =
+      [
+        hojas[indice]
+      ];
+
+
+    if (
+      hojas[indice + 1]
+    ) {
+
+
+      pliego.push(
+        hojas[indice + 1]
       );
 
-
-      tarjeta.appendChild(
-        info
-      );
-
-
-      paginasGrid.appendChild(
-        tarjeta
-      );
 
     }
-  );
+
+
+    data.push(
+      pliego
+    );
+
+
+  }
+
+
+  return data;
+
 
 }
 
 
-/* =========================
-   CREAR DESFASES
-========================= */
+/* =========================================
+   INICIAR BOOKREADER
+========================================= */
+
+function inicializarBookReader() {
+
+
+  if (
+    bookReaderPreparado
+  ) {
+
+
+    return;
+
+
+  }
+
+
+  if (
+    documentoActual.paginas.length === 0
+  ) {
+
+
+    return;
+
+
+  }
+
+
+  try {
+
+
+    contenedorBookReader.innerHTML =
+      "";
+
+
+    const tituloLibro =
+      documentoActual.nombre
+        .replace(
+          /\.[^/.]+$/,
+          ""
+        );
+
+
+    const opciones = {
+
+
+      data:
+        crearDatosBookReader(),
+
+
+      bookTitle:
+        tituloLibro,
+
+
+      thumbnail:
+        documentoActual.paginas[0].src,
+
+
+      metadata: [
+
+
+        {
+
+          label:
+            "Título",
+
+          value:
+            tituloLibro
+
+        },
+
+
+        {
+
+          label:
+            "Páginas",
+
+          value:
+            String(
+              documentoActual.paginas.length
+            )
+
+        }
+
+
+      ],
+
+
+      ui:
+        "full",
+
+
+      el:
+        "#BookReader"
+
+
+    };
+
+
+    bookReaderActual =
+      new window.BookReader(
+        opciones
+      );
+
+
+    bookReaderActual.init();
+
+
+    bookReaderPreparado =
+      true;
+
+
+  }
+
+  catch (
+    error
+  ) {
+
+
+    console.error(
+      error
+    );
+
+
+    contenedorBookReader.innerHTML =
+      `
+        <div style="
+          padding:30px;
+          color:white;
+          font-size:14px;
+        ">
+          No se pudo iniciar BookReader.
+          Revisá la consola del navegador.
+        </div>
+      `;
+
+
+  }
+
+
+}
+
+
+/* =========================================
+   MOSTRAR LIBRO
+========================================= */
+
+function mostrarLibro() {
+
+
+  visorCapas.classList.remove(
+    "visible"
+  );
+
+
+  visorLibro.classList.add(
+    "visible"
+  );
+
+
+  botonLibro.classList.add(
+    "activo"
+  );
+
+
+  botonCapas.classList.remove(
+    "activo"
+  );
+
+
+  /*
+    Esperamos a que el contenedor
+    sea visible antes de iniciar
+    BookReader.
+  */
+
+
+  requestAnimationFrame(
+
+    () => {
+
+
+      inicializarBookReader();
+
+
+      /*
+        Si ya estaba iniciado y volvemos
+        desde Capas, le permitimos
+        recalcular el tamaño.
+      */
+
+
+      if (
+        bookReaderActual &&
+        typeof bookReaderActual.resize ===
+        "function"
+      ) {
+
+
+        try {
+
+
+          bookReaderActual.resize();
+
+
+        }
+
+        catch (
+          error
+        ) {
+
+
+          console.warn(
+            error
+          );
+
+
+        }
+
+
+      }
+
+
+    }
+
+  );
+
+
+}
+
+
+/* =========================================
+   MOSTRAR CAPAS
+========================================= */
+
+function mostrarCapas() {
+
+
+  visorLibro.classList.remove(
+    "visible"
+  );
+
+
+  visorCapas.classList.add(
+    "visible"
+  );
+
+
+  botonCapas.classList.add(
+    "activo"
+  );
+
+
+  botonLibro.classList.remove(
+    "activo"
+  );
+
+
+  actualizarCapas();
+
+
+  requestAnimationFrame(
+
+    () => {
+
+
+      zonaScroll.scrollLeft =
+        (
+          zonaScroll.scrollWidth -
+          zonaScroll.clientWidth
+        ) / 2;
+
+
+    }
+
+  );
+
+
+}
+
+
+/* =========================================
+   BOTONES PRINCIPALES
+========================================= */
+
+botonLibro.addEventListener(
+
+  "click",
+
+  mostrarLibro
+
+);
+
+
+botonCapas.addEventListener(
+
+  "click",
+
+  mostrarCapas
+
+);
+
+
+/* =========================================
+   OFFSETS DE CAPAS
+========================================= */
 
 function crearOffsets(
   cantidad
 ) {
 
+
   const patron = [
 
+
     {x:0, y:0},
+
     {x:2, y:0},
+
     {x:-1, y:1},
+
     {x:1, y:-1},
+
     {x:-2, y:1},
+
     {x:0, y:-2},
+
     {x:2, y:1},
+
     {x:-1, y:-2},
+
     {x:1, y:2},
+
     {x:-2, y:0},
+
     {x:2, y:-1},
+
     {x:0, y:2}
+
 
   ];
 
@@ -1687,40 +2559,52 @@ function crearOffsets(
 
 
   for (
-    let i = 0;
-    i < cantidad;
-    i++
+
+    let indice = 0;
+
+    indice < cantidad;
+
+    indice++
+
   ) {
+
 
     const base =
       patron[
-        i % patron.length
+        indice %
+        patron.length
       ];
 
 
     resultado.push({
 
+
       x:
         base.x,
+
 
       y:
         base.y
 
+
     });
+
 
   }
 
 
   return resultado;
 
+
 }
 
 
-/* =========================
-   PREPARAR CAPAS
-========================= */
+/* =========================================
+   PREPARAR VISOR DE CAPAS
+========================================= */
 
 function prepararVisorCapas() {
+
 
   mesa.innerHTML =
     "";
@@ -1738,13 +2622,20 @@ function prepararVisorCapas() {
 
   posiciones =
     offsets.map(
+
       posicion => ({
+
+
         x:
           posicion.x,
 
+
         y:
           posicion.y
+
+
       })
+
     );
 
 
@@ -1761,23 +2652,30 @@ function prepararVisorCapas() {
 
 
   /*
-    La relación de aspecto de la mesa
-    se toma automáticamente de la
-    primera página.
+    Relación de aspecto tomada
+    de la primera página.
   */
+
 
   if (
     paginas.length > 0
   ) {
 
+
     mesa.style.aspectRatio =
       `${paginas[0].width} / ${paginas[0].height}`;
+
 
   }
 
 
   paginas.forEach(
-    (pagina, indice) => {
+
+    (
+      pagina,
+      indice
+    ) => {
+
 
       const imagen =
         document.createElement(
@@ -1813,12 +2711,15 @@ function prepararVisorCapas() {
         imagen
       );
 
+
     }
+
   );
 
 
   zSuperior =
-    paginas.length + 100;
+    paginas.length +
+    100;
 
 
   configurarArrastre();
@@ -1826,17 +2727,19 @@ function prepararVisorCapas() {
 
   actualizarCapas();
 
+
 }
 
 
-/* =========================
+/* =========================================
    COLOCAR CAPA
-========================= */
+========================================= */
 
 function colocarPagina(
   pagina,
   indice
 ) {
+
 
   pagina.style.transform =
     `translate(
@@ -1844,16 +2747,18 @@ function colocarPagina(
       ${posiciones[indice].y}px
     )`;
 
+
 }
 
 
-/* =========================
+/* =========================================
    ACTUALIZAR CAPAS
-========================= */
+========================================= */
 
 function actualizarCapas() {
 
-  const paginas =
+
+  const laminas =
     [
       ...mesa.querySelectorAll(
         ".lamina"
@@ -1873,11 +2778,19 @@ function actualizarCapas() {
     ) / 100;
 
 
-  paginas.forEach(
-    (pagina, indice) => {
+  laminas.forEach(
+
+    (
+      pagina,
+      indice
+    ) => {
+
 
       const numero =
         indice + 1;
+
+
+      /* ACUMULACIÓN */
 
 
       if (
@@ -1885,16 +2798,20 @@ function actualizarCapas() {
         "acumulacion"
       ) {
 
+
         if (
           numero <=
           seleccion
         ) {
 
+
           pagina.style.visibility =
             "visible";
 
+
           pagina.style.pointerEvents =
             "auto";
+
 
           pagina.style.opacity =
             opacidad;
@@ -1905,61 +2822,85 @@ function actualizarCapas() {
             indice
           );
 
+
         }
 
+
         else {
+
 
           pagina.style.visibility =
             "hidden";
 
+
           pagina.style.pointerEvents =
             "none";
+
 
           pagina.style.opacity =
             0;
 
+
         }
+
 
       }
 
 
+      /* INDIVIDUAL */
+
+
       else {
+
 
         if (
           numero ===
           seleccion
         ) {
 
+
           pagina.style.visibility =
             "visible";
+
 
           pagina.style.pointerEvents =
             "auto";
 
+
           pagina.style.opacity =
             1;
+
 
           pagina.style.transform =
             "translate(0px,0px)";
 
+
         }
 
+
         else {
+
 
           pagina.style.visibility =
             "hidden";
 
+
           pagina.style.pointerEvents =
             "none";
+
 
           pagina.style.opacity =
             0;
 
+
         }
+
 
       }
 
+
     }
+
   );
 
 
@@ -1976,6 +2917,7 @@ function actualizarCapas() {
     "acumulacion"
   ) {
 
+
     etiquetaPaginas.textContent =
       "Capas visibles";
 
@@ -1989,14 +2931,23 @@ function actualizarCapas() {
 
 
     estadoCapas.textContent =
+
       seleccion === 1
-      ? "Página 1 · arrastrá la lámina"
-      : `Páginas 1–${seleccion} superpuestas · arrastrá las láminas para separarlas`;
+
+      ?
+
+      "Página 1 · arrastrá la lámina"
+
+      :
+
+      `Páginas 1–${seleccion} superpuestas · arrastrá las láminas para separarlas`;
+
 
   }
 
 
   else {
+
 
     etiquetaPaginas.textContent =
       "Página";
@@ -2013,19 +2964,22 @@ function actualizarCapas() {
     estadoCapas.textContent =
       `Página ${seleccion}`;
 
+
   }
 
 
   actualizarTamano();
 
+
 }
 
 
-/* =========================
-   TAMAÑO
-========================= */
+/* =========================================
+   TAMAÑO DE LÁMINAS
+========================================= */
 
 function actualizarTamano() {
+
 
   const tamano =
     Number(
@@ -2040,16 +2994,18 @@ function actualizarTamano() {
   valorTamano.textContent =
     `${tamano} px`;
 
+
 }
 
 
-/* =========================
-   ARRASTRE
-========================= */
+/* =========================================
+   ARRASTRE DE CAPAS
+========================================= */
 
 function configurarArrastre() {
 
-  const paginas =
+
+  const laminas =
     [
       ...mesa.querySelectorAll(
         ".lamina"
@@ -2057,8 +3013,10 @@ function configurarArrastre() {
     ];
 
 
-  paginas.forEach(
+  laminas.forEach(
+
     pagina => {
+
 
       let arrastrando =
         false;
@@ -2081,14 +3039,21 @@ function configurarArrastre() {
 
 
       pagina.addEventListener(
+
         "pointerdown",
+
         evento => {
+
 
           if (
             modoCapas !==
             "acumulacion"
           ) {
+
+
             return;
+
+
           }
 
 
@@ -2137,18 +3102,27 @@ function configurarArrastre() {
             evento.pointerId
           );
 
+
         }
+
       );
 
 
       pagina.addEventListener(
+
         "pointermove",
+
         evento => {
+
 
           if (
             !arrastrando
           ) {
+
+
             return;
+
+
           }
 
 
@@ -2159,14 +3133,28 @@ function configurarArrastre() {
 
 
           posiciones[indice].x =
-            inicioPaginaX +
-            evento.clientX -
+
+            inicioPaginaX
+
+            +
+
+            evento.clientX
+
+            -
+
             inicioMouseX;
 
 
           posiciones[indice].y =
-            inicioPaginaY +
-            evento.clientY -
+
+            inicioPaginaY
+
+            +
+
+            evento.clientY
+
+            -
+
             inicioMouseY;
 
 
@@ -2175,18 +3163,25 @@ function configurarArrastre() {
             indice
           );
 
+
         }
+
       );
 
 
-      function terminar(
+      function terminarArrastre(
         evento
       ) {
+
 
         if (
           !arrastrando
         ) {
+
+
           return;
+
+
         }
 
 
@@ -2205,42 +3200,56 @@ function configurarArrastre() {
           )
         ) {
 
+
           pagina.releasePointerCapture(
             evento.pointerId
           );
 
+
         }
+
 
       }
 
 
       pagina.addEventListener(
         "pointerup",
-        terminar
+        terminarArrastre
       );
 
 
       pagina.addEventListener(
         "pointercancel",
-        terminar
+        terminarArrastre
       );
 
+
     }
+
   );
+
 
 }
 
 
-/* =========================
+/* =========================================
    RESTABLECER
-========================= */
+========================================= */
 
 restablecer.addEventListener(
+
   "click",
+
   () => {
 
+
     posiciones.forEach(
-      (posicion, indice) => {
+
+      (
+        posicion,
+        indice
+      ) => {
+
 
         posicion.x =
           offsets[indice].x;
@@ -2249,11 +3258,13 @@ restablecer.addEventListener(
         posicion.y =
           offsets[indice].y;
 
+
       }
+
     );
 
 
-    const paginas =
+    const laminas =
       [
         ...mesa.querySelectorAll(
           ".lamina"
@@ -2261,13 +3272,20 @@ restablecer.addEventListener(
       ];
 
 
-    paginas.forEach(
-      (pagina, indice) => {
+    laminas.forEach(
+
+      (
+        pagina,
+        indice
+      ) => {
+
 
         pagina.style.zIndex =
           indice + 1;
 
+
       }
+
     );
 
 
@@ -2278,100 +3296,22 @@ restablecer.addEventListener(
 
     actualizarCapas();
 
+
   }
+
 );
 
 
-/* =========================
-   MODOS PRINCIPALES
-========================= */
-
-function mostrarVistaPrevia() {
-
-  previsualizacion.style.display =
-    "block";
-
-
-  visorCapas.classList.remove(
-    "visible"
-  );
-
-
-  botonVistaPrevia.classList.add(
-    "activo"
-  );
-
-
-  botonCapas.classList.remove(
-    "activo"
-  );
-
-}
-
-
-function mostrarCapas() {
-
-  previsualizacion.style.display =
-    "none";
-
-
-  visorCapas.classList.add(
-    "visible"
-  );
-
-
-  botonCapas.classList.add(
-    "activo"
-  );
-
-
-  botonVistaPrevia.classList.remove(
-    "activo"
-  );
-
-
-  actualizarCapas();
-
-
-  /*
-    Centramos horizontalmente
-    la mesa grande.
-  */
-
-  requestAnimationFrame(
-    () => {
-
-      zonaScroll.scrollLeft =
-        (
-          zonaScroll.scrollWidth -
-          zonaScroll.clientWidth
-        ) / 2;
-
-    }
-  );
-
-}
-
-
-botonVistaPrevia.addEventListener(
-  "click",
-  mostrarVistaPrevia
-);
-
-
-botonCapas.addEventListener(
-  "click",
-  mostrarCapas
-);
-
-
-/* =========================
-   MODOS DE CAPAS
-========================= */
+/* =========================================
+   MODOS INTERNOS DE CAPAS
+========================================= */
 
 modoAcumulacion.addEventListener(
+
   "click",
+
   () => {
+
 
     modoCapas =
       "acumulacion";
@@ -2389,13 +3329,19 @@ modoAcumulacion.addEventListener(
 
     actualizarCapas();
 
+
   }
+
 );
 
 
+
 modoIndividual.addEventListener(
+
   "click",
+
   () => {
+
 
     modoCapas =
       "individual";
@@ -2413,13 +3359,15 @@ modoIndividual.addEventListener(
 
     actualizarCapas();
 
+
   }
+
 );
 
 
-/* =========================
+/* =========================================
    CONTROLES
-========================= */
+========================================= */
 
 controlPaginas.addEventListener(
   "input",
@@ -2437,6 +3385,7 @@ controlTamano.addEventListener(
   "input",
   actualizarTamano
 );
+
 
 </script>
 
