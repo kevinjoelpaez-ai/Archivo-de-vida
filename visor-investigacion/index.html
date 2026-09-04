@@ -4410,21 +4410,6 @@ function dibujarPaginaFisica(
       : 4;
 
 
-  contexto.fillStyle =
-    "#ffffff";
-
-  contexto.fillRect(
-    -ancho / 2 - 3,
-    -alto / 2 - 3,
-    ancho + 6,
-    alto + 6
-  );
-
-
-  contexto.shadowColor =
-    "transparent";
-
-
   if (
     imagen &&
     imagen.complete &&
@@ -4433,20 +4418,6 @@ function dibujarPaginaFisica(
 
     contexto.drawImage(
       imagen,
-      -ancho / 2,
-      -alto / 2,
-      ancho,
-      alto
-    );
-
-  }
-
-  else {
-
-    contexto.fillStyle =
-      "#ffe0ff";
-
-    contexto.fillRect(
       -ancho / 2,
       -alto / 2,
       ancho,
