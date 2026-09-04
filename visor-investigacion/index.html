@@ -1683,6 +1683,134 @@ input[type="range"] {
 
 
 /* =========================================================
+   VISOR DE CORRIENTE O DERIVA
+========================================================= */
+
+.visor-deriva {
+  display: none;
+}
+
+.visor-deriva.visible {
+  display: block;
+}
+
+.controles-deriva {
+  display: flex;
+
+  width: min(100%, 900px);
+
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+
+  margin: 0 auto 20px;
+  padding: 16px 18px;
+
+  border: 1px solid var(--color-border-soft);
+  border-radius: 8px;
+
+  background: var(--color-surface);
+
+  box-shadow: 0 8px 24px var(--color-shadow);
+}
+
+.control-corriente {
+  flex: 1;
+
+  max-width: 330px;
+}
+
+.control-corriente label {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 14px;
+
+  margin-bottom: 7px;
+
+  color: var(--color-text);
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.interacciones-deriva {
+  display: flex;
+
+  gap: 8px;
+}
+
+.modo-deriva {
+  padding: 9px 13px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+
+  background: var(--color-surface);
+  color: var(--color-dark);
+
+  cursor: pointer;
+}
+
+.modo-deriva:hover {
+  background: var(--color-surface-2);
+}
+
+.modo-deriva.activo {
+  border-color: var(--color-dark);
+
+  background: var(--color-dark);
+  color: var(--color-white);
+}
+
+.escenario-deriva {
+  position: relative;
+
+  width: 100%;
+  height: clamp(520px, 72vh, 820px);
+
+  overflow: hidden;
+
+  border: 1px solid var(--color-border-soft);
+  border-radius: 14px;
+
+  background:
+    radial-gradient(
+      circle at 32% 28%,
+      rgba(255, 240, 251, 0.98),
+      rgba(255, 224, 255, 0.78) 48%,
+      rgba(230, 169, 203, 0.82)
+    );
+
+  box-shadow: inset 0 0 70px rgba(195, 59, 128, 0.08),
+              0 10px 26px var(--color-shadow);
+
+  cursor: crosshair;
+  touch-action: none;
+}
+
+#lienzoDeriva {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  touch-action: none;
+}
+
+.estado-deriva {
+  margin-top: 10px;
+
+  color: var(--color-text-soft);
+
+  font-size: 12px;
+
+  text-align: center;
+}
+
+
+/* =========================================================
    PIE
 ========================================================= */
 
@@ -1762,6 +1890,32 @@ input[type="range"] {
   }
 
   .escenario-detalle {
+    height: 68vh;
+    min-height: 480px;
+  }
+
+  .controles-deriva {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .control-corriente {
+    width: 100%;
+    max-width: none;
+  }
+
+  .interacciones-deriva {
+    display: grid;
+
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+
+  .modo-deriva {
+    padding: 9px 7px;
+  }
+
+  .escenario-deriva {
     height: 68vh;
     min-height: 480px;
   }
@@ -2030,6 +2184,15 @@ input[type="range"] {
         type="button"
       >
         Recorte y detalle
+      </button>
+
+
+      <button
+        id="botonDeriva"
+        class="boton-modo"
+        type="button"
+      >
+        Corriente o deriva
       </button>
 
     </nav>
@@ -2404,6 +2567,95 @@ input[type="range"] {
     </section>
 
 
+    <!-- =================================================
+         VISOR DE CORRIENTE O DERIVA
+    ================================================== -->
+
+    <section
+      id="visorDeriva"
+      class="visor-deriva"
+    >
+
+      <div class="controles-deriva">
+
+        <div class="control-corriente">
+
+          <label for="controlCorriente">
+            <span>Fuerza de la corriente</span>
+
+            <span
+              id="valorCorriente"
+              class="valor-control"
+            >
+              100%
+            </span>
+          </label>
+
+          <input
+            id="controlCorriente"
+            type="range"
+            min="0"
+            max="200"
+            value="100"
+            step="5"
+          >
+
+        </div>
+
+
+        <div
+          class="interacciones-deriva"
+          aria-label="Efecto del cursor"
+        >
+
+          <button
+            id="derivaAtraer"
+            class="modo-deriva"
+            type="button"
+          >
+            Atracción
+          </button>
+
+          <button
+            id="derivaRemolino"
+            class="modo-deriva activo"
+            type="button"
+          >
+            Remolino
+          </button>
+
+          <button
+            id="derivaRepeler"
+            class="modo-deriva"
+            type="button"
+          >
+            Repulsión
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="escenarioDeriva"
+        class="escenario-deriva"
+      >
+
+        <canvas id="lienzoDeriva"></canvas>
+
+      </div>
+
+
+      <div
+        class="estado-deriva"
+      >
+        Mové el cursor para alterar la corriente de las imágenes.
+      </div>
+
+    </section>
+
+
   </section>
 
 
@@ -2603,6 +2855,38 @@ const valorLupa =
 
 
 /* =========================================================
+   CORRIENTE O DERIVA
+========================================================= */
+
+const botonDeriva =
+  document.getElementById("botonDeriva");
+
+const visorDeriva =
+  document.getElementById("visorDeriva");
+
+const escenarioDeriva =
+  document.getElementById("escenarioDeriva");
+
+const lienzoDeriva =
+  document.getElementById("lienzoDeriva");
+
+const controlCorriente =
+  document.getElementById("controlCorriente");
+
+const valorCorriente =
+  document.getElementById("valorCorriente");
+
+const derivaAtraer =
+  document.getElementById("derivaAtraer");
+
+const derivaRemolino =
+  document.getElementById("derivaRemolino");
+
+const derivaRepeler =
+  document.getElementById("derivaRepeler");
+
+
+/* =========================================================
    ESTADO DE LA APLICACIÓN
 ========================================================= */
 
@@ -2697,6 +2981,33 @@ let observadorDetalle =
 let posicionLupa = {
   x: null,
   y: null
+};
+
+let imagenesDeriva =
+  [];
+
+let particulasDeriva =
+  [];
+
+let derivaPreparada =
+  false;
+
+let animacionDeriva =
+  null;
+
+let ultimoTiempoDeriva =
+  null;
+
+let observadorDeriva =
+  null;
+
+let modoInteraccionDeriva =
+  "remolino";
+
+let punteroDeriva = {
+  activo: false,
+  x: 0,
+  y: 0
 };
 
 
@@ -2870,6 +3181,8 @@ function limpiarAnterior() {
 
   limpiarDetalle();
 
+  limpiarDeriva();
+
 
   if (
     documentoActual.paginas
@@ -2927,6 +3240,11 @@ function limpiarAnterior() {
 
 
   visorDetalle.classList.remove(
+    "visible"
+  );
+
+
+  visorDeriva.classList.remove(
     "visible"
   );
 
@@ -3769,6 +4087,8 @@ function mostrarLibro() {
 
   pausarFisica();
 
+  pausarDeriva();
+
 
   visorCapas.classList.remove(
     "visible"
@@ -3781,6 +4101,11 @@ function mostrarLibro() {
 
 
   visorDetalle.classList.remove(
+    "visible"
+  );
+
+
+  visorDeriva.classList.remove(
     "visible"
   );
 
@@ -3806,6 +4131,11 @@ function mostrarLibro() {
 
 
   botonDetalle.classList.remove(
+    "activo"
+  );
+
+
+  botonDeriva.classList.remove(
     "activo"
   );
 
@@ -3862,6 +4192,8 @@ function mostrarCapas() {
 
   pausarFisica();
 
+  pausarDeriva();
+
 
   visorLibro.classList.remove(
     "visible"
@@ -3874,6 +4206,11 @@ function mostrarCapas() {
 
 
   visorDetalle.classList.remove(
+    "visible"
+  );
+
+
+  visorDeriva.classList.remove(
     "visible"
   );
 
@@ -3899,6 +4236,11 @@ function mostrarCapas() {
 
 
   botonDetalle.classList.remove(
+    "activo"
+  );
+
+
+  botonDeriva.classList.remove(
     "activo"
   );
 
@@ -3951,6 +4293,9 @@ function mostrarFisica() {
     "fisica";
 
 
+  pausarDeriva();
+
+
   visorLibro.classList.remove(
     "visible"
   );
@@ -3962,6 +4307,11 @@ function mostrarFisica() {
 
 
   visorDetalle.classList.remove(
+    "visible"
+  );
+
+
+  visorDeriva.classList.remove(
     "visible"
   );
 
@@ -3982,6 +4332,11 @@ function mostrarFisica() {
 
 
   botonDetalle.classList.remove(
+    "activo"
+  );
+
+
+  botonDeriva.classList.remove(
     "activo"
   );
 
@@ -4038,6 +4393,8 @@ function mostrarDetalle() {
 
   pausarFisica();
 
+  pausarDeriva();
+
 
   visorLibro.classList.remove(
     "visible"
@@ -4050,6 +4407,11 @@ function mostrarDetalle() {
 
 
   visorFisica.classList.remove(
+    "visible"
+  );
+
+
+  visorDeriva.classList.remove(
     "visible"
   );
 
@@ -4070,6 +4432,11 @@ function mostrarDetalle() {
 
 
   botonFisica.classList.remove(
+    "activo"
+  );
+
+
+  botonDeriva.classList.remove(
     "activo"
   );
 
@@ -4636,6 +5003,1033 @@ lienzoDetalle.addEventListener(
 
 
     dibujarDetalle();
+
+  }
+);
+
+
+/* =========================================================
+   MOSTRAR CORRIENTE O DERIVA
+========================================================= */
+
+function mostrarDeriva() {
+
+  modoPrincipal =
+    "deriva";
+
+
+  pausarFisica();
+
+
+  visorLibro.classList.remove(
+    "visible"
+  );
+
+
+  visorCapas.classList.remove(
+    "visible"
+  );
+
+
+  visorFisica.classList.remove(
+    "visible"
+  );
+
+
+  visorDetalle.classList.remove(
+    "visible"
+  );
+
+
+  visorDeriva.classList.add(
+    "visible"
+  );
+
+
+  botonLibro.classList.remove(
+    "activo"
+  );
+
+
+  botonCapas.classList.remove(
+    "activo"
+  );
+
+
+  botonFisica.classList.remove(
+    "activo"
+  );
+
+
+  botonDetalle.classList.remove(
+    "activo"
+  );
+
+
+  botonDeriva.classList.add(
+    "activo"
+  );
+
+
+  descripcionModo.textContent =
+    "Las imágenes flotan en corrientes variables que el cursor puede alterar.";
+
+
+  requestAnimationFrame(
+    () => {
+
+      if (
+        !derivaPreparada
+      ) {
+
+        prepararDeriva();
+
+      }
+
+      else {
+
+        ajustarLienzoDeriva();
+
+        iniciarAnimacionDeriva();
+
+      }
+
+    }
+  );
+
+}
+
+
+botonDeriva.addEventListener(
+  "click",
+  mostrarDeriva
+);
+
+
+/* =========================================================
+   CORRIENTE O DERIVA
+========================================================= */
+
+function pausarDeriva() {
+
+  if (
+    animacionDeriva !== null
+  ) {
+
+    cancelAnimationFrame(
+      animacionDeriva
+    );
+
+  }
+
+
+  animacionDeriva =
+    null;
+
+  ultimoTiempoDeriva =
+    null;
+
+}
+
+
+function limpiarDeriva() {
+
+  pausarDeriva();
+
+
+  if (
+    observadorDeriva
+  ) {
+
+    observadorDeriva.disconnect();
+
+  }
+
+
+  observadorDeriva =
+    null;
+
+  imagenesDeriva =
+    [];
+
+  particulasDeriva =
+    [];
+
+  derivaPreparada =
+    false;
+
+  punteroDeriva = {
+    activo: false,
+    x: 0,
+    y: 0
+  };
+
+
+  const contexto =
+    lienzoDeriva.getContext(
+      "2d"
+    );
+
+
+  contexto.clearRect(
+    0,
+    0,
+    lienzoDeriva.width,
+    lienzoDeriva.height
+  );
+
+}
+
+
+function ajustarLienzoDeriva() {
+
+  const ancho =
+    Math.max(
+      280,
+      Math.round(
+        escenarioDeriva.clientWidth
+      )
+    );
+
+
+  const alto =
+    Math.max(
+      420,
+      Math.round(
+        escenarioDeriva.clientHeight
+      )
+    );
+
+
+  const anchoAnterior =
+    Number(
+      lienzoDeriva.dataset.ancho || 0
+    );
+
+
+  const altoAnterior =
+    Number(
+      lienzoDeriva.dataset.alto || 0
+    );
+
+
+  const densidadPixeles =
+    Math.min(
+      window.devicePixelRatio || 1,
+      2
+    );
+
+
+  lienzoDeriva.width =
+    Math.round(
+      ancho * densidadPixeles
+    );
+
+
+  lienzoDeriva.height =
+    Math.round(
+      alto * densidadPixeles
+    );
+
+
+  lienzoDeriva.dataset.ancho =
+    ancho;
+
+
+  lienzoDeriva.dataset.alto =
+    alto;
+
+
+  if (
+    anchoAnterior > 0 &&
+    altoAnterior > 0 &&
+    (
+      anchoAnterior !== ancho ||
+      altoAnterior !== alto
+    )
+  ) {
+
+    particulasDeriva.forEach(
+      particula => {
+
+        particula.x *=
+          ancho / anchoAnterior;
+
+        particula.y *=
+          alto / altoAnterior;
+
+      }
+    );
+
+  }
+
+
+  dibujarDeriva();
+
+
+  return {
+    ancho,
+    alto
+  };
+
+}
+
+
+function calcularTamanoDeriva(
+  pagina,
+  anchoEscenario,
+  cantidad
+) {
+
+  const anchoBase =
+    Math.max(
+      66,
+      Math.min(
+        150,
+        anchoEscenario /
+          Math.max(
+            4,
+            Math.sqrt(cantidad) + 2
+          )
+      )
+    );
+
+
+  const proporcion =
+    pagina.height /
+    pagina.width;
+
+
+  let ancho =
+    anchoBase;
+
+  let alto =
+    ancho * proporcion;
+
+
+  if (
+    alto > 195
+  ) {
+
+    alto =
+      195;
+
+    ancho =
+      alto / proporcion;
+
+  }
+
+
+  return {
+    ancho,
+    alto
+  };
+
+}
+
+
+function prepararDeriva() {
+
+  const medidas =
+    ajustarLienzoDeriva();
+
+
+  const paginas =
+    documentoActual.paginas;
+
+
+  imagenesDeriva =
+    paginas.map(
+      pagina => {
+
+        const imagen =
+          new Image();
+
+
+        imagen.onload =
+          () => {
+
+            if (
+              modoPrincipal === "deriva"
+            ) {
+
+              dibujarDeriva();
+
+            }
+
+          };
+
+
+        imagen.src =
+          pagina.src;
+
+
+        return imagen;
+
+      }
+    );
+
+
+  particulasDeriva =
+    paginas.map(
+      (
+        pagina,
+        indice
+      ) => {
+
+        const tamano =
+          calcularTamanoDeriva(
+            pagina,
+            medidas.ancho,
+            paginas.length
+          );
+
+
+        return {
+          indice,
+          x: Math.random() * medidas.ancho,
+          y: Math.random() * medidas.alto,
+          velocidadX: (
+            Math.random() - 0.5
+          ) * 1.5,
+          velocidadY: (
+            Math.random() - 0.5
+          ) * 1.5,
+          angulo: (
+            Math.random() - 0.5
+          ) * 0.35,
+          giro: (
+            Math.random() - 0.5
+          ) * 0.004,
+          semilla: Math.random() * Math.PI * 2,
+          ancho: tamano.ancho,
+          alto: tamano.alto
+        };
+
+      }
+    );
+
+
+  derivaPreparada =
+    true;
+
+
+  if (
+    !observadorDeriva
+  ) {
+
+    observadorDeriva =
+      new ResizeObserver(
+        () => {
+
+          if (
+            derivaPreparada &&
+            modoPrincipal === "deriva"
+          ) {
+
+            ajustarLienzoDeriva();
+
+          }
+
+        }
+      );
+
+
+    observadorDeriva.observe(
+      escenarioDeriva
+    );
+
+  }
+
+
+  iniciarAnimacionDeriva();
+
+}
+
+
+function actualizarDeriva(
+  tiempo,
+  delta
+) {
+
+  const ancho =
+    Number(
+      lienzoDeriva.dataset.ancho || 0
+    );
+
+
+  const alto =
+    Number(
+      lienzoDeriva.dataset.alto || 0
+    );
+
+
+  const fuerza =
+    Number(
+      controlCorriente.value
+    ) / 100;
+
+
+  const paso =
+    delta / (1000 / 60);
+
+
+  const radioCursor =
+    Math.min(
+      270,
+      Math.max(
+        150,
+        Math.min(ancho, alto) * 0.34
+      )
+    );
+
+
+  particulasDeriva.forEach(
+    particula => {
+
+      const direccion =
+        Math.sin(
+          particula.y * 0.009 +
+          tiempo * 0.00042 +
+          particula.semilla
+        ) * 1.35 +
+        Math.cos(
+          particula.x * 0.006 -
+          tiempo * 0.00031 +
+          particula.semilla * 1.7
+        ) * 0.8;
+
+
+      particula.velocidadX +=
+        Math.cos(direccion) *
+        0.018 * fuerza * paso;
+
+      particula.velocidadY +=
+        Math.sin(direccion) *
+        0.018 * fuerza * paso;
+
+
+      if (
+        punteroDeriva.activo
+      ) {
+
+        const diferenciaX =
+          punteroDeriva.x - particula.x;
+
+        const diferenciaY =
+          punteroDeriva.y - particula.y;
+
+        const distancia =
+          Math.hypot(
+            diferenciaX,
+            diferenciaY
+          );
+
+
+        if (
+          distancia > 0 &&
+          distancia < radioCursor
+        ) {
+
+          const intensidad =
+            Math.pow(
+              1 - distancia / radioCursor,
+              2
+            ) *
+            0.24 * paso;
+
+
+          const unidadX =
+            diferenciaX / distancia;
+
+          const unidadY =
+            diferenciaY / distancia;
+
+
+          if (
+            modoInteraccionDeriva === "atraer"
+          ) {
+
+            particula.velocidadX +=
+              unidadX * intensidad;
+
+            particula.velocidadY +=
+              unidadY * intensidad;
+
+          }
+
+
+          else if (
+            modoInteraccionDeriva === "repeler"
+          ) {
+
+            particula.velocidadX -=
+              unidadX * intensidad;
+
+            particula.velocidadY -=
+              unidadY * intensidad;
+
+          }
+
+
+          else {
+
+            particula.velocidadX +=
+              -unidadY * intensidad;
+
+            particula.velocidadY +=
+              unidadX * intensidad;
+
+          }
+
+        }
+
+      }
+
+
+      const amortiguacion =
+        Math.pow(
+          0.993,
+          paso
+        );
+
+
+      particula.velocidadX *=
+        amortiguacion;
+
+      particula.velocidadY *=
+        amortiguacion;
+
+
+      const velocidadMaxima =
+        1.4 + fuerza * 2.5;
+
+
+      const velocidad =
+        Math.hypot(
+          particula.velocidadX,
+          particula.velocidadY
+        );
+
+
+      if (
+        velocidad > velocidadMaxima
+      ) {
+
+        particula.velocidadX =
+          particula.velocidadX /
+          velocidad *
+          velocidadMaxima;
+
+        particula.velocidadY =
+          particula.velocidadY /
+          velocidad *
+          velocidadMaxima;
+
+      }
+
+
+      particula.x +=
+        particula.velocidadX * paso;
+
+      particula.y +=
+        particula.velocidadY * paso;
+
+      particula.angulo +=
+        particula.giro * paso +
+        particula.velocidadX * 0.00045 * paso;
+
+
+      const margenX =
+        particula.ancho / 2;
+
+      const margenY =
+        particula.alto / 2;
+
+
+      if (
+        particula.x < -margenX
+      ) {
+
+        particula.x =
+          ancho + margenX;
+
+      }
+
+      else if (
+        particula.x > ancho + margenX
+      ) {
+
+        particula.x =
+          -margenX;
+
+      }
+
+
+      if (
+        particula.y < -margenY
+      ) {
+
+        particula.y =
+          alto + margenY;
+
+      }
+
+      else if (
+        particula.y > alto + margenY
+      ) {
+
+        particula.y =
+          -margenY;
+
+      }
+
+    }
+  );
+
+}
+
+
+function dibujarDeriva() {
+
+  const contexto =
+    lienzoDeriva.getContext(
+      "2d"
+    );
+
+
+  const ancho =
+    Number(
+      lienzoDeriva.dataset.ancho || 0
+    );
+
+
+  const alto =
+    Number(
+      lienzoDeriva.dataset.alto || 0
+    );
+
+
+  if (
+    ancho === 0 ||
+    alto === 0
+  ) {
+
+    return;
+
+  }
+
+
+  const densidadPixeles =
+    lienzoDeriva.width /
+    ancho;
+
+
+  contexto.setTransform(
+    densidadPixeles,
+    0,
+    0,
+    densidadPixeles,
+    0,
+    0
+  );
+
+
+  contexto.clearRect(
+    0,
+    0,
+    ancho,
+    alto
+  );
+
+
+  particulasDeriva.forEach(
+    particula => {
+
+      const imagen =
+        imagenesDeriva[
+          particula.indice
+        ];
+
+
+      if (
+        !imagen ||
+        !imagen.complete ||
+        imagen.naturalWidth === 0
+      ) {
+
+        return;
+
+      }
+
+
+      contexto.save();
+
+      contexto.translate(
+        particula.x,
+        particula.y
+      );
+
+      contexto.rotate(
+        particula.angulo
+      );
+
+
+      contexto.shadowColor =
+        "rgba(107, 31, 72, 0.25)";
+
+      contexto.shadowBlur =
+        9;
+
+      contexto.shadowOffsetY =
+        4;
+
+
+      contexto.drawImage(
+        imagen,
+        -particula.ancho / 2,
+        -particula.alto / 2,
+        particula.ancho,
+        particula.alto
+      );
+
+
+      contexto.restore();
+
+    }
+  );
+
+
+  if (
+    punteroDeriva.activo
+  ) {
+
+    contexto.save();
+
+    contexto.beginPath();
+
+    contexto.arc(
+      punteroDeriva.x,
+      punteroDeriva.y,
+      22,
+      0,
+      Math.PI * 2
+    );
+
+
+    contexto.strokeStyle =
+      "rgba(195, 59, 128, 0.55)";
+
+    contexto.lineWidth =
+      1.5;
+
+    contexto.stroke();
+
+    contexto.restore();
+
+  }
+
+}
+
+
+function pasoDeriva(
+  tiempo
+) {
+
+  if (
+    modoPrincipal !== "deriva" ||
+    !derivaPreparada
+  ) {
+
+    pausarDeriva();
+
+    return;
+
+  }
+
+
+  const delta =
+    ultimoTiempoDeriva === null
+      ? 1000 / 60
+      : Math.min(
+          32,
+          Math.max(
+            8,
+            tiempo - ultimoTiempoDeriva
+          )
+        );
+
+
+  ultimoTiempoDeriva =
+    tiempo;
+
+
+  actualizarDeriva(
+    tiempo,
+    delta
+  );
+
+  dibujarDeriva();
+
+
+  animacionDeriva =
+    requestAnimationFrame(
+      pasoDeriva
+    );
+
+}
+
+
+function iniciarAnimacionDeriva() {
+
+  if (
+    animacionDeriva !== null ||
+    !derivaPreparada
+  ) {
+
+    return;
+
+  }
+
+
+  ultimoTiempoDeriva =
+    null;
+
+
+  animacionDeriva =
+    requestAnimationFrame(
+      pasoDeriva
+    );
+
+}
+
+
+function seleccionarInteraccionDeriva(
+  modo
+) {
+
+  modoInteraccionDeriva =
+    modo;
+
+
+  derivaAtraer.classList.toggle(
+    "activo",
+    modo === "atraer"
+  );
+
+
+  derivaRemolino.classList.toggle(
+    "activo",
+    modo === "remolino"
+  );
+
+
+  derivaRepeler.classList.toggle(
+    "activo",
+    modo === "repeler"
+  );
+
+}
+
+
+derivaAtraer.addEventListener(
+  "click",
+  () =>
+    seleccionarInteraccionDeriva(
+      "atraer"
+    )
+);
+
+
+derivaRemolino.addEventListener(
+  "click",
+  () =>
+    seleccionarInteraccionDeriva(
+      "remolino"
+    )
+);
+
+
+derivaRepeler.addEventListener(
+  "click",
+  () =>
+    seleccionarInteraccionDeriva(
+      "repeler"
+    )
+);
+
+
+controlCorriente.addEventListener(
+  "input",
+  () => {
+
+    valorCorriente.textContent =
+      `${controlCorriente.value}%`;
+
+  }
+);
+
+
+function actualizarPunteroDeriva(
+  evento
+) {
+
+  const rectangulo =
+    lienzoDeriva.getBoundingClientRect();
+
+
+  punteroDeriva = {
+    activo: true,
+    x: evento.clientX - rectangulo.left,
+    y: evento.clientY - rectangulo.top
+  };
+
+}
+
+
+lienzoDeriva.addEventListener(
+  "pointerenter",
+  actualizarPunteroDeriva
+);
+
+
+lienzoDeriva.addEventListener(
+  "pointermove",
+  evento => {
+
+    evento.preventDefault();
+
+    actualizarPunteroDeriva(
+      evento
+    );
+
+  }
+);
+
+
+lienzoDeriva.addEventListener(
+  "pointerleave",
+  () => {
+
+    punteroDeriva.activo =
+      false;
+
+  }
+);
+
+
+lienzoDeriva.addEventListener(
+  "pointerup",
+  () => {
+
+    if (
+      navigator.maxTouchPoints > 0
+    ) {
+
+      punteroDeriva.activo =
+        false;
+
+    }
 
   }
 );
