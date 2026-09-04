@@ -32,7 +32,682 @@
      MOTOR DE FÍSICA PARA EL MODO CAÍDA
 ========================================================= -->
 
-<script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
+<script>
+
+/* Motor físico mínimo incluido en el archivo.
+   Evita depender de una descarga externa para el modo de rebote. */
+
+(function (
+  global
+) {
+
+  function rectangulo(
+    x,
+    y,
+    ancho,
+    alto,
+    opciones = {}
+  ) {
+
+    return {
+      position: {x, y},
+      velocity: {x: 0, y: 0},
+      angle: 0,
+      angularVelocity: 0,
+      width: ancho,
+      height: alto,
+      halfWidth: ancho / 2,
+      halfHeight: alto / 2,
+      isStatic: Boolean(opciones.isStatic),
+      restitution: opciones.restitution ?? 0.8,
+      frictionAir: opciones.frictionAir ?? 0,
+      density: opciones.density ?? 0.001,
+      label: opciones.label || "cuerpo",
+      plugin: {}
+    };
+
+  }
+
+
+  function masa(
+    cuerpo
+  ) {
+
+    if (
+      cuerpo.isStatic
+    ) {
+
+      return Infinity;
+
+    }
+
+
+    return Math.max(
+      0.001,
+      cuerpo.width *
+      cuerpo.height *
+      cuerpo.density
+    );
+
+  }
+
+
+  function resolverVelocidad(
+    a,
+    b,
+    eje,
+    normal,
+    restitucion
+  ) {
+
+    const velocidadA =
+      a.velocity[eje];
+
+    const velocidadB =
+      b.velocity[eje];
+
+
+    if (
+      (
+        velocidadA - velocidadB
+      ) * normal <= 0
+    ) {
+
+      return;
+
+    }
+
+
+    if (
+      a.isStatic
+    ) {
+
+      b.velocity[eje] =
+        -velocidadB * restitucion;
+
+      return;
+
+    }
+
+
+    if (
+      b.isStatic
+    ) {
+
+      a.velocity[eje] =
+        -velocidadA * restitucion;
+
+      return;
+
+    }
+
+
+    const masaA =
+      masa(a);
+
+    const masaB =
+      masa(b);
+
+
+    a.velocity[eje] =
+      (
+        (
+          masaA - restitucion * masaB
+        ) * velocidadA +
+        (
+          1 + restitucion
+        ) * masaB * velocidadB
+      ) /
+      (
+        masaA + masaB
+      );
+
+
+    b.velocity[eje] =
+      (
+        (
+          masaB - restitucion * masaA
+        ) * velocidadB +
+        (
+          1 + restitucion
+        ) * masaA * velocidadA
+      ) /
+      (
+        masaA + masaB
+      );
+
+  }
+
+
+  function resolverColision(
+    a,
+    b
+  ) {
+
+    if (
+      a.isStatic &&
+      b.isStatic
+    ) {
+
+      return;
+
+    }
+
+
+    if (
+      a.plugin.visible === false ||
+      b.plugin.visible === false
+    ) {
+
+      return;
+
+    }
+
+
+    const diferenciaX =
+      b.position.x - a.position.x;
+
+    const diferenciaY =
+      b.position.y - a.position.y;
+
+
+    const solapamientoX =
+      a.halfWidth +
+      b.halfWidth -
+      Math.abs(diferenciaX);
+
+    const solapamientoY =
+      a.halfHeight +
+      b.halfHeight -
+      Math.abs(diferenciaY);
+
+
+    if (
+      solapamientoX <= 0 ||
+      solapamientoY <= 0
+    ) {
+
+      return;
+
+    }
+
+
+    const restitucion =
+      Math.min(
+        a.restitution,
+        b.restitution
+      );
+
+
+    if (
+      solapamientoX < solapamientoY
+    ) {
+
+      const normal =
+        diferenciaX >= 0
+          ? 1
+          : -1;
+
+
+      if (
+        a.isStatic
+      ) {
+
+        b.position.x +=
+          normal * solapamientoX;
+
+      }
+
+      else if (
+        b.isStatic
+      ) {
+
+        a.position.x -=
+          normal * solapamientoX;
+
+      }
+
+      else {
+
+        a.position.x -=
+          normal * solapamientoX / 2;
+
+        b.position.x +=
+          normal * solapamientoX / 2;
+
+      }
+
+
+      resolverVelocidad(
+        a,
+        b,
+        "x",
+        normal,
+        restitucion
+      );
+
+    }
+
+    else {
+
+      const normal =
+        diferenciaY >= 0
+          ? 1
+          : -1;
+
+
+      if (
+        a.isStatic
+      ) {
+
+        b.position.y +=
+          normal * solapamientoY;
+
+      }
+
+      else if (
+        b.isStatic
+      ) {
+
+        a.position.y -=
+          normal * solapamientoY;
+
+      }
+
+      else {
+
+        a.position.y -=
+          normal * solapamientoY / 2;
+
+        b.position.y +=
+          normal * solapamientoY / 2;
+
+      }
+
+
+      resolverVelocidad(
+        a,
+        b,
+        "y",
+        normal,
+        restitucion
+      );
+
+    }
+
+  }
+
+
+  const Engine = {
+
+    create() {
+
+      return {
+        world: {
+          bodies: []
+        },
+        gravity: {
+          x: 0,
+          y: 1
+        }
+      };
+
+    },
+
+
+    update(
+      motor,
+      delta
+    ) {
+
+      const paso =
+        delta / (1000 / 60);
+
+
+      const cuerpos =
+        motor.world.bodies;
+
+
+      cuerpos.forEach(
+        cuerpo => {
+
+          if (
+            cuerpo.isStatic ||
+            cuerpo.plugin.visible === false
+          ) {
+
+            return;
+
+          }
+
+
+          cuerpo.velocity.x +=
+            motor.gravity.x * 0.28 * paso;
+
+          cuerpo.velocity.y +=
+            motor.gravity.y * 0.28 * paso;
+
+
+          const amortiguacion =
+            Math.pow(
+              1 - cuerpo.frictionAir,
+              paso
+            );
+
+
+          cuerpo.velocity.x *=
+            amortiguacion;
+
+          cuerpo.velocity.y *=
+            amortiguacion;
+
+          cuerpo.angularVelocity *=
+            amortiguacion;
+
+
+          cuerpo.position.x +=
+            cuerpo.velocity.x * paso;
+
+          cuerpo.position.y +=
+            cuerpo.velocity.y * paso;
+
+          cuerpo.angle +=
+            cuerpo.angularVelocity * paso;
+
+        }
+      );
+
+
+      for (
+        let repeticion = 0;
+        repeticion < 3;
+        repeticion++
+      ) {
+
+        for (
+          let a = 0;
+          a < cuerpos.length;
+          a++
+        ) {
+
+          for (
+            let b = a + 1;
+            b < cuerpos.length;
+            b++
+          ) {
+
+            resolverColision(
+              cuerpos[a],
+              cuerpos[b]
+            );
+
+          }
+
+        }
+
+      }
+
+    },
+
+
+    clear() {}
+
+  };
+
+
+  const Composite = {
+
+    add(
+      mundo,
+      objetos
+    ) {
+
+      const lista =
+        Array.isArray(objetos)
+          ? objetos
+          : [objetos];
+
+
+      lista.forEach(
+        objeto => {
+
+          if (
+            !mundo.bodies.includes(
+              objeto
+            )
+          ) {
+
+            mundo.bodies.push(
+              objeto
+            );
+
+          }
+
+        }
+      );
+
+    },
+
+
+    remove(
+      mundo,
+      objetos
+    ) {
+
+      const lista =
+        Array.isArray(objetos)
+          ? objetos
+          : [objetos];
+
+
+      mundo.bodies =
+        mundo.bodies.filter(
+          cuerpo =>
+            !lista.includes(cuerpo)
+        );
+
+    },
+
+
+    clear(
+      mundo
+    ) {
+
+      mundo.bodies =
+        [];
+
+    }
+
+  };
+
+
+  const Body = {
+
+    setPosition(
+      cuerpo,
+      posicion
+    ) {
+
+      cuerpo.position.x =
+        posicion.x;
+
+      cuerpo.position.y =
+        posicion.y;
+
+    },
+
+
+    setAngle(
+      cuerpo,
+      angulo
+    ) {
+
+      cuerpo.angle =
+        angulo;
+
+    },
+
+
+    setStatic(
+      cuerpo,
+      estatico
+    ) {
+
+      cuerpo.isStatic =
+        estatico;
+
+
+      if (
+        estatico
+      ) {
+
+        cuerpo.velocity.x =
+          0;
+
+        cuerpo.velocity.y =
+          0;
+
+        cuerpo.angularVelocity =
+          0;
+
+      }
+
+    },
+
+
+    setVelocity(
+      cuerpo,
+      velocidad
+    ) {
+
+      cuerpo.velocity.x =
+        velocidad.x;
+
+      cuerpo.velocity.y =
+        velocidad.y;
+
+    },
+
+
+    setAngularVelocity(
+      cuerpo,
+      velocidad
+    ) {
+
+      cuerpo.angularVelocity =
+        velocidad;
+
+    }
+
+  };
+
+
+  const Vector = {
+
+    magnitude(
+      vector
+    ) {
+
+      return Math.hypot(
+        vector.x,
+        vector.y
+      );
+
+    },
+
+
+    normalise(
+      vector
+    ) {
+
+      const magnitud =
+        Math.hypot(
+          vector.x,
+          vector.y
+        ) || 1;
+
+
+      return {
+        x: vector.x / magnitud,
+        y: vector.y / magnitud
+      };
+
+    },
+
+
+    mult(
+      vector,
+      cantidad
+    ) {
+
+      return {
+        x: vector.x * cantidad,
+        y: vector.y * cantidad
+      };
+
+    }
+
+  };
+
+
+  const Query = {
+
+    point(
+      cuerpos,
+      punto
+    ) {
+
+      return cuerpos.filter(
+        cuerpo => {
+
+          const diferenciaX =
+            punto.x - cuerpo.position.x;
+
+          const diferenciaY =
+            punto.y - cuerpo.position.y;
+
+          const coseno =
+            Math.cos(cuerpo.angle);
+
+          const seno =
+            Math.sin(cuerpo.angle);
+
+          const localX =
+            diferenciaX * coseno +
+            diferenciaY * seno;
+
+          const localY =
+            -diferenciaX * seno +
+            diferenciaY * coseno;
+
+
+          return (
+            Math.abs(localX) <= cuerpo.halfWidth &&
+            Math.abs(localY) <= cuerpo.halfHeight
+          );
+
+        }
+      );
+
+    }
+
+  };
+
+
+  global.Matter = {
+    Engine,
+    Bodies: {
+      rectangle: rectangulo
+    },
+    Body,
+    Composite,
+    Query,
+    Vector
+  };
+
+})(globalThis);
+
+</script>
 
 
 <style>
