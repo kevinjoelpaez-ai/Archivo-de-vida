@@ -1547,6 +1547,142 @@ input[type="range"] {
 
 
 /* =========================================================
+   VISOR DE RECORTE Y DETALLE
+========================================================= */
+
+.visor-detalle {
+  display: none;
+}
+
+.visor-detalle.visible {
+  display: block;
+}
+
+.controles-detalle {
+  display: flex;
+
+  width: min(100%, 820px);
+
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+
+  margin: 0 auto 20px;
+  padding: 16px 18px;
+
+  border: 1px solid var(--color-border-soft);
+  border-radius: 8px;
+
+  background: var(--color-surface);
+
+  box-shadow: 0 8px 24px var(--color-shadow);
+}
+
+.navegacion-detalle {
+  display: flex;
+
+  align-items: center;
+  gap: 9px;
+}
+
+.navegacion-detalle button {
+  padding: 9px 13px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+
+  background: var(--color-surface);
+  color: var(--color-dark);
+
+  cursor: pointer;
+}
+
+.navegacion-detalle button:hover:not(:disabled) {
+  background: var(--color-surface-2);
+}
+
+.navegacion-detalle button:disabled {
+  opacity: 0.42;
+
+  cursor: default;
+}
+
+.pagina-detalle {
+  min-width: 96px;
+
+  color: var(--color-text-soft);
+
+  font-size: 12px;
+
+  text-align: center;
+}
+
+.control-lupa {
+  flex: 1;
+
+  max-width: 330px;
+}
+
+.control-lupa label {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 14px;
+
+  margin-bottom: 7px;
+
+  color: var(--color-text);
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.escenario-detalle {
+  position: relative;
+
+  width: 100%;
+  height: clamp(520px, 72vh, 820px);
+
+  overflow: hidden;
+
+  border: 1px solid var(--color-border-soft);
+  border-radius: 14px;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(255, 240, 251, 0.98),
+      rgba(230, 169, 203, 0.88)
+    );
+
+  box-shadow: 0 10px 26px var(--color-shadow);
+
+  cursor: none;
+  touch-action: none;
+}
+
+#lienzoDetalle {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  touch-action: none;
+}
+
+.estado-detalle {
+  margin-top: 10px;
+
+  color: var(--color-text-soft);
+
+  font-size: 12px;
+
+  text-align: center;
+}
+
+
+/* =========================================================
    PIE
 ========================================================= */
 
@@ -1611,6 +1747,25 @@ input[type="range"] {
     min-height: 480px;
   }
 
+  .controles-detalle {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .navegacion-detalle {
+    justify-content: center;
+  }
+
+  .control-lupa {
+    width: 100%;
+    max-width: none;
+  }
+
+  .escenario-detalle {
+    height: 68vh;
+    min-height: 480px;
+  }
+
   #BookReader,
   .BookReader {
     height: 700px;
@@ -1644,7 +1799,7 @@ input[type="range"] {
 
     <p>
       Cargá un PDF o una serie de imágenes y explorá el material
-      como libro o mediante superposición de capas.
+      mediante distintos modos de lectura e interacción.
       No necesitás preparar previamente las páginas.
     </p>
 
@@ -1866,6 +2021,15 @@ input[type="range"] {
         type="button"
       >
         Caer y rebotar
+      </button>
+
+
+      <button
+        id="botonDetalle"
+        class="boton-modo"
+        type="button"
+      >
+        Recorte y detalle
       </button>
 
     </nav>
@@ -2157,6 +2321,89 @@ input[type="range"] {
     </section>
 
 
+    <!-- =================================================
+         VISOR DE RECORTE Y DETALLE
+    ================================================== -->
+
+    <section
+      id="visorDetalle"
+      class="visor-detalle"
+    >
+
+      <div class="controles-detalle">
+
+        <div class="navegacion-detalle">
+
+          <button
+            id="detalleAnterior"
+            type="button"
+          >
+            Anterior
+          </button>
+
+          <span
+            id="paginaDetalle"
+            class="pagina-detalle"
+          >
+            Página 1 de 1
+          </span>
+
+          <button
+            id="detalleSiguiente"
+            type="button"
+          >
+            Siguiente
+          </button>
+
+        </div>
+
+
+        <div class="control-lupa">
+
+          <label for="controlLupa">
+            <span>Tamaño de la lupa</span>
+
+            <span
+              id="valorLupa"
+              class="valor-control"
+            >
+              220 px
+            </span>
+          </label>
+
+          <input
+            id="controlLupa"
+            type="range"
+            min="90"
+            max="440"
+            value="220"
+            step="10"
+          >
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="escenarioDetalle"
+        class="escenario-detalle"
+      >
+
+        <canvas id="lienzoDetalle"></canvas>
+
+      </div>
+
+
+      <div
+        class="estado-detalle"
+      >
+        Mové el cursor para revelar fragmentos de la imagen.
+      </div>
+
+    </section>
+
+
   </section>
 
 
@@ -2324,6 +2571,38 @@ const estadoFisica =
 
 
 /* =========================================================
+   RECORTE Y DETALLE
+========================================================= */
+
+const botonDetalle =
+  document.getElementById("botonDetalle");
+
+const visorDetalle =
+  document.getElementById("visorDetalle");
+
+const escenarioDetalle =
+  document.getElementById("escenarioDetalle");
+
+const lienzoDetalle =
+  document.getElementById("lienzoDetalle");
+
+const detalleAnterior =
+  document.getElementById("detalleAnterior");
+
+const detalleSiguiente =
+  document.getElementById("detalleSiguiente");
+
+const paginaDetalle =
+  document.getElementById("paginaDetalle");
+
+const controlLupa =
+  document.getElementById("controlLupa");
+
+const valorLupa =
+  document.getElementById("valorLupa");
+
+
+/* =========================================================
    ESTADO DE LA APLICACIÓN
 ========================================================= */
 
@@ -2401,6 +2680,23 @@ let ultimoPuntero = {
 let velocidadLanzamiento = {
   x: 0,
   y: 0
+};
+
+let imagenesDetalle =
+  [];
+
+let indiceDetalle =
+  0;
+
+let detallePreparado =
+  false;
+
+let observadorDetalle =
+  null;
+
+let posicionLupa = {
+  x: null,
+  y: null
 };
 
 
@@ -2572,6 +2868,8 @@ function limpiarAnterior() {
 
   limpiarFisica();
 
+  limpiarDetalle();
+
 
   if (
     documentoActual.paginas
@@ -2624,6 +2922,11 @@ function limpiarAnterior() {
 
 
   visorFisica.classList.remove(
+    "visible"
+  );
+
+
+  visorDetalle.classList.remove(
     "visible"
   );
 
@@ -3477,6 +3780,11 @@ function mostrarLibro() {
   );
 
 
+  visorDetalle.classList.remove(
+    "visible"
+  );
+
+
   visorLibro.classList.add(
     "visible"
   );
@@ -3493,6 +3801,11 @@ function mostrarLibro() {
 
 
   botonFisica.classList.remove(
+    "activo"
+  );
+
+
+  botonDetalle.classList.remove(
     "activo"
   );
 
@@ -3560,6 +3873,11 @@ function mostrarCapas() {
   );
 
 
+  visorDetalle.classList.remove(
+    "visible"
+  );
+
+
   visorCapas.classList.add(
     "visible"
   );
@@ -3576,6 +3894,11 @@ function mostrarCapas() {
 
 
   botonFisica.classList.remove(
+    "activo"
+  );
+
+
+  botonDetalle.classList.remove(
     "activo"
   );
 
@@ -3638,6 +3961,11 @@ function mostrarFisica() {
   );
 
 
+  visorDetalle.classList.remove(
+    "visible"
+  );
+
+
   visorFisica.classList.add(
     "visible"
   );
@@ -3649,6 +3977,11 @@ function mostrarFisica() {
 
 
   botonCapas.classList.remove(
+    "activo"
+  );
+
+
+  botonDetalle.classList.remove(
     "activo"
   );
 
@@ -3690,6 +4023,621 @@ function mostrarFisica() {
 botonFisica.addEventListener(
   "click",
   mostrarFisica
+);
+
+
+/* =========================================================
+   MOSTRAR RECORTE Y DETALLE
+========================================================= */
+
+function mostrarDetalle() {
+
+  modoPrincipal =
+    "detalle";
+
+
+  pausarFisica();
+
+
+  visorLibro.classList.remove(
+    "visible"
+  );
+
+
+  visorCapas.classList.remove(
+    "visible"
+  );
+
+
+  visorFisica.classList.remove(
+    "visible"
+  );
+
+
+  visorDetalle.classList.add(
+    "visible"
+  );
+
+
+  botonLibro.classList.remove(
+    "activo"
+  );
+
+
+  botonCapas.classList.remove(
+    "activo"
+  );
+
+
+  botonFisica.classList.remove(
+    "activo"
+  );
+
+
+  botonDetalle.classList.add(
+    "activo"
+  );
+
+
+  descripcionModo.textContent =
+    "Exploración fragmentaria mediante una lupa que revela la imagen.";
+
+
+  requestAnimationFrame(
+    () => {
+
+      if (
+        !detallePreparado
+      ) {
+
+        prepararDetalle();
+
+      }
+
+      else {
+
+        ajustarLienzoDetalle();
+
+      }
+
+    }
+  );
+
+}
+
+
+botonDetalle.addEventListener(
+  "click",
+  mostrarDetalle
+);
+
+
+/* =========================================================
+   RECORTE Y DETALLE
+========================================================= */
+
+function limpiarDetalle() {
+
+  if (
+    observadorDetalle
+  ) {
+
+    observadorDetalle.disconnect();
+
+  }
+
+
+  observadorDetalle =
+    null;
+
+  imagenesDetalle =
+    [];
+
+  indiceDetalle =
+    0;
+
+  detallePreparado =
+    false;
+
+  posicionLupa = {
+    x: null,
+    y: null
+  };
+
+
+  const contexto =
+    lienzoDetalle.getContext(
+      "2d"
+    );
+
+
+  contexto.clearRect(
+    0,
+    0,
+    lienzoDetalle.width,
+    lienzoDetalle.height
+  );
+
+}
+
+
+function prepararDetalle() {
+
+  imagenesDetalle =
+    documentoActual.paginas.map(
+      (
+        pagina,
+        indice
+      ) => {
+
+        const imagen =
+          new Image();
+
+
+        imagen.onload =
+          () => {
+
+            if (
+              indice === indiceDetalle &&
+              modoPrincipal === "detalle"
+            ) {
+
+              dibujarDetalle();
+
+            }
+
+          };
+
+
+        imagen.src =
+          pagina.src;
+
+
+        return imagen;
+
+      }
+    );
+
+
+  indiceDetalle =
+    Math.min(
+      indiceDetalle,
+      Math.max(
+        0,
+        imagenesDetalle.length - 1
+      )
+    );
+
+
+  detallePreparado =
+    true;
+
+
+  ajustarLienzoDetalle();
+
+  actualizarNavegacionDetalle();
+
+
+  if (
+    !observadorDetalle
+  ) {
+
+    observadorDetalle =
+      new ResizeObserver(
+        () => {
+
+          if (
+            detallePreparado &&
+            modoPrincipal === "detalle"
+          ) {
+
+            ajustarLienzoDetalle();
+
+          }
+
+        }
+      );
+
+
+    observadorDetalle.observe(
+      escenarioDetalle
+    );
+
+  }
+
+}
+
+
+function ajustarLienzoDetalle() {
+
+  const ancho =
+    Math.max(
+      280,
+      Math.round(
+        escenarioDetalle.clientWidth
+      )
+    );
+
+
+  const alto =
+    Math.max(
+      420,
+      Math.round(
+        escenarioDetalle.clientHeight
+      )
+    );
+
+
+  const densidadPixeles =
+    Math.min(
+      window.devicePixelRatio || 1,
+      2
+    );
+
+
+  lienzoDetalle.width =
+    Math.round(
+      ancho * densidadPixeles
+    );
+
+
+  lienzoDetalle.height =
+    Math.round(
+      alto * densidadPixeles
+    );
+
+
+  lienzoDetalle.dataset.ancho =
+    ancho;
+
+
+  lienzoDetalle.dataset.alto =
+    alto;
+
+
+  if (
+    posicionLupa.x === null ||
+    posicionLupa.y === null ||
+    posicionLupa.x > ancho ||
+    posicionLupa.y > alto
+  ) {
+
+    posicionLupa = {
+      x: ancho / 2,
+      y: alto / 2
+    };
+
+  }
+
+
+  dibujarDetalle();
+
+}
+
+
+function medidasImagenDetalle(
+  imagen,
+  anchoLienzo,
+  altoLienzo
+) {
+
+  const margen =
+    Math.min(
+      56,
+      anchoLienzo * 0.07
+    );
+
+
+  const escala =
+    Math.min(
+      (
+        anchoLienzo - margen * 2
+      ) / imagen.naturalWidth,
+      (
+        altoLienzo - margen * 2
+      ) / imagen.naturalHeight
+    );
+
+
+  const ancho =
+    imagen.naturalWidth * escala;
+
+  const alto =
+    imagen.naturalHeight * escala;
+
+
+  return {
+    x: (
+      anchoLienzo - ancho
+    ) / 2,
+    y: (
+      altoLienzo - alto
+    ) / 2,
+    ancho,
+    alto
+  };
+
+}
+
+
+function dibujarDetalle() {
+
+  const imagen =
+    imagenesDetalle[
+      indiceDetalle
+    ];
+
+
+  const contexto =
+    lienzoDetalle.getContext(
+      "2d"
+    );
+
+
+  const anchoLienzo =
+    Number(
+      lienzoDetalle.dataset.ancho || 0
+    );
+
+
+  const altoLienzo =
+    Number(
+      lienzoDetalle.dataset.alto || 0
+    );
+
+
+  if (
+    anchoLienzo === 0 ||
+    altoLienzo === 0
+  ) {
+
+    return;
+
+  }
+
+
+  const densidadPixeles =
+    lienzoDetalle.width /
+    anchoLienzo;
+
+
+  contexto.setTransform(
+    densidadPixeles,
+    0,
+    0,
+    densidadPixeles,
+    0,
+    0
+  );
+
+
+  contexto.clearRect(
+    0,
+    0,
+    anchoLienzo,
+    altoLienzo
+  );
+
+
+  if (
+    !imagen ||
+    !imagen.complete ||
+    imagen.naturalWidth === 0
+  ) {
+
+    return;
+
+  }
+
+
+  const medidas =
+    medidasImagenDetalle(
+      imagen,
+      anchoLienzo,
+      altoLienzo
+    );
+
+
+  contexto.save();
+
+  contexto.globalAlpha =
+    0.34;
+
+  contexto.filter =
+    "blur(11px)";
+
+  contexto.drawImage(
+    imagen,
+    medidas.x,
+    medidas.y,
+    medidas.ancho,
+    medidas.alto
+  );
+
+  contexto.restore();
+
+
+  contexto.fillStyle =
+    "rgba(55, 14, 38, 0.58)";
+
+  contexto.fillRect(
+    0,
+    0,
+    anchoLienzo,
+    altoLienzo
+  );
+
+
+  const radio =
+    Number(
+      controlLupa.value
+    ) / 2;
+
+
+  contexto.save();
+
+  contexto.beginPath();
+
+  contexto.arc(
+    posicionLupa.x,
+    posicionLupa.y,
+    radio,
+    0,
+    Math.PI * 2
+  );
+
+  contexto.clip();
+
+
+  contexto.clearRect(
+    0,
+    0,
+    anchoLienzo,
+    altoLienzo
+  );
+
+
+  contexto.drawImage(
+    imagen,
+    medidas.x,
+    medidas.y,
+    medidas.ancho,
+    medidas.alto
+  );
+
+  contexto.restore();
+
+
+  contexto.save();
+
+  contexto.beginPath();
+
+  contexto.arc(
+    posicionLupa.x,
+    posicionLupa.y,
+    radio,
+    0,
+    Math.PI * 2
+  );
+
+
+  contexto.strokeStyle =
+    "rgba(255, 255, 255, 0.82)";
+
+  contexto.lineWidth =
+    2;
+
+  contexto.shadowColor =
+    "rgba(107, 31, 72, 0.5)";
+
+  contexto.shadowBlur =
+    12;
+
+  contexto.stroke();
+
+  contexto.restore();
+
+}
+
+
+function actualizarNavegacionDetalle() {
+
+  const cantidad =
+    imagenesDetalle.length;
+
+
+  paginaDetalle.textContent =
+    cantidad > 0
+      ? `Página ${indiceDetalle + 1} de ${cantidad}`
+      : "Sin páginas";
+
+
+  detalleAnterior.disabled =
+    indiceDetalle <= 0;
+
+
+  detalleSiguiente.disabled =
+    cantidad === 0 ||
+    indiceDetalle >= cantidad - 1;
+
+
+  valorLupa.textContent =
+    `${controlLupa.value} px`;
+
+}
+
+
+function cambiarPaginaDetalle(
+  desplazamiento
+) {
+
+  indiceDetalle =
+    Math.min(
+      Math.max(
+        0,
+        indiceDetalle + desplazamiento
+      ),
+      Math.max(
+        0,
+        imagenesDetalle.length - 1
+      )
+    );
+
+
+  actualizarNavegacionDetalle();
+
+  dibujarDetalle();
+
+}
+
+
+detalleAnterior.addEventListener(
+  "click",
+  () =>
+    cambiarPaginaDetalle(-1)
+);
+
+
+detalleSiguiente.addEventListener(
+  "click",
+  () =>
+    cambiarPaginaDetalle(1)
+);
+
+
+controlLupa.addEventListener(
+  "input",
+  () => {
+
+    valorLupa.textContent =
+      `${controlLupa.value} px`;
+
+    dibujarDetalle();
+
+  }
+);
+
+
+lienzoDetalle.addEventListener(
+  "pointermove",
+  evento => {
+
+    evento.preventDefault();
+
+
+    const rectangulo =
+      lienzoDetalle.getBoundingClientRect();
+
+
+    posicionLupa = {
+      x: evento.clientX - rectangulo.left,
+      y: evento.clientY - rectangulo.top
+    };
+
+
+    dibujarDetalle();
+
+  }
 );
 
 
