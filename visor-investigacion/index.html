@@ -10,7 +10,7 @@
   content="width=device-width, initial-scale=1.0"
 >
 
-<title>Visor de investigación artística</title>
+<title>Visor de investigación artística · Bitácora de Derivas</title>
 
 
 <!-- =========================================================
@@ -27,6 +27,12 @@
 >
 
 <script src="https://unpkg.com/@internetarchive/bookreader@5.0.0-94/BookReader/BookReader.js"></script>
+
+<!-- =========================================================
+     MOTOR DE FÍSICA PARA EL MODO CAÍDA
+========================================================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
 
 
 <style>
@@ -748,6 +754,124 @@ input[type="range"] {
 
 
 /* =========================================================
+   VISOR DE CAÍDA Y REBOTE
+========================================================= */
+
+.visor-fisica {
+  display: none;
+}
+
+.visor-fisica.visible {
+  display: block;
+}
+
+.controles-fisica {
+  display: flex;
+
+  width: min(100%, 760px);
+
+  align-items: end;
+  gap: 16px;
+
+  margin: 0 auto 20px;
+  padding: 16px 18px;
+
+  border: 1px solid var(--color-border-soft);
+  border-radius: 8px;
+
+  background: var(--color-surface);
+
+  box-shadow: 0 8px 24px var(--color-shadow);
+}
+
+.control-fisica {
+  flex: 1;
+}
+
+.control-fisica label {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 14px;
+
+  margin-bottom: 7px;
+
+  color: var(--color-text);
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#reiniciarFisica {
+  min-width: 180px;
+
+  padding: 9px 14px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+
+  background: var(--color-surface);
+  color: var(--color-dark);
+
+  cursor: pointer;
+}
+
+#reiniciarFisica:hover {
+  background: var(--color-surface-2);
+}
+
+.escenario-fisica {
+  position: relative;
+
+  width: 100%;
+  height: clamp(520px, 72vh, 820px);
+
+  overflow: hidden;
+
+  border: 1px solid var(--color-border-soft);
+  border-radius: 14px;
+
+  background:
+    radial-gradient(
+      circle at 50% 35%,
+      rgba(255, 240, 251, 0.98),
+      rgba(255, 224, 255, 0.72) 62%,
+      rgba(230, 169, 203, 0.75)
+    );
+
+  box-shadow: inset 0 0 55px rgba(195, 59, 128, 0.09),
+              0 10px 26px var(--color-shadow);
+
+  cursor: grab;
+  touch-action: none;
+}
+
+.escenario-fisica.agarrando {
+  cursor: grabbing;
+}
+
+#lienzoFisica {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  touch-action: none;
+}
+
+.estado-fisica {
+  margin-top: 10px;
+
+  color: var(--color-text-soft);
+
+  font-size: 12px;
+
+  text-align: center;
+}
+
+
+/* =========================================================
    PIE
 ========================================================= */
 
@@ -796,6 +920,20 @@ input[type="range"] {
 
   .modos-principales {
     flex-direction: column;
+  }
+
+  .controles-fisica {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  #reiniciarFisica {
+    width: 100%;
+  }
+
+  .escenario-fisica {
+    height: 68vh;
+    min-height: 480px;
   }
 
   #BookReader,
@@ -1046,6 +1184,15 @@ input[type="range"] {
         Superponer capas
       </button>
 
+
+      <button
+        id="botonFisica"
+        class="boton-modo"
+        type="button"
+      >
+        Caer y rebotar
+      </button>
+
     </nav>
 
 
@@ -1268,6 +1415,73 @@ input[type="range"] {
     </section>
 
 
+    <!-- =================================================
+         VISOR DE CAÍDA Y REBOTE
+    ================================================== -->
+
+    <section
+      id="visorFisica"
+      class="visor-fisica"
+    >
+
+      <div class="controles-fisica">
+
+        <div class="control-fisica">
+
+          <label for="controlGravedad">
+            <span>Gravedad</span>
+
+            <span
+              id="valorGravedad"
+              class="valor-control"
+            >
+              100%
+            </span>
+          </label>
+
+          <input
+            id="controlGravedad"
+            type="range"
+            min="0"
+            max="200"
+            value="100"
+            step="5"
+          >
+
+        </div>
+
+
+        <button
+          id="reiniciarFisica"
+          type="button"
+        >
+          Reiniciar caída
+        </button>
+
+      </div>
+
+
+      <div
+        id="escenarioFisica"
+        class="escenario-fisica"
+      >
+
+        <canvas id="lienzoFisica"></canvas>
+
+      </div>
+
+
+      <div
+        id="estadoFisica"
+        class="estado-fisica"
+        aria-live="polite"
+      >
+        Agarrá una página, movela y soltala para lanzarla.
+      </div>
+
+    </section>
+
+
   </section>
 
 
@@ -1406,6 +1620,35 @@ const estadoCapas =
 
 
 /* =========================================================
+   CAÍDA Y REBOTE
+========================================================= */
+
+const botonFisica =
+  document.getElementById("botonFisica");
+
+const visorFisica =
+  document.getElementById("visorFisica");
+
+const escenarioFisica =
+  document.getElementById("escenarioFisica");
+
+const lienzoFisica =
+  document.getElementById("lienzoFisica");
+
+const controlGravedad =
+  document.getElementById("controlGravedad");
+
+const valorGravedad =
+  document.getElementById("valorGravedad");
+
+const reiniciarFisica =
+  document.getElementById("reiniciarFisica");
+
+const estadoFisica =
+  document.getElementById("estadoFisica");
+
+
+/* =========================================================
    ESTADO DE LA APLICACIÓN
 ========================================================= */
 
@@ -1435,6 +1678,55 @@ let bookReaderActual =
 
 let bookReaderPreparado =
   false;
+
+let motorFisica =
+  null;
+
+let cuerposFisica =
+  [];
+
+let bordesFisica =
+  [];
+
+let imagenesFisica =
+  [];
+
+let fisicaPreparada =
+  false;
+
+let animacionFisica =
+  null;
+
+let ultimoTiempoFisica =
+  null;
+
+let observadorFisica =
+  null;
+
+let temporizadoresFisica =
+  [];
+
+let cuerpoAgarrado =
+  null;
+
+let punteroAgarrado =
+  null;
+
+let desplazamientoAgarre = {
+  x: 0,
+  y: 0
+};
+
+let ultimoPuntero = {
+  x: 0,
+  y: 0,
+  tiempo: 0
+};
+
+let velocidadLanzamiento = {
+  x: 0,
+  y: 0
+};
 
 
 /* =========================================================
@@ -1603,6 +1895,8 @@ function limpiarAnterior() {
 
   limpiarBookReader();
 
+  limpiarFisica();
+
 
   if (
     documentoActual.paginas
@@ -1650,6 +1944,11 @@ function limpiarAnterior() {
 
 
   visorCapas.classList.remove(
+    "visible"
+  );
+
+
+  visorFisica.classList.remove(
     "visible"
   );
 
@@ -2490,7 +2789,15 @@ function mostrarLibro() {
     "libro";
 
 
+  pausarFisica();
+
+
   visorCapas.classList.remove(
+    "visible"
+  );
+
+
+  visorFisica.classList.remove(
     "visible"
   );
 
@@ -2506,6 +2813,11 @@ function mostrarLibro() {
 
 
   botonCapas.classList.remove(
+    "activo"
+  );
+
+
+  botonFisica.classList.remove(
     "activo"
   );
 
@@ -2560,7 +2872,15 @@ function mostrarCapas() {
     "capas";
 
 
+  pausarFisica();
+
+
   visorLibro.classList.remove(
+    "visible"
+  );
+
+
+  visorFisica.classList.remove(
     "visible"
   );
 
@@ -2576,6 +2896,11 @@ function mostrarCapas() {
 
 
   botonLibro.classList.remove(
+    "activo"
+  );
+
+
+  botonFisica.classList.remove(
     "activo"
   );
 
@@ -2615,6 +2940,1355 @@ botonLibro.addEventListener(
 botonCapas.addEventListener(
   "click",
   mostrarCapas
+);
+
+
+/* =========================================================
+   MOSTRAR CAÍDA Y REBOTE
+========================================================= */
+
+function mostrarFisica() {
+
+  modoPrincipal =
+    "fisica";
+
+
+  visorLibro.classList.remove(
+    "visible"
+  );
+
+
+  visorCapas.classList.remove(
+    "visible"
+  );
+
+
+  visorFisica.classList.add(
+    "visible"
+  );
+
+
+  botonLibro.classList.remove(
+    "activo"
+  );
+
+
+  botonCapas.classList.remove(
+    "activo"
+  );
+
+
+  botonFisica.classList.add(
+    "activo"
+  );
+
+
+  descripcionModo.textContent =
+    "Las páginas caen, chocan y pueden agarrarse y lanzarse.";
+
+
+  requestAnimationFrame(
+    () => {
+
+      if (
+        !fisicaPreparada
+      ) {
+
+        reiniciarSimulacionFisica();
+
+      }
+
+      else {
+
+        ajustarLienzoFisica();
+
+        iniciarAnimacionFisica();
+
+      }
+
+    }
+  );
+
+}
+
+
+botonFisica.addEventListener(
+  "click",
+  mostrarFisica
+);
+
+
+/* =========================================================
+   MOTOR DE CAÍDA Y REBOTE
+========================================================= */
+
+function limpiarTemporizadoresFisica() {
+
+  temporizadoresFisica.forEach(
+    temporizador =>
+      clearTimeout(
+        temporizador
+      )
+  );
+
+
+  temporizadoresFisica =
+    [];
+
+}
+
+
+function pausarFisica() {
+
+  if (
+    animacionFisica !== null
+  ) {
+
+    cancelAnimationFrame(
+      animacionFisica
+    );
+
+  }
+
+
+  animacionFisica =
+    null;
+
+  ultimoTiempoFisica =
+    null;
+
+}
+
+
+function limpiarFisica() {
+
+  pausarFisica();
+
+  limpiarTemporizadoresFisica();
+
+
+  if (
+    observadorFisica
+  ) {
+
+    observadorFisica.disconnect();
+
+  }
+
+
+  observadorFisica =
+    null;
+
+
+  if (
+    motorFisica &&
+    window.Matter
+  ) {
+
+    Matter.Composite.clear(
+      motorFisica.world,
+      false
+    );
+
+    Matter.Engine.clear(
+      motorFisica
+    );
+
+  }
+
+
+  motorFisica =
+    null;
+
+  cuerposFisica =
+    [];
+
+  bordesFisica =
+    [];
+
+  imagenesFisica =
+    [];
+
+  fisicaPreparada =
+    false;
+
+  cuerpoAgarrado =
+    null;
+
+  punteroAgarrado =
+    null;
+
+
+  escenarioFisica.classList.remove(
+    "agarrando"
+  );
+
+}
+
+
+function crearBordesFisica(
+  ancho,
+  alto
+) {
+
+  if (
+    !motorFisica
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    bordesFisica.length > 0
+  ) {
+
+    Matter.Composite.remove(
+      motorFisica.world,
+      bordesFisica
+    );
+
+  }
+
+
+  const grosor =
+    70;
+
+
+  const opciones = {
+    isStatic: true,
+    restitution: 0.9,
+    friction: 0.02,
+    label: "borde"
+  };
+
+
+  bordesFisica = [
+
+    Matter.Bodies.rectangle(
+      ancho / 2,
+      -grosor / 2,
+      ancho + grosor * 2,
+      grosor,
+      opciones
+    ),
+
+    Matter.Bodies.rectangle(
+      ancho / 2,
+      alto + grosor / 2,
+      ancho + grosor * 2,
+      grosor,
+      opciones
+    ),
+
+    Matter.Bodies.rectangle(
+      -grosor / 2,
+      alto / 2,
+      grosor,
+      alto + grosor * 2,
+      opciones
+    ),
+
+    Matter.Bodies.rectangle(
+      ancho + grosor / 2,
+      alto / 2,
+      grosor,
+      alto + grosor * 2,
+      opciones
+    )
+
+  ];
+
+
+  Matter.Composite.add(
+    motorFisica.world,
+    bordesFisica
+  );
+
+}
+
+
+function ajustarLienzoFisica() {
+
+  const ancho =
+    Math.max(
+      280,
+      Math.round(
+        escenarioFisica.clientWidth
+      )
+    );
+
+
+  const alto =
+    Math.max(
+      420,
+      Math.round(
+        escenarioFisica.clientHeight
+      )
+    );
+
+
+  const densidadPixeles =
+    Math.min(
+      window.devicePixelRatio || 1,
+      2
+    );
+
+
+  const anchoAnterior =
+    Number(
+      lienzoFisica.dataset.ancho || 0
+    );
+
+
+  const altoAnterior =
+    Number(
+      lienzoFisica.dataset.alto || 0
+    );
+
+
+  lienzoFisica.width =
+    Math.round(
+      ancho * densidadPixeles
+    );
+
+
+  lienzoFisica.height =
+    Math.round(
+      alto * densidadPixeles
+    );
+
+
+  lienzoFisica.dataset.ancho =
+    ancho;
+
+
+  lienzoFisica.dataset.alto =
+    alto;
+
+
+  if (
+    motorFisica
+  ) {
+
+    crearBordesFisica(
+      ancho,
+      alto
+    );
+
+
+    if (
+      anchoAnterior > 0 &&
+      altoAnterior > 0 &&
+      (
+        anchoAnterior !== ancho ||
+        altoAnterior !== alto
+      )
+    ) {
+
+      cuerposFisica.forEach(
+        cuerpo => {
+
+          if (
+            !cuerpo.plugin.visible
+          ) {
+
+            return;
+
+          }
+
+
+          Matter.Body.setPosition(
+            cuerpo,
+            {
+              x: Math.min(
+                Math.max(
+                  cuerpo.position.x,
+                  cuerpo.plugin.ancho / 2
+                ),
+                ancho - cuerpo.plugin.ancho / 2
+              ),
+
+              y: Math.min(
+                Math.max(
+                  cuerpo.position.y,
+                  cuerpo.plugin.alto / 2
+                ),
+                alto - cuerpo.plugin.alto / 2
+              )
+            }
+          );
+
+        }
+      );
+
+    }
+
+  }
+
+
+  return {
+    ancho,
+    alto,
+    densidadPixeles
+  };
+
+}
+
+
+function calcularTamanoFisica(
+  pagina,
+  anchoEscenario,
+  cantidad
+) {
+
+  const anchoBase =
+    Math.max(
+      72,
+      Math.min(
+        165,
+        anchoEscenario /
+          Math.max(
+            3.2,
+            Math.sqrt(cantidad) + 1.4
+          )
+      )
+    );
+
+
+  const proporcion =
+    pagina.height /
+    pagina.width;
+
+
+  let ancho =
+    anchoBase;
+
+  let alto =
+    ancho * proporcion;
+
+
+  if (
+    alto > 215
+  ) {
+
+    alto =
+      215;
+
+    ancho =
+      alto / proporcion;
+
+  }
+
+
+  return {
+    ancho,
+    alto
+  };
+
+}
+
+
+function crearPaginasFisica(
+  anchoEscenario
+) {
+
+  const paginas =
+    documentoActual.paginas;
+
+
+  imagenesFisica =
+    paginas.map(
+      pagina => {
+
+        const imagen =
+          new Image();
+
+        imagen.src =
+          pagina.src;
+
+        return imagen;
+
+      }
+    );
+
+
+  cuerposFisica =
+    paginas.map(
+      (
+        pagina,
+        indice
+      ) => {
+
+        const tamano =
+          calcularTamanoFisica(
+            pagina,
+            anchoEscenario,
+            paginas.length
+          );
+
+
+        const cuerpo =
+          Matter.Bodies.rectangle(
+            -1000,
+            -1000,
+            tamano.ancho,
+            tamano.alto,
+            {
+              isStatic: true,
+              restitution: 0.82,
+              friction: 0.08,
+              frictionAir: 0.006,
+              density: 0.0015,
+              chamfer: {
+                radius: 5
+              },
+              label: `pagina-${indice + 1}`
+            }
+          );
+
+
+        cuerpo.plugin.indicePagina =
+          indice;
+
+        cuerpo.plugin.ancho =
+          tamano.ancho;
+
+        cuerpo.plugin.alto =
+          tamano.alto;
+
+        cuerpo.plugin.visible =
+          false;
+
+
+        return cuerpo;
+
+      }
+    );
+
+
+  Matter.Composite.add(
+    motorFisica.world,
+    cuerposFisica
+  );
+
+
+  cuerposFisica.forEach(
+    (
+      cuerpo,
+      indice
+    ) => {
+
+      const temporizador =
+        setTimeout(
+          () => {
+
+            if (
+              !motorFisica ||
+              !cuerposFisica.includes(
+                cuerpo
+              )
+            ) {
+
+              return;
+
+            }
+
+
+            const margen =
+              cuerpo.plugin.ancho / 2 + 8;
+
+
+            const x =
+              margen +
+              Math.random() *
+              Math.max(
+                1,
+                anchoEscenario - margen * 2
+              );
+
+
+            Matter.Body.setPosition(
+              cuerpo,
+              {
+                x,
+                y: cuerpo.plugin.alto / 2 + 5
+              }
+            );
+
+
+            Matter.Body.setAngle(
+              cuerpo,
+              (
+                Math.random() - 0.5
+              ) * 0.32
+            );
+
+
+            Matter.Body.setStatic(
+              cuerpo,
+              false
+            );
+
+
+            Matter.Body.setVelocity(
+              cuerpo,
+              {
+                x: (
+                  Math.random() - 0.5
+                ) * 4,
+                y: 0
+              }
+            );
+
+
+            Matter.Body.setAngularVelocity(
+              cuerpo,
+              (
+                Math.random() - 0.5
+              ) * 0.04
+            );
+
+
+            cuerpo.plugin.visible =
+              true;
+
+          },
+          indice * 115
+        );
+
+
+      temporizadoresFisica.push(
+        temporizador
+      );
+
+    }
+  );
+
+}
+
+
+function reiniciarSimulacionFisica() {
+
+  if (
+    !window.Matter
+  ) {
+
+    estadoFisica.textContent =
+      "No se pudo cargar el motor de movimiento. Revisá la conexión e intentá nuevamente.";
+
+    return;
+
+  }
+
+
+  pausarFisica();
+
+  limpiarTemporizadoresFisica();
+
+
+  if (
+    motorFisica
+  ) {
+
+    Matter.Composite.clear(
+      motorFisica.world,
+      false
+    );
+
+    Matter.Engine.clear(
+      motorFisica
+    );
+
+  }
+
+
+  motorFisica =
+    Matter.Engine.create();
+
+
+  motorFisica.gravity.y =
+    Number(
+      controlGravedad.value
+    ) / 100;
+
+
+  cuerposFisica =
+    [];
+
+  bordesFisica =
+    [];
+
+  cuerpoAgarrado =
+    null;
+
+  punteroAgarrado =
+    null;
+
+
+  escenarioFisica.classList.remove(
+    "agarrando"
+  );
+
+
+  const medidas =
+    ajustarLienzoFisica();
+
+
+  crearPaginasFisica(
+    medidas.ancho
+  );
+
+
+  fisicaPreparada =
+    true;
+
+
+  estadoFisica.textContent =
+    "Agarrá una página, movela y soltala para lanzarla.";
+
+
+  if (
+    !observadorFisica
+  ) {
+
+    observadorFisica =
+      new ResizeObserver(
+        () => {
+
+          if (
+            fisicaPreparada &&
+            modoPrincipal === "fisica"
+          ) {
+
+            ajustarLienzoFisica();
+
+          }
+
+        }
+      );
+
+
+    observadorFisica.observe(
+      escenarioFisica
+    );
+
+  }
+
+
+  iniciarAnimacionFisica();
+
+}
+
+
+function dibujarPaginaFisica(
+  contexto,
+  cuerpo
+) {
+
+  if (
+    !cuerpo.plugin.visible
+  ) {
+
+    return;
+
+  }
+
+
+  const imagen =
+    imagenesFisica[
+      cuerpo.plugin.indicePagina
+    ];
+
+
+  const ancho =
+    cuerpo.plugin.ancho;
+
+  const alto =
+    cuerpo.plugin.alto;
+
+
+  contexto.save();
+
+  contexto.translate(
+    cuerpo.position.x,
+    cuerpo.position.y
+  );
+
+  contexto.rotate(
+    cuerpo.angle
+  );
+
+
+  contexto.shadowColor =
+    "rgba(107, 31, 72, 0.28)";
+
+  contexto.shadowBlur =
+    cuerpo === cuerpoAgarrado
+      ? 18
+      : 9;
+
+  contexto.shadowOffsetY =
+    cuerpo === cuerpoAgarrado
+      ? 8
+      : 4;
+
+
+  contexto.fillStyle =
+    "#ffffff";
+
+  contexto.fillRect(
+    -ancho / 2 - 3,
+    -alto / 2 - 3,
+    ancho + 6,
+    alto + 6
+  );
+
+
+  contexto.shadowColor =
+    "transparent";
+
+
+  if (
+    imagen &&
+    imagen.complete &&
+    imagen.naturalWidth > 0
+  ) {
+
+    contexto.drawImage(
+      imagen,
+      -ancho / 2,
+      -alto / 2,
+      ancho,
+      alto
+    );
+
+  }
+
+  else {
+
+    contexto.fillStyle =
+      "#ffe0ff";
+
+    contexto.fillRect(
+      -ancho / 2,
+      -alto / 2,
+      ancho,
+      alto
+    );
+
+  }
+
+
+  contexto.restore();
+
+}
+
+
+function dibujarFisica() {
+
+  const contexto =
+    lienzoFisica.getContext(
+      "2d"
+    );
+
+
+  const ancho =
+    Number(
+      lienzoFisica.dataset.ancho || 0
+    );
+
+
+  const alto =
+    Number(
+      lienzoFisica.dataset.alto || 0
+    );
+
+
+  const densidadPixeles =
+    ancho > 0
+      ? lienzoFisica.width / ancho
+      : 1;
+
+
+  contexto.setTransform(
+    densidadPixeles,
+    0,
+    0,
+    densidadPixeles,
+    0,
+    0
+  );
+
+
+  contexto.clearRect(
+    0,
+    0,
+    ancho,
+    alto
+  );
+
+
+  cuerposFisica
+    .filter(
+      cuerpo =>
+        cuerpo !== cuerpoAgarrado
+    )
+    .forEach(
+      cuerpo =>
+        dibujarPaginaFisica(
+          contexto,
+          cuerpo
+        )
+    );
+
+
+  if (
+    cuerpoAgarrado
+  ) {
+
+    dibujarPaginaFisica(
+      contexto,
+      cuerpoAgarrado
+    );
+
+  }
+
+}
+
+
+function pasoFisica(
+  tiempo
+) {
+
+  if (
+    modoPrincipal !== "fisica" ||
+    !motorFisica
+  ) {
+
+    pausarFisica();
+
+    return;
+
+  }
+
+
+  const delta =
+    ultimoTiempoFisica === null
+      ? 1000 / 60
+      : Math.min(
+          32,
+          Math.max(
+            8,
+            tiempo - ultimoTiempoFisica
+          )
+        );
+
+
+  ultimoTiempoFisica =
+    tiempo;
+
+
+  Matter.Engine.update(
+    motorFisica,
+    delta
+  );
+
+
+  cuerposFisica.forEach(
+    cuerpo => {
+
+      const rapidez =
+        Matter.Vector.magnitude(
+          cuerpo.velocity
+        );
+
+
+      if (
+        rapidez > 28
+      ) {
+
+        Matter.Body.setVelocity(
+          cuerpo,
+          Matter.Vector.mult(
+            Matter.Vector.normalise(
+              cuerpo.velocity
+            ),
+            28
+          )
+        );
+
+      }
+
+    }
+  );
+
+
+  dibujarFisica();
+
+
+  animacionFisica =
+    requestAnimationFrame(
+      pasoFisica
+    );
+
+}
+
+
+function iniciarAnimacionFisica() {
+
+  if (
+    animacionFisica !== null ||
+    !motorFisica
+  ) {
+
+    return;
+
+  }
+
+
+  ultimoTiempoFisica =
+    null;
+
+
+  animacionFisica =
+    requestAnimationFrame(
+      pasoFisica
+    );
+
+}
+
+
+function puntoDelEvento(
+  evento
+) {
+
+  const rectangulo =
+    lienzoFisica.getBoundingClientRect();
+
+
+  return {
+    x: evento.clientX - rectangulo.left,
+    y: evento.clientY - rectangulo.top
+  };
+
+}
+
+
+lienzoFisica.addEventListener(
+  "pointerdown",
+  evento => {
+
+    if (
+      !motorFisica ||
+      cuerpoAgarrado
+    ) {
+
+      return;
+
+    }
+
+
+    const punto =
+      puntoDelEvento(
+        evento
+      );
+
+
+    const candidatos =
+      Matter.Query.point(
+        cuerposFisica.filter(
+          cuerpo =>
+            cuerpo.plugin.visible
+        ),
+        punto
+      );
+
+
+    if (
+      candidatos.length === 0
+    ) {
+
+      return;
+
+    }
+
+
+    evento.preventDefault();
+
+
+    cuerpoAgarrado =
+      candidatos[
+        candidatos.length - 1
+      ];
+
+
+    punteroAgarrado =
+      evento.pointerId;
+
+
+    desplazamientoAgarre = {
+      x: cuerpoAgarrado.position.x - punto.x,
+      y: cuerpoAgarrado.position.y - punto.y
+    };
+
+
+    ultimoPuntero = {
+      x: punto.x,
+      y: punto.y,
+      tiempo: performance.now()
+    };
+
+
+    velocidadLanzamiento = {
+      x: 0,
+      y: 0
+    };
+
+
+    Matter.Body.setStatic(
+      cuerpoAgarrado,
+      true
+    );
+
+
+    escenarioFisica.classList.add(
+      "agarrando"
+    );
+
+
+    lienzoFisica.setPointerCapture(
+      evento.pointerId
+    );
+
+  }
+);
+
+
+lienzoFisica.addEventListener(
+  "pointermove",
+  evento => {
+
+    if (
+      !cuerpoAgarrado ||
+      evento.pointerId !== punteroAgarrado
+    ) {
+
+      return;
+
+    }
+
+
+    evento.preventDefault();
+
+
+    const punto =
+      puntoDelEvento(
+        evento
+      );
+
+
+    const ahora =
+      performance.now();
+
+
+    const delta =
+      Math.max(
+        8,
+        ahora - ultimoPuntero.tiempo
+      );
+
+
+    velocidadLanzamiento = {
+      x: (
+        punto.x - ultimoPuntero.x
+      ) / delta * 16.67,
+      y: (
+        punto.y - ultimoPuntero.y
+      ) / delta * 16.67
+    };
+
+
+    const anchoEscenario =
+      Number(
+        lienzoFisica.dataset.ancho
+      );
+
+
+    const altoEscenario =
+      Number(
+        lienzoFisica.dataset.alto
+      );
+
+
+    const mitadAncho =
+      cuerpoAgarrado.plugin.ancho / 2;
+
+
+    const mitadAlto =
+      cuerpoAgarrado.plugin.alto / 2;
+
+
+    Matter.Body.setPosition(
+      cuerpoAgarrado,
+      {
+        x: Math.min(
+          Math.max(
+            punto.x + desplazamientoAgarre.x,
+            mitadAncho
+          ),
+          anchoEscenario - mitadAncho
+        ),
+
+        y: Math.min(
+          Math.max(
+            punto.y + desplazamientoAgarre.y,
+            mitadAlto
+          ),
+          altoEscenario - mitadAlto
+        )
+      }
+    );
+
+
+    ultimoPuntero = {
+      x: punto.x,
+      y: punto.y,
+      tiempo: ahora
+    };
+
+  }
+);
+
+
+function soltarPaginaFisica(
+  evento
+) {
+
+  if (
+    !cuerpoAgarrado ||
+    evento.pointerId !== punteroAgarrado
+  ) {
+
+    return;
+
+  }
+
+
+  const cuerpo =
+    cuerpoAgarrado;
+
+
+  Matter.Body.setStatic(
+    cuerpo,
+    false
+  );
+
+
+  Matter.Body.setVelocity(
+    cuerpo,
+    {
+      x: Math.max(
+        -25,
+        Math.min(
+          25,
+          velocidadLanzamiento.x
+        )
+      ),
+
+      y: Math.max(
+        -25,
+        Math.min(
+          25,
+          velocidadLanzamiento.y
+        )
+      )
+    }
+  );
+
+
+  Matter.Body.setAngularVelocity(
+    cuerpo,
+    Math.max(
+      -0.18,
+      Math.min(
+        0.18,
+        velocidadLanzamiento.x * 0.008
+      )
+    )
+  );
+
+
+  cuerpoAgarrado =
+    null;
+
+  punteroAgarrado =
+    null;
+
+
+  escenarioFisica.classList.remove(
+    "agarrando"
+  );
+
+
+  if (
+    lienzoFisica.hasPointerCapture(
+      evento.pointerId
+    )
+  ) {
+
+    lienzoFisica.releasePointerCapture(
+      evento.pointerId
+    );
+
+  }
+
+}
+
+
+lienzoFisica.addEventListener(
+  "pointerup",
+  soltarPaginaFisica
+);
+
+
+lienzoFisica.addEventListener(
+  "pointercancel",
+  soltarPaginaFisica
+);
+
+
+controlGravedad.addEventListener(
+  "input",
+  () => {
+
+    const gravedad =
+      Number(
+        controlGravedad.value
+      );
+
+
+    valorGravedad.textContent =
+      `${gravedad}%`;
+
+
+    if (
+      motorFisica
+    ) {
+
+      motorFisica.gravity.y =
+        gravedad / 100;
+
+    }
+
+  }
+);
+
+
+reiniciarFisica.addEventListener(
+  "click",
+  reiniciarSimulacionFisica
 );
 
 
