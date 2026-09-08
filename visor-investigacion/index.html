@@ -1811,6 +1811,250 @@ input[type="range"] {
 
 
 /* =========================================================
+   ESPACIO 3D
+========================================================= */
+
+.visor-espacio-3d {
+  display: none;
+}
+
+.visor-espacio-3d.visible {
+  display: block;
+}
+
+.controles-espacio-3d {
+  display: flex;
+
+  width: min(100%, 900px);
+
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin: 0 auto 20px;
+  padding: 16px 18px;
+
+  border: 1px solid var(--color-border-soft);
+  border-radius: 8px;
+
+  background: var(--color-surface);
+
+  box-shadow: 0 8px 24px var(--color-shadow);
+}
+
+.modos-espacio-3d {
+  display: flex;
+
+  gap: 8px;
+}
+
+.modo-espacio-3d,
+#restablecerEspacio3D {
+  padding: 9px 13px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+
+  background: var(--color-surface);
+  color: var(--color-dark);
+
+  cursor: pointer;
+}
+
+.modo-espacio-3d:hover,
+#restablecerEspacio3D:hover {
+  background: var(--color-surface-2);
+}
+
+.modo-espacio-3d.activo {
+  border-color: var(--color-dark);
+
+  background: var(--color-dark);
+  color: var(--color-white);
+}
+
+.escenario-espacio-3d {
+  position: relative;
+
+  width: 100%;
+  height: clamp(560px, 76vh, 860px);
+
+  overflow: hidden;
+
+  border: 1px solid var(--color-border-soft);
+  border-radius: 14px;
+
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(255, 240, 251, 0.98),
+      rgba(236, 189, 218, 0.92) 48%,
+      rgba(176, 88, 137, 0.94)
+    );
+
+  box-shadow: inset 0 0 90px rgba(107, 31, 72, 0.15),
+              0 10px 26px var(--color-shadow);
+
+  perspective: 900px;
+  perspective-origin: 50% 50%;
+
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.escenario-espacio-3d.arrastrando {
+  cursor: grabbing;
+}
+
+.escenario-espacio-3d.editando {
+  cursor: default;
+}
+
+.vista-espacio-3d,
+.mundo-espacio-3d {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 0;
+  height: 0;
+
+  transform-style: preserve-3d;
+}
+
+.vista-espacio-3d {
+  will-change: transform;
+}
+
+.mundo-espacio-3d {
+  will-change: transform;
+}
+
+.piso-espacio-3d {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 7200px;
+  height: 11000px;
+
+  margin-left: -3600px;
+  margin-top: -5500px;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.13) 0,
+      rgba(255, 255, 255, 0.13) 1px,
+      transparent 1px,
+      transparent 220px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.13) 0,
+      rgba(255, 255, 255, 0.13) 1px,
+      transparent 1px,
+      transparent 220px
+    );
+
+  transform:
+    translate3d(0, 850px, -4700px)
+    rotateX(90deg);
+
+  transform-origin: center;
+
+  pointer-events: none;
+}
+
+.lamina-espacio-3d {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  border: 0;
+  padding: 0;
+
+  background: transparent;
+
+  transform-style: preserve-3d;
+  transform-origin: center;
+
+  backface-visibility: hidden;
+
+  pointer-events: none;
+
+  will-change: transform;
+}
+
+.lamina-espacio-3d img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  backface-visibility: hidden;
+
+  filter: drop-shadow(0 8px 9px rgba(71, 16, 48, 0.28));
+
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.escenario-espacio-3d.editando .lamina-espacio-3d {
+  pointer-events: auto;
+
+  cursor: grab;
+}
+
+.escenario-espacio-3d.editando .lamina-espacio-3d.seleccionada {
+  outline: 3px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 7px;
+
+  cursor: grabbing;
+}
+
+.reticula-espacio-3d {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 14px;
+  height: 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 50%;
+
+  transform: translate(-50%, -50%);
+
+  box-shadow: 0 0 10px rgba(107, 31, 72, 0.34);
+
+  pointer-events: none;
+}
+
+.escenario-espacio-3d.editando .reticula-espacio-3d {
+  display: none;
+}
+
+.estado-espacio-3d {
+  margin-top: 10px;
+
+  color: var(--color-text-soft);
+
+  font-size: 12px;
+
+  text-align: center;
+}
+
+
+/* =========================================================
    PIE
 ========================================================= */
 
@@ -1918,6 +2162,27 @@ input[type="range"] {
   .escenario-deriva {
     height: 68vh;
     min-height: 480px;
+  }
+
+  .controles-espacio-3d {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .modos-espacio-3d {
+    display: grid;
+
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  #restablecerEspacio3D {
+    width: 100%;
+  }
+
+  .escenario-espacio-3d {
+    height: 72vh;
+    min-height: 520px;
   }
 
   #BookReader,
@@ -2193,6 +2458,15 @@ input[type="range"] {
         type="button"
       >
         Corriente o deriva
+      </button>
+
+
+      <button
+        id="botonEspacio3D"
+        class="boton-modo"
+        type="button"
+      >
+        Espacio 3D
       </button>
 
     </nav>
@@ -2656,6 +2930,88 @@ input[type="range"] {
     </section>
 
 
+    <!-- =================================================
+         ESPACIO 3D
+    ================================================== -->
+
+    <section
+      id="visorEspacio3D"
+      class="visor-espacio-3d"
+    >
+
+      <div class="controles-espacio-3d">
+
+        <div class="modos-espacio-3d">
+
+          <button
+            id="modoRecorrer3D"
+            class="modo-espacio-3d activo"
+            type="button"
+          >
+            Recorrer
+          </button>
+
+          <button
+            id="modoEditar3D"
+            class="modo-espacio-3d"
+            type="button"
+          >
+            Editar láminas
+          </button>
+
+        </div>
+
+
+        <button
+          id="restablecerEspacio3D"
+          type="button"
+        >
+          Restablecer distribución
+        </button>
+
+      </div>
+
+
+      <div
+        id="escenarioEspacio3D"
+        class="escenario-espacio-3d"
+        tabindex="0"
+        aria-label="Espacio tridimensional de láminas"
+      >
+
+        <div
+          id="vistaEspacio3D"
+          class="vista-espacio-3d"
+        >
+
+          <div
+            id="mundoEspacio3D"
+            class="mundo-espacio-3d"
+          >
+
+            <div class="piso-espacio-3d"></div>
+
+          </div>
+
+        </div>
+
+
+        <div class="reticula-espacio-3d"></div>
+
+      </div>
+
+
+      <div
+        id="estadoEspacio3D"
+        class="estado-espacio-3d"
+        aria-live="polite"
+      >
+        WASD o flechas para moverte · arrastrá el mouse para mirar · Q y E para bajar o subir.
+      </div>
+
+    </section>
+
+
   </section>
 
 
@@ -2887,6 +3243,38 @@ const derivaRepeler =
 
 
 /* =========================================================
+   ESPACIO 3D
+========================================================= */
+
+const botonEspacio3D =
+  document.getElementById("botonEspacio3D");
+
+const visorEspacio3D =
+  document.getElementById("visorEspacio3D");
+
+const escenarioEspacio3D =
+  document.getElementById("escenarioEspacio3D");
+
+const vistaEspacio3D =
+  document.getElementById("vistaEspacio3D");
+
+const mundoEspacio3D =
+  document.getElementById("mundoEspacio3D");
+
+const modoRecorrer3D =
+  document.getElementById("modoRecorrer3D");
+
+const modoEditar3D =
+  document.getElementById("modoEditar3D");
+
+const restablecerEspacio3D =
+  document.getElementById("restablecerEspacio3D");
+
+const estadoEspacio3D =
+  document.getElementById("estadoEspacio3D");
+
+
+/* =========================================================
    ESTADO DE LA APLICACIÓN
 ========================================================= */
 
@@ -3009,6 +3397,43 @@ let punteroDeriva = {
   x: 0,
   y: 0
 };
+
+let laminasEspacio3D =
+  [];
+
+let espacio3DPreparado =
+  false;
+
+let animacionEspacio3D =
+  null;
+
+let ultimoTiempoEspacio3D =
+  null;
+
+let modoActualEspacio3D =
+  "recorrer";
+
+let camaraEspacio3D = {
+  x: 0,
+  y: 0,
+  z: 0,
+  giroY: 0,
+  giroX: 0
+};
+
+let teclasEspacio3D =
+  new Set();
+
+let arrastreEspacio3D = {
+  activo: false,
+  puntero: null,
+  x: 0,
+  y: 0,
+  lamina: null
+};
+
+let laminaSeleccionada3D =
+  null;
 
 
 /* =========================================================
@@ -3183,6 +3608,8 @@ function limpiarAnterior() {
 
   limpiarDeriva();
 
+  limpiarEspacio3D();
+
 
   if (
     documentoActual.paginas
@@ -3245,6 +3672,11 @@ function limpiarAnterior() {
 
 
   visorDeriva.classList.remove(
+    "visible"
+  );
+
+
+  visorEspacio3D.classList.remove(
     "visible"
   );
 
@@ -4089,6 +4521,8 @@ function mostrarLibro() {
 
   pausarDeriva();
 
+  pausarEspacio3D();
+
 
   visorCapas.classList.remove(
     "visible"
@@ -4106,6 +4540,11 @@ function mostrarLibro() {
 
 
   visorDeriva.classList.remove(
+    "visible"
+  );
+
+
+  visorEspacio3D.classList.remove(
     "visible"
   );
 
@@ -4136,6 +4575,11 @@ function mostrarLibro() {
 
 
   botonDeriva.classList.remove(
+    "activo"
+  );
+
+
+  botonEspacio3D.classList.remove(
     "activo"
   );
 
@@ -4194,6 +4638,8 @@ function mostrarCapas() {
 
   pausarDeriva();
 
+  pausarEspacio3D();
+
 
   visorLibro.classList.remove(
     "visible"
@@ -4211,6 +4657,11 @@ function mostrarCapas() {
 
 
   visorDeriva.classList.remove(
+    "visible"
+  );
+
+
+  visorEspacio3D.classList.remove(
     "visible"
   );
 
@@ -4241,6 +4692,11 @@ function mostrarCapas() {
 
 
   botonDeriva.classList.remove(
+    "activo"
+  );
+
+
+  botonEspacio3D.classList.remove(
     "activo"
   );
 
@@ -4295,6 +4751,8 @@ function mostrarFisica() {
 
   pausarDeriva();
 
+  pausarEspacio3D();
+
 
   visorLibro.classList.remove(
     "visible"
@@ -4312,6 +4770,11 @@ function mostrarFisica() {
 
 
   visorDeriva.classList.remove(
+    "visible"
+  );
+
+
+  visorEspacio3D.classList.remove(
     "visible"
   );
 
@@ -4337,6 +4800,11 @@ function mostrarFisica() {
 
 
   botonDeriva.classList.remove(
+    "activo"
+  );
+
+
+  botonEspacio3D.classList.remove(
     "activo"
   );
 
@@ -4395,6 +4863,8 @@ function mostrarDetalle() {
 
   pausarDeriva();
 
+  pausarEspacio3D();
+
 
   visorLibro.classList.remove(
     "visible"
@@ -4412,6 +4882,11 @@ function mostrarDetalle() {
 
 
   visorDeriva.classList.remove(
+    "visible"
+  );
+
+
+  visorEspacio3D.classList.remove(
     "visible"
   );
 
@@ -4437,6 +4912,11 @@ function mostrarDetalle() {
 
 
   botonDeriva.classList.remove(
+    "activo"
+  );
+
+
+  botonEspacio3D.classList.remove(
     "activo"
   );
 
@@ -5020,6 +5500,8 @@ function mostrarDeriva() {
 
   pausarFisica();
 
+  pausarEspacio3D();
+
 
   visorLibro.classList.remove(
     "visible"
@@ -5037,6 +5519,11 @@ function mostrarDeriva() {
 
 
   visorDetalle.classList.remove(
+    "visible"
+  );
+
+
+  visorEspacio3D.classList.remove(
     "visible"
   );
 
@@ -5062,6 +5549,11 @@ function mostrarDeriva() {
 
 
   botonDetalle.classList.remove(
+    "activo"
+  );
+
+
+  botonEspacio3D.classList.remove(
     "activo"
   );
 
@@ -6032,6 +6524,1226 @@ lienzoDeriva.addEventListener(
     }
 
   }
+);
+
+
+/* =========================================================
+   MOSTRAR ESPACIO 3D
+========================================================= */
+
+function mostrarEspacio3D() {
+
+  modoPrincipal =
+    "espacio3d";
+
+
+  pausarFisica();
+
+  pausarDeriva();
+
+
+  visorLibro.classList.remove(
+    "visible"
+  );
+
+
+  visorCapas.classList.remove(
+    "visible"
+  );
+
+
+  visorFisica.classList.remove(
+    "visible"
+  );
+
+
+  visorDetalle.classList.remove(
+    "visible"
+  );
+
+
+  visorDeriva.classList.remove(
+    "visible"
+  );
+
+
+  visorEspacio3D.classList.add(
+    "visible"
+  );
+
+
+  botonLibro.classList.remove(
+    "activo"
+  );
+
+
+  botonCapas.classList.remove(
+    "activo"
+  );
+
+
+  botonFisica.classList.remove(
+    "activo"
+  );
+
+
+  botonDetalle.classList.remove(
+    "activo"
+  );
+
+
+  botonDeriva.classList.remove(
+    "activo"
+  );
+
+
+  botonEspacio3D.classList.add(
+    "activo"
+  );
+
+
+  descripcionModo.textContent =
+    "Recorrido tridimensional entre láminas distribuidas y editables.";
+
+
+  requestAnimationFrame(
+    () => {
+
+      if (
+        !espacio3DPreparado
+      ) {
+
+        prepararEspacio3D();
+
+      }
+
+      else {
+
+        iniciarAnimacionEspacio3D();
+
+      }
+
+
+      escenarioEspacio3D.focus({
+        preventScroll: true
+      });
+
+    }
+  );
+
+}
+
+
+botonEspacio3D.addEventListener(
+  "click",
+  mostrarEspacio3D
+);
+
+
+/* =========================================================
+   PREPARAR Y LIMPIAR ESPACIO 3D
+========================================================= */
+
+function pausarEspacio3D() {
+
+  if (
+    animacionEspacio3D !== null
+  ) {
+
+    cancelAnimationFrame(
+      animacionEspacio3D
+    );
+
+  }
+
+
+  animacionEspacio3D =
+    null;
+
+  ultimoTiempoEspacio3D =
+    null;
+
+  teclasEspacio3D.clear();
+
+  arrastreEspacio3D.activo =
+    false;
+
+
+  escenarioEspacio3D.classList.remove(
+    "arrastrando"
+  );
+
+}
+
+
+function limpiarEspacio3D() {
+
+  pausarEspacio3D();
+
+
+  mundoEspacio3D
+    .querySelectorAll(
+      ".lamina-espacio-3d"
+    )
+    .forEach(
+      elemento =>
+        elemento.remove()
+    );
+
+
+  laminasEspacio3D =
+    [];
+
+  espacio3DPreparado =
+    false;
+
+  laminaSeleccionada3D =
+    null;
+
+  modoActualEspacio3D =
+    "recorrer";
+
+  camaraEspacio3D = {
+    x: 0,
+    y: 0,
+    z: 0,
+    giroY: 0,
+    giroX: 0
+  };
+
+
+  vistaEspacio3D.style.transform =
+    "";
+
+  mundoEspacio3D.style.transform =
+    "";
+
+
+  escenarioEspacio3D.classList.remove(
+    "editando"
+  );
+
+}
+
+
+function tamanoLaminaEspacio3D(
+  pagina
+) {
+
+  const proporcion =
+    pagina.height /
+    pagina.width;
+
+
+  let ancho =
+    245;
+
+  let alto =
+    ancho * proporcion;
+
+
+  if (
+    alto > 330
+  ) {
+
+    alto =
+      330;
+
+    ancho =
+      alto / proporcion;
+
+  }
+
+
+  return {
+    ancho,
+    alto
+  };
+
+}
+
+
+function posicionAutomaticaEspacio3D(
+  indice
+) {
+
+  const columna =
+    indice % 3 - 1;
+
+  const fila =
+    Math.floor(
+      indice / 3
+    );
+
+
+  return {
+    x:
+      columna * 430 +
+      Math.sin(indice * 1.73) * 52,
+
+    y:
+      Math.sin(indice * 0.91) * 175 +
+      (
+        fila % 2 === 0
+          ? -45
+          : 45
+      ),
+
+    z:
+      -720 -
+      fila * 560 -
+      (
+        indice % 3
+      ) * 105,
+
+    giroY:
+      columna * -13 +
+      Math.sin(indice * 1.19) * 7
+  };
+
+}
+
+
+function actualizarLaminaEspacio3D(
+  lamina
+) {
+
+  lamina.elemento.style.transform =
+    `translate3d(
+      ${lamina.x}px,
+      ${lamina.y}px,
+      ${lamina.z}px
+    ) rotateY(${lamina.giroY}deg)`;
+
+}
+
+
+function crearLaminasEspacio3D() {
+
+  mundoEspacio3D
+    .querySelectorAll(
+      ".lamina-espacio-3d"
+    )
+    .forEach(
+      elemento =>
+        elemento.remove()
+    );
+
+
+  laminasEspacio3D =
+    documentoActual.paginas.map(
+      (
+        pagina,
+        indice
+      ) => {
+
+        const tamano =
+          tamanoLaminaEspacio3D(
+            pagina
+          );
+
+
+        const posicion =
+          posicionAutomaticaEspacio3D(
+            indice
+          );
+
+
+        const elemento =
+          document.createElement(
+            "button"
+          );
+
+
+        elemento.type =
+          "button";
+
+        elemento.className =
+          "lamina-espacio-3d";
+
+        elemento.dataset.indice =
+          indice;
+
+        elemento.setAttribute(
+          "aria-label",
+          `Lámina ${indice + 1}`
+        );
+
+
+        elemento.style.width =
+          `${tamano.ancho}px`;
+
+        elemento.style.height =
+          `${tamano.alto}px`;
+
+        elemento.style.marginLeft =
+          `${-tamano.ancho / 2}px`;
+
+        elemento.style.marginTop =
+          `${-tamano.alto / 2}px`;
+
+
+        const imagen =
+          document.createElement(
+            "img"
+          );
+
+
+        imagen.src =
+          pagina.src;
+
+        imagen.alt =
+          `Página ${pagina.numero}`;
+
+        imagen.draggable =
+          false;
+
+
+        elemento.appendChild(
+          imagen
+        );
+
+
+        mundoEspacio3D.appendChild(
+          elemento
+        );
+
+
+        const lamina = {
+          indice,
+          elemento,
+          ancho: tamano.ancho,
+          alto: tamano.alto,
+          x: posicion.x,
+          y: posicion.y,
+          z: posicion.z,
+          giroY: posicion.giroY
+        };
+
+
+        actualizarLaminaEspacio3D(
+          lamina
+        );
+
+
+        return lamina;
+
+      }
+    );
+
+}
+
+
+function prepararEspacio3D() {
+
+  crearLaminasEspacio3D();
+
+
+  espacio3DPreparado =
+    true;
+
+
+  seleccionarModoEspacio3D(
+    "recorrer"
+  );
+
+
+  actualizarCamaraEspacio3D();
+
+  iniciarAnimacionEspacio3D();
+
+}
+
+
+/* =========================================================
+   CÁMARA Y RECORRIDO
+========================================================= */
+
+function actualizarCamaraEspacio3D() {
+
+  vistaEspacio3D.style.transform =
+    `rotateX(${camaraEspacio3D.giroX}deg)
+     rotateY(${-camaraEspacio3D.giroY}deg)`;
+
+
+  mundoEspacio3D.style.transform =
+    `translate3d(
+      ${-camaraEspacio3D.x}px,
+      ${-camaraEspacio3D.y}px,
+      ${-camaraEspacio3D.z}px
+    )`;
+
+}
+
+
+function actualizarMovimientoEspacio3D(
+  delta
+) {
+
+  if (
+    modoActualEspacio3D !== "recorrer"
+  ) {
+
+    return;
+
+  }
+
+
+  const paso =
+    delta / 1000;
+
+
+  const rapido =
+    teclasEspacio3D.has("shift")
+      ? 2
+      : 1;
+
+
+  const velocidad =
+    430 * paso * rapido;
+
+
+  const giroRadianes =
+    camaraEspacio3D.giroY *
+    Math.PI / 180;
+
+
+  const frenteX =
+    Math.sin(giroRadianes);
+
+  const frenteZ =
+    -Math.cos(giroRadianes);
+
+  const derechaX =
+    Math.cos(giroRadianes);
+
+  const derechaZ =
+    Math.sin(giroRadianes);
+
+
+  let avance =
+    0;
+
+  let lateral =
+    0;
+
+  let vertical =
+    0;
+
+
+  if (
+    teclasEspacio3D.has("w") ||
+    teclasEspacio3D.has("arrowup")
+  ) {
+
+    avance +=
+      1;
+
+  }
+
+
+  if (
+    teclasEspacio3D.has("s") ||
+    teclasEspacio3D.has("arrowdown")
+  ) {
+
+    avance -=
+      1;
+
+  }
+
+
+  if (
+    teclasEspacio3D.has("d") ||
+    teclasEspacio3D.has("arrowright")
+  ) {
+
+    lateral +=
+      1;
+
+  }
+
+
+  if (
+    teclasEspacio3D.has("a") ||
+    teclasEspacio3D.has("arrowleft")
+  ) {
+
+    lateral -=
+      1;
+
+  }
+
+
+  if (
+    teclasEspacio3D.has("e")
+  ) {
+
+    vertical -=
+      1;
+
+  }
+
+
+  if (
+    teclasEspacio3D.has("q")
+  ) {
+
+    vertical +=
+      1;
+
+  }
+
+
+  camaraEspacio3D.x +=
+    (
+      frenteX * avance +
+      derechaX * lateral
+    ) * velocidad;
+
+
+  camaraEspacio3D.z +=
+    (
+      frenteZ * avance +
+      derechaZ * lateral
+    ) * velocidad;
+
+
+  camaraEspacio3D.y +=
+    vertical * velocidad;
+
+}
+
+
+function pasoEspacio3D(
+  tiempo
+) {
+
+  if (
+    modoPrincipal !== "espacio3d" ||
+    !espacio3DPreparado
+  ) {
+
+    pausarEspacio3D();
+
+    return;
+
+  }
+
+
+  const delta =
+    ultimoTiempoEspacio3D === null
+      ? 1000 / 60
+      : Math.min(
+          40,
+          Math.max(
+            8,
+            tiempo - ultimoTiempoEspacio3D
+          )
+        );
+
+
+  ultimoTiempoEspacio3D =
+    tiempo;
+
+
+  actualizarMovimientoEspacio3D(
+    delta
+  );
+
+  actualizarCamaraEspacio3D();
+
+
+  animacionEspacio3D =
+    requestAnimationFrame(
+      pasoEspacio3D
+    );
+
+}
+
+
+function iniciarAnimacionEspacio3D() {
+
+  if (
+    animacionEspacio3D !== null ||
+    !espacio3DPreparado
+  ) {
+
+    return;
+
+  }
+
+
+  ultimoTiempoEspacio3D =
+    null;
+
+
+  animacionEspacio3D =
+    requestAnimationFrame(
+      pasoEspacio3D
+    );
+
+}
+
+
+/* =========================================================
+   RECORRER / EDITAR
+========================================================= */
+
+function seleccionarLaminaEspacio3D(
+  lamina
+) {
+
+  laminasEspacio3D.forEach(
+    item =>
+      item.elemento.classList.toggle(
+        "seleccionada",
+        item === lamina
+      )
+  );
+
+
+  laminaSeleccionada3D =
+    lamina;
+
+
+  if (
+    lamina
+  ) {
+
+    estadoEspacio3D.textContent =
+      `Lámina ${lamina.indice + 1} seleccionada · arrastrá para mover · rueda para profundidad · Shift + rueda para rotar.`;
+
+  }
+
+}
+
+
+function seleccionarModoEspacio3D(
+  modo
+) {
+
+  modoActualEspacio3D =
+    modo;
+
+
+  const editando =
+    modo === "editar";
+
+
+  modoRecorrer3D.classList.toggle(
+    "activo",
+    !editando
+  );
+
+
+  modoEditar3D.classList.toggle(
+    "activo",
+    editando
+  );
+
+
+  escenarioEspacio3D.classList.toggle(
+    "editando",
+    editando
+  );
+
+
+  teclasEspacio3D.clear();
+
+
+  if (
+    editando
+  ) {
+
+    estadoEspacio3D.textContent =
+      "Seleccioná una lámina para moverla, acercarla, alejarla o rotarla.";
+
+  }
+
+  else {
+
+    seleccionarLaminaEspacio3D(
+      null
+    );
+
+
+    estadoEspacio3D.textContent =
+      "WASD o flechas para moverte · arrastrá el mouse para mirar · Q y E para bajar o subir.";
+
+  }
+
+}
+
+
+modoRecorrer3D.addEventListener(
+  "click",
+  () =>
+    seleccionarModoEspacio3D(
+      "recorrer"
+    )
+);
+
+
+modoEditar3D.addEventListener(
+  "click",
+  () =>
+    seleccionarModoEspacio3D(
+      "editar"
+    )
+);
+
+
+restablecerEspacio3D.addEventListener(
+  "click",
+  () => {
+
+    camaraEspacio3D = {
+      x: 0,
+      y: 0,
+      z: 0,
+      giroY: 0,
+      giroX: 0
+    };
+
+
+    laminasEspacio3D.forEach(
+      lamina => {
+
+        const posicion =
+          posicionAutomaticaEspacio3D(
+            lamina.indice
+          );
+
+
+        lamina.x =
+          posicion.x;
+
+        lamina.y =
+          posicion.y;
+
+        lamina.z =
+          posicion.z;
+
+        lamina.giroY =
+          posicion.giroY;
+
+
+        actualizarLaminaEspacio3D(
+          lamina
+        );
+
+      }
+    );
+
+
+    seleccionarLaminaEspacio3D(
+      null
+    );
+
+    actualizarCamaraEspacio3D();
+
+
+    estadoEspacio3D.textContent =
+      "Distribución automática restablecida.";
+
+  }
+);
+
+
+/* =========================================================
+   PUNTERO Y RUEDA EN 3D
+========================================================= */
+
+escenarioEspacio3D.addEventListener(
+  "pointerdown",
+  evento => {
+
+    escenarioEspacio3D.focus({
+      preventScroll: true
+    });
+
+
+    const elementoLamina =
+      evento.target.closest(
+        ".lamina-espacio-3d"
+      );
+
+
+    if (
+      modoActualEspacio3D === "editar"
+    ) {
+
+      if (
+        !elementoLamina
+      ) {
+
+        seleccionarLaminaEspacio3D(
+          null
+        );
+
+        return;
+
+      }
+
+
+      const indice =
+        Number(
+          elementoLamina.dataset.indice
+        );
+
+
+      const lamina =
+        laminasEspacio3D[indice];
+
+
+      seleccionarLaminaEspacio3D(
+        lamina
+      );
+
+
+      arrastreEspacio3D.lamina =
+        lamina;
+
+    }
+
+
+    else {
+
+      arrastreEspacio3D.lamina =
+        null;
+
+    }
+
+
+    evento.preventDefault();
+
+
+    arrastreEspacio3D.activo =
+      true;
+
+    arrastreEspacio3D.puntero =
+      evento.pointerId;
+
+    arrastreEspacio3D.x =
+      evento.clientX;
+
+    arrastreEspacio3D.y =
+      evento.clientY;
+
+
+    escenarioEspacio3D.classList.add(
+      "arrastrando"
+    );
+
+
+    escenarioEspacio3D.setPointerCapture(
+      evento.pointerId
+    );
+
+  }
+);
+
+
+escenarioEspacio3D.addEventListener(
+  "pointermove",
+  evento => {
+
+    if (
+      !arrastreEspacio3D.activo ||
+      evento.pointerId !== arrastreEspacio3D.puntero
+    ) {
+
+      return;
+
+    }
+
+
+    evento.preventDefault();
+
+
+    const diferenciaX =
+      evento.clientX - arrastreEspacio3D.x;
+
+    const diferenciaY =
+      evento.clientY - arrastreEspacio3D.y;
+
+
+    if (
+      modoActualEspacio3D === "recorrer"
+    ) {
+
+      camaraEspacio3D.giroY +=
+        diferenciaX * 0.17;
+
+      camaraEspacio3D.giroX =
+        Math.max(
+          -62,
+          Math.min(
+            62,
+            camaraEspacio3D.giroX -
+            diferenciaY * 0.15
+          )
+        );
+
+    }
+
+
+    else if (
+      arrastreEspacio3D.lamina
+    ) {
+
+      const lamina =
+        arrastreEspacio3D.lamina;
+
+
+      const distancia =
+        Math.max(
+          320,
+          Math.abs(
+            lamina.z - camaraEspacio3D.z
+          )
+        );
+
+
+      const escala =
+        distancia / 900;
+
+
+      const giroRadianes =
+        camaraEspacio3D.giroY *
+        Math.PI / 180;
+
+
+      lamina.x +=
+        Math.cos(giroRadianes) *
+        diferenciaX * escala;
+
+      lamina.z +=
+        Math.sin(giroRadianes) *
+        diferenciaX * escala;
+
+      lamina.y +=
+        diferenciaY * escala;
+
+
+      actualizarLaminaEspacio3D(
+        lamina
+      );
+
+    }
+
+
+    arrastreEspacio3D.x =
+      evento.clientX;
+
+    arrastreEspacio3D.y =
+      evento.clientY;
+
+  }
+);
+
+
+function terminarArrastreEspacio3D(
+  evento
+) {
+
+  if (
+    !arrastreEspacio3D.activo ||
+    evento.pointerId !== arrastreEspacio3D.puntero
+  ) {
+
+    return;
+
+  }
+
+
+  arrastreEspacio3D.activo =
+    false;
+
+  arrastreEspacio3D.puntero =
+    null;
+
+  arrastreEspacio3D.lamina =
+    null;
+
+
+  escenarioEspacio3D.classList.remove(
+    "arrastrando"
+  );
+
+
+  if (
+    escenarioEspacio3D.hasPointerCapture(
+      evento.pointerId
+    )
+  ) {
+
+    escenarioEspacio3D.releasePointerCapture(
+      evento.pointerId
+    );
+
+  }
+
+}
+
+
+escenarioEspacio3D.addEventListener(
+  "pointerup",
+  terminarArrastreEspacio3D
+);
+
+
+escenarioEspacio3D.addEventListener(
+  "pointercancel",
+  terminarArrastreEspacio3D
+);
+
+
+escenarioEspacio3D.addEventListener(
+  "wheel",
+  evento => {
+
+    if (
+      modoPrincipal !== "espacio3d"
+    ) {
+
+      return;
+
+    }
+
+
+    evento.preventDefault();
+
+
+    if (
+      modoActualEspacio3D === "editar" &&
+      laminaSeleccionada3D
+    ) {
+
+      if (
+        evento.shiftKey
+      ) {
+
+        laminaSeleccionada3D.giroY +=
+          evento.deltaY * 0.12;
+
+      }
+
+      else {
+
+        laminaSeleccionada3D.z -=
+          evento.deltaY * 0.75;
+
+      }
+
+
+      actualizarLaminaEspacio3D(
+        laminaSeleccionada3D
+      );
+
+
+      return;
+
+    }
+
+
+    if (
+      modoActualEspacio3D === "recorrer"
+    ) {
+
+      const cantidad =
+        -evento.deltaY * 0.8;
+
+
+      const giroRadianes =
+        camaraEspacio3D.giroY *
+        Math.PI / 180;
+
+
+      camaraEspacio3D.x +=
+        Math.sin(giroRadianes) *
+        cantidad;
+
+      camaraEspacio3D.z -=
+        Math.cos(giroRadianes) *
+        cantidad;
+
+    }
+
+  },
+  {
+    passive: false
+  }
+);
+
+
+/* =========================================================
+   TECLADO 3D
+========================================================= */
+
+window.addEventListener(
+  "keydown",
+  evento => {
+
+    if (
+      modoPrincipal !== "espacio3d" ||
+      modoActualEspacio3D !== "recorrer"
+    ) {
+
+      return;
+
+    }
+
+
+    const tecla =
+      evento.key.toLowerCase();
+
+
+    if (
+      [
+        "w",
+        "a",
+        "s",
+        "d",
+        "q",
+        "e",
+        "shift",
+        "arrowup",
+        "arrowdown",
+        "arrowleft",
+        "arrowright"
+      ].includes(tecla)
+    ) {
+
+      evento.preventDefault();
+
+      teclasEspacio3D.add(
+        tecla
+      );
+
+    }
+
+  }
+);
+
+
+window.addEventListener(
+  "keyup",
+  evento => {
+
+    teclasEspacio3D.delete(
+      evento.key.toLowerCase()
+    );
+
+  }
+);
+
+
+window.addEventListener(
+  "blur",
+  () =>
+    teclasEspacio3D.clear()
 );
 
 
