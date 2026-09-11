@@ -7007,7 +7007,7 @@ function actualizarCamaraEspacio3D() {
 
   vistaEspacio3D.style.transform =
     `rotateX(${camaraEspacio3D.giroX}deg)
-     rotateY(${-camaraEspacio3D.giroY}deg)`;
+     rotateY(${camaraEspacio3D.giroY}deg)`;
 
 
   mundoEspacio3D.style.transform =
@@ -7135,6 +7135,26 @@ function actualizarMovimientoEspacio3D(
 
     vertical +=
       1;
+
+  }
+
+
+  const intensidadHorizontal =
+    Math.hypot(
+      avance,
+      lateral
+    );
+
+
+  if (
+    intensidadHorizontal > 1
+  ) {
+
+    avance /=
+      intensidadHorizontal;
+
+    lateral /=
+      intensidadHorizontal;
 
   }
 
@@ -7517,8 +7537,12 @@ escenarioEspacio3D.addEventListener(
       modoActualEspacio3D === "recorrer"
     ) {
 
-      camaraEspacio3D.giroY +=
-        diferenciaX * 0.17;
+      camaraEspacio3D.giroY =
+        (
+          camaraEspacio3D.giroY +
+          diferenciaX * 0.17 +
+          540
+        ) % 360 - 180;
 
       camaraEspacio3D.giroX =
         Math.max(
