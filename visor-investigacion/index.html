@@ -3393,6 +3393,9 @@ let imagenesDeriva =
 let particulasDeriva =
   [];
 
+let efectosInteraccionDeriva =
+  [];
+
 let derivaPreparada =
   false;
 
@@ -3410,6 +3413,7 @@ let modoInteraccionDeriva =
 
 let punteroDeriva = {
   activo: false,
+  presionado: false,
   x: 0,
   y: 0
 };
@@ -5663,11 +5667,15 @@ function limpiarDeriva() {
   particulasDeriva =
     [];
 
+  efectosInteraccionDeriva =
+    [];
+
   derivaPreparada =
     false;
 
   punteroDeriva = {
     activo: false,
+    presionado: false,
     x: 0,
     y: 0
   };
@@ -5955,6 +5963,26 @@ function prepararDeriva() {
 }
 
 
+function calcularDireccionCorrienteDeriva(
+  x,
+  y,
+  tiempo
+) {
+
+  return (
+    Math.sin(
+      y * 0.009 +
+      tiempo * 0.00042
+    ) * 1.35 +
+    Math.cos(
+      x * 0.006 -
+      tiempo * 0.00031
+    ) * 0.8
+  );
+
+}
+
+
 function actualizarDeriva(
   tiempo,
   delta
@@ -5996,16 +6024,15 @@ function actualizarDeriva(
     particula => {
 
       const direccion =
+        calcularDireccionCorrienteDeriva(
+          particula.x,
+          particula.y,
+          tiempo
+        ) +
         Math.sin(
-          particula.y * 0.009 +
-          tiempo * 0.00042 +
-          particula.semilla
-        ) * 1.35 +
-        Math.cos(
-          particula.x * 0.006 -
-          tiempo * 0.00031 +
-          particula.semilla * 1.7
-        ) * 0.8;
+          particula.semilla +
+          tiempo * 0.00023
+        ) * 0.24;
 
 
       particula.velocidadX +=
@@ -6198,7 +6225,508 @@ function actualizarDeriva(
 }
 
 
-function dibujarDeriva() {
+function dibujarIndicadoresCorrienteDeriva(
+  contexto,
+  ancho,
+  alto,
+  tiempo
+) {
+
+  const fuerza =
+    Number(
+      controlCorriente.value
+    ) / 100;
+
+
+  if (
+    fuerza <= 0
+  ) {
+
+    return;
+
+  }
+
+
+  const separacionX =
+    105;
+
+  const separacionY =
+    92;
+
+  const columnas =
+    Math.ceil(
+      ancho / separacionX
+    ) + 1;
+
+  const filas =
+    Math.ceil(
+      alto / separacionY
+    ) + 1;
+
+  const intensidad =
+    Math.min(
+      1,
+      fuerza
+    );
+
+
+  contexto.save();
+
+  contexto.lineCap =
+    "round";
+
+  contexto.lineJoin =
+    "round";
+
+
+  for (
+    let fila = 0;
+    fila < filas;
+    fila += 1
+  ) {
+
+    for (
+      let columna = 0;
+      columna < columnas;
+      columna += 1
+    ) {
+
+      const indice =
+        fila * columnas +
+        columna;
+
+      const fase =
+        (
+          tiempo * 0.00024 +
+          indice * 0.173
+        ) % 1;
+
+      const aparicion =
+        Math.pow(
+          Math.sin(
+            fase * Math.PI
+          ),
+          2
+        );
+
+
+      if (
+        aparicion < 0.04
+      ) {
+
+        continue;
+
+      }
+
+
+      const baseX =
+        columna * separacionX -
+        separacionX * 0.28 +
+        Math.sin(
+          indice * 2.31
+        ) * 24;
+
+      const baseY =
+        fila * separacionY -
+        separacionY * 0.2 +
+        Math.cos(
+          indice * 1.73
+        ) * 19;
+
+      const direccion =
+        calcularDireccionCorrienteDeriva(
+          baseX,
+          baseY,
+          tiempo
+        );
+
+      const direccionSiguiente =
+        calcularDireccionCorrienteDeriva(
+          baseX +
+            Math.cos(direccion) * 28,
+          baseY +
+            Math.sin(direccion) * 28,
+          tiempo
+        );
+
+      const desplazamiento =
+        (
+          fase - 0.5
+        ) * 54;
+
+      const centroX =
+        baseX +
+        Math.cos(direccion) *
+          desplazamiento;
+
+      const centroY =
+        baseY +
+        Math.sin(direccion) *
+          desplazamiento;
+
+      const largo =
+        20 +
+        intensidad * 22;
+
+      const inicioX =
+        centroX -
+        Math.cos(direccion) *
+          largo * 0.55;
+
+      const inicioY =
+        centroY -
+        Math.sin(direccion) *
+          largo * 0.55;
+
+      const finalX =
+        centroX +
+        Math.cos(direccionSiguiente) *
+          largo * 0.55;
+
+      const finalY =
+        centroY +
+        Math.sin(direccionSiguiente) *
+          largo * 0.55;
+
+      const opacidad =
+        aparicion *
+        (
+          0.13 +
+          intensidad * 0.19
+        );
+
+
+      contexto.beginPath();
+
+      contexto.moveTo(
+        inicioX,
+        inicioY
+      );
+
+      contexto.quadraticCurveTo(
+        centroX,
+        centroY,
+        finalX,
+        finalY
+      );
+
+      contexto.strokeStyle =
+        `rgba(107, 31, 72, ${opacidad})`;
+
+      contexto.lineWidth =
+        1.1 +
+        intensidad * 0.45;
+
+      contexto.stroke();
+
+
+      const punta =
+        4 +
+        intensidad * 2;
+
+
+      contexto.beginPath();
+
+      contexto.moveTo(
+        finalX,
+        finalY
+      );
+
+      contexto.lineTo(
+        finalX -
+          Math.cos(
+            direccionSiguiente - 0.55
+          ) * punta,
+        finalY -
+          Math.sin(
+            direccionSiguiente - 0.55
+          ) * punta
+      );
+
+      contexto.moveTo(
+        finalX,
+        finalY
+      );
+
+      contexto.lineTo(
+        finalX -
+          Math.cos(
+            direccionSiguiente + 0.55
+          ) * punta,
+        finalY -
+          Math.sin(
+            direccionSiguiente + 0.55
+          ) * punta
+      );
+
+      contexto.stroke();
+
+    }
+
+  }
+
+
+  contexto.restore();
+
+}
+
+
+function dibujarEfectoInteraccionDeriva(
+  contexto,
+  efecto,
+  progreso
+) {
+
+  const desvanecimiento =
+    Math.pow(
+      1 - progreso,
+      1.35
+    );
+
+
+  contexto.save();
+
+  contexto.translate(
+    efecto.x,
+    efecto.y
+  );
+
+  contexto.lineCap =
+    "round";
+
+  contexto.lineWidth =
+    1.7;
+
+  contexto.strokeStyle =
+    `rgba(195, 59, 128, ${0.72 * desvanecimiento})`;
+
+
+  if (
+    efecto.modo === "atraer"
+  ) {
+
+    for (
+      let indice = 0;
+      indice < 3;
+      indice += 1
+    ) {
+
+      const fase =
+        Math.max(
+          0,
+          Math.min(
+            1,
+            (
+              progreso -
+              indice * 0.09
+            ) / 0.73
+          )
+        );
+
+      const radio =
+        92 -
+        fase * 70;
+
+
+      contexto.globalAlpha =
+        fase > 0
+          ? desvanecimiento
+          : 0;
+
+      contexto.beginPath();
+
+      contexto.arc(
+        0,
+        0,
+        radio,
+        0,
+        Math.PI * 2
+      );
+
+      contexto.stroke();
+
+    }
+
+  }
+
+
+  else if (
+    efecto.modo === "repeler"
+  ) {
+
+    for (
+      let indice = 0;
+      indice < 3;
+      indice += 1
+    ) {
+
+      const fase =
+        Math.max(
+          0,
+          Math.min(
+            1,
+            (
+              progreso -
+              indice * 0.08
+            ) / 0.76
+          )
+        );
+
+      const radio =
+        14 +
+        fase * 92;
+
+
+      contexto.globalAlpha =
+        fase > 0
+          ? desvanecimiento
+          : 0;
+
+      contexto.beginPath();
+
+      contexto.arc(
+        0,
+        0,
+        radio,
+        0,
+        Math.PI * 2
+      );
+
+      contexto.stroke();
+
+    }
+
+
+    contexto.globalAlpha =
+      desvanecimiento;
+
+
+    for (
+      let indice = 0;
+      indice < 8;
+      indice += 1
+    ) {
+
+      const angulo =
+        indice * Math.PI / 4;
+
+      const inicio =
+        20 +
+        progreso * 45;
+
+      const final =
+        inicio + 14;
+
+
+      contexto.beginPath();
+
+      contexto.moveTo(
+        Math.cos(angulo) * inicio,
+        Math.sin(angulo) * inicio
+      );
+
+      contexto.lineTo(
+        Math.cos(angulo) * final,
+        Math.sin(angulo) * final
+      );
+
+      contexto.stroke();
+
+    }
+
+  }
+
+
+  else {
+
+    contexto.globalAlpha =
+      desvanecimiento;
+
+    contexto.rotate(
+      progreso * Math.PI * 2.4
+    );
+
+
+    for (
+      let indice = 0;
+      indice < 3;
+      indice += 1
+    ) {
+
+      const radio =
+        22 +
+        indice * 17 +
+        progreso * 18;
+
+      const inicio =
+        indice * 2.08;
+
+
+      contexto.beginPath();
+
+      contexto.arc(
+        0,
+        0,
+        radio,
+        inicio,
+        inicio + Math.PI * 1.25
+      );
+
+      contexto.stroke();
+
+    }
+
+  }
+
+
+  contexto.restore();
+
+}
+
+
+function dibujarEfectosInteraccionDeriva(
+  contexto,
+  tiempo
+) {
+
+  efectosInteraccionDeriva =
+    efectosInteraccionDeriva.filter(
+      efecto => {
+
+        const progreso =
+          (
+            tiempo - efecto.inicio
+          ) / 920;
+
+
+        if (
+          progreso < 0 ||
+          progreso >= 1
+        ) {
+
+          return false;
+
+        }
+
+
+        dibujarEfectoInteraccionDeriva(
+          contexto,
+          efecto,
+          progreso
+        );
+
+
+        return true;
+
+      }
+    );
+
+}
+
+
+function dibujarDeriva(
+  tiempo = performance.now()
+) {
 
   const contexto =
     lienzoDeriva.getContext(
@@ -6248,6 +6776,14 @@ function dibujarDeriva() {
     0,
     ancho,
     alto
+  );
+
+
+  dibujarIndicadoresCorrienteDeriva(
+    contexto,
+    ancho,
+    alto,
+    tiempo
   );
 
 
@@ -6305,6 +6841,12 @@ function dibujarDeriva() {
       contexto.restore();
 
     }
+  );
+
+
+  dibujarEfectosInteraccionDeriva(
+    contexto,
+    tiempo
   );
 
 
@@ -6377,7 +6919,9 @@ function pasoDeriva(
     delta
   );
 
-  dibujarDeriva();
+  dibujarDeriva(
+    tiempo
+  );
 
 
   animacionDeriva =
@@ -6486,11 +7030,14 @@ function actualizarPunteroDeriva(
     lienzoDeriva.getBoundingClientRect();
 
 
-  punteroDeriva = {
-    activo: true,
-    x: evento.clientX - rectangulo.left,
-    y: evento.clientY - rectangulo.top
-  };
+  punteroDeriva.activo =
+    true;
+
+  punteroDeriva.x =
+    evento.clientX - rectangulo.left;
+
+  punteroDeriva.y =
+    evento.clientY - rectangulo.top;
 
 }
 
@@ -6516,6 +7063,59 @@ lienzoDeriva.addEventListener(
 
 
 lienzoDeriva.addEventListener(
+  "pointerdown",
+  evento => {
+
+    if (
+      evento.button !== 0
+    ) {
+
+      return;
+
+    }
+
+
+    evento.preventDefault();
+
+
+    actualizarPunteroDeriva(
+      evento
+    );
+
+
+    punteroDeriva.presionado =
+      true;
+
+
+    efectosInteraccionDeriva.push({
+      x: punteroDeriva.x,
+      y: punteroDeriva.y,
+      modo: modoInteraccionDeriva,
+      inicio: performance.now()
+    });
+
+
+    if (
+      efectosInteraccionDeriva.length > 12
+    ) {
+
+      efectosInteraccionDeriva.splice(
+        0,
+        efectosInteraccionDeriva.length - 12
+      );
+
+    }
+
+
+    lienzoDeriva.setPointerCapture(
+      evento.pointerId
+    );
+
+  }
+);
+
+
+lienzoDeriva.addEventListener(
   "pointerleave",
   () => {
 
@@ -6528,7 +7128,23 @@ lienzoDeriva.addEventListener(
 
 lienzoDeriva.addEventListener(
   "pointerup",
-  () => {
+  evento => {
+
+    punteroDeriva.presionado =
+      false;
+
+
+    if (
+      lienzoDeriva.hasPointerCapture(
+        evento.pointerId
+      )
+    ) {
+
+      lienzoDeriva.releasePointerCapture(
+        evento.pointerId
+      );
+
+    }
 
     if (
       navigator.maxTouchPoints > 0
@@ -6536,6 +7152,33 @@ lienzoDeriva.addEventListener(
 
       punteroDeriva.activo =
         false;
+
+    }
+
+  }
+);
+
+
+lienzoDeriva.addEventListener(
+  "pointercancel",
+  evento => {
+
+    punteroDeriva.presionado =
+      false;
+
+    punteroDeriva.activo =
+      false;
+
+
+    if (
+      lienzoDeriva.hasPointerCapture(
+        evento.pointerId
+      )
+    ) {
+
+      lienzoDeriva.releasePointerCapture(
+        evento.pointerId
+      );
 
     }
 
