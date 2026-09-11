@@ -2023,55 +2023,6 @@ input[type="range"] {
     scaleX(-1);
 }
 
-.canto-espacio-3d {
-  position: absolute;
-
-  display: block;
-
-  background: rgba(195, 59, 128, 0.62);
-
-  box-shadow: 0 0 4px rgba(107, 31, 72, 0.18);
-
-  backface-visibility: visible;
-  pointer-events: none;
-}
-
-.canto-izquierdo-espacio-3d,
-.canto-derecho-espacio-3d {
-  top: 0;
-
-  width: 8px;
-  height: 100%;
-
-  transform: rotateY(90deg);
-}
-
-.canto-izquierdo-espacio-3d {
-  left: -4px;
-}
-
-.canto-derecho-espacio-3d {
-  right: -4px;
-}
-
-.canto-superior-espacio-3d,
-.canto-inferior-espacio-3d {
-  left: 0;
-
-  width: 100%;
-  height: 8px;
-
-  transform: rotateX(90deg);
-}
-
-.canto-superior-espacio-3d {
-  top: -4px;
-}
-
-.canto-inferior-espacio-3d {
-  bottom: -4px;
-}
-
 .escenario-espacio-3d.editando .lamina-espacio-3d {
   pointer-events: auto;
 
@@ -6991,44 +6942,9 @@ function crearLaminasEspacio3D() {
         );
 
 
-        const clasesCantos = [
-          "canto-izquierdo-espacio-3d",
-          "canto-derecho-espacio-3d",
-          "canto-superior-espacio-3d",
-          "canto-inferior-espacio-3d"
-        ];
-
-
-        const cantos =
-          clasesCantos.map(
-            clase => {
-
-              const canto =
-                document.createElement(
-                  "span"
-                );
-
-
-              canto.className =
-                `canto-espacio-3d ${clase}`;
-
-
-              canto.setAttribute(
-                "aria-hidden",
-                "true"
-              );
-
-
-              return canto;
-
-            }
-          );
-
-
         elemento.append(
           imagenFrente,
-          imagenDorso,
-          ...cantos
+          imagenDorso
         );
 
 
