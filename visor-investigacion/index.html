@@ -1811,6 +1811,126 @@ input[type="range"] {
 
 
 /* =========================================================
+   CONSTELACIÓN CONECTADA
+========================================================= */
+
+.visor-constelacion {
+  display: none;
+}
+
+.visor-constelacion.visible {
+  display: block;
+}
+
+.controles-constelacion {
+  display: flex;
+
+  width: min(100%, 900px);
+
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+
+  margin: 0 auto 20px;
+  padding: 16px 18px;
+
+  border: 1px solid var(--color-border-soft);
+  border-radius: 8px;
+
+  background: var(--color-surface);
+
+  box-shadow: 0 8px 24px var(--color-shadow);
+}
+
+.control-tension-constelacion {
+  flex: 1;
+
+  max-width: 390px;
+}
+
+.control-tension-constelacion label {
+  display: flex;
+
+  justify-content: space-between;
+  gap: 14px;
+
+  margin-bottom: 7px;
+
+  color: var(--color-text);
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#restablecerConstelacion {
+  padding: 9px 13px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+
+  background: var(--color-surface);
+  color: var(--color-dark);
+
+  cursor: pointer;
+}
+
+#restablecerConstelacion:hover {
+  background: var(--color-surface-2);
+}
+
+.escenario-constelacion {
+  position: relative;
+
+  width: 100%;
+  height: clamp(540px, 74vh, 840px);
+
+  overflow: hidden;
+
+  border: 1px solid var(--color-border-soft);
+  border-radius: 14px;
+
+  background:
+    radial-gradient(
+      circle at 50% 46%,
+      rgba(255, 247, 253, 0.98),
+      rgba(242, 209, 229, 0.9) 54%,
+      rgba(201, 126, 169, 0.88)
+    );
+
+  box-shadow: inset 0 0 85px rgba(107, 31, 72, 0.12),
+              0 10px 26px var(--color-shadow);
+
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.escenario-constelacion.arrastrando {
+  cursor: grabbing;
+}
+
+#lienzoConstelacion {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  touch-action: none;
+}
+
+.estado-constelacion {
+  margin-top: 10px;
+
+  color: var(--color-text-soft);
+
+  font-size: 12px;
+
+  text-align: center;
+}
+
+
+/* =========================================================
    ESPACIO 3D
 ========================================================= */
 
@@ -2180,6 +2300,25 @@ input[type="range"] {
     min-height: 480px;
   }
 
+  .controles-constelacion {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .control-tension-constelacion {
+    width: 100%;
+    max-width: none;
+  }
+
+  #restablecerConstelacion {
+    width: 100%;
+  }
+
+  .escenario-constelacion {
+    height: 70vh;
+    min-height: 500px;
+  }
+
   .controles-espacio-3d {
     align-items: stretch;
     flex-direction: column;
@@ -2483,6 +2622,15 @@ input[type="range"] {
         type="button"
       >
         Espacio 3D
+      </button>
+
+
+      <button
+        id="botonConstelacion"
+        class="boton-modo"
+        type="button"
+      >
+        Constelación conectada
       </button>
 
     </nav>
@@ -3028,6 +3176,74 @@ input[type="range"] {
     </section>
 
 
+    <!-- =================================================
+         CONSTELACIÓN CONECTADA · CASA DEL RÍO
+    ================================================== -->
+
+    <section
+      id="visorConstelacion"
+      class="visor-constelacion"
+    >
+
+      <div class="controles-constelacion">
+
+        <div class="control-tension-constelacion">
+
+          <label for="controlTensionConstelacion">
+            <span>Tensión entre los nodos</span>
+
+            <span
+              id="valorTensionConstelacion"
+              class="valor-control"
+            >
+              100%
+            </span>
+          </label>
+
+          <input
+            id="controlTensionConstelacion"
+            type="range"
+            min="20"
+            max="180"
+            value="100"
+            step="5"
+          >
+
+        </div>
+
+
+        <button
+          id="restablecerConstelacion"
+          type="button"
+        >
+          Restablecer constelación
+        </button>
+
+      </div>
+
+
+      <div
+        id="escenarioConstelacion"
+        class="escenario-constelacion"
+        aria-label="Constelación conectada de imágenes"
+      >
+
+        <canvas id="lienzoConstelacion"></canvas>
+
+      </div>
+
+
+      <div
+        id="estadoConstelacion"
+        class="estado-constelacion"
+        aria-live="polite"
+      >
+        Prototipo Casa del río · arrastrá una imagen para tensar y desplazar toda la red.
+      </div>
+
+    </section>
+
+
   </section>
 
 
@@ -3291,6 +3507,35 @@ const estadoEspacio3D =
 
 
 /* =========================================================
+   CONSTELACIÓN CONECTADA
+========================================================= */
+
+const botonConstelacion =
+  document.getElementById("botonConstelacion");
+
+const visorConstelacion =
+  document.getElementById("visorConstelacion");
+
+const escenarioConstelacion =
+  document.getElementById("escenarioConstelacion");
+
+const lienzoConstelacion =
+  document.getElementById("lienzoConstelacion");
+
+const controlTensionConstelacion =
+  document.getElementById("controlTensionConstelacion");
+
+const valorTensionConstelacion =
+  document.getElementById("valorTensionConstelacion");
+
+const restablecerConstelacion =
+  document.getElementById("restablecerConstelacion");
+
+const estadoConstelacion =
+  document.getElementById("estadoConstelacion");
+
+
+/* =========================================================
    ESTADO DE LA APLICACIÓN
 ========================================================= */
 
@@ -3454,6 +3699,41 @@ let arrastreEspacio3D = {
 
 let laminaSeleccionada3D =
   null;
+
+let imagenesConstelacion =
+  [];
+
+let nodosConstelacion =
+  [];
+
+let conexionesConstelacion =
+  [];
+
+let constelacionPreparada =
+  false;
+
+let animacionConstelacion =
+  null;
+
+let ultimoTiempoConstelacion =
+  null;
+
+let observadorConstelacion =
+  null;
+
+let nodoArrastradoConstelacion =
+  null;
+
+let punteroConstelacion = {
+  id: null,
+  x: 0,
+  y: 0,
+  anteriorX: 0,
+  anteriorY: 0,
+  tiempo: 0,
+  velocidadX: 0,
+  velocidadY: 0
+};
 
 
 /* =========================================================
@@ -3630,6 +3910,8 @@ function limpiarAnterior() {
 
   limpiarEspacio3D();
 
+  limpiarConstelacion();
+
 
   if (
     documentoActual.paginas
@@ -3697,6 +3979,11 @@ function limpiarAnterior() {
 
 
   visorEspacio3D.classList.remove(
+    "visible"
+  );
+
+
+  visorConstelacion.classList.remove(
     "visible"
   );
 
@@ -4543,6 +4830,8 @@ function mostrarLibro() {
 
   pausarEspacio3D();
 
+  pausarConstelacion();
+
 
   visorCapas.classList.remove(
     "visible"
@@ -4565,6 +4854,11 @@ function mostrarLibro() {
 
 
   visorEspacio3D.classList.remove(
+    "visible"
+  );
+
+
+  visorConstelacion.classList.remove(
     "visible"
   );
 
@@ -4600,6 +4894,11 @@ function mostrarLibro() {
 
 
   botonEspacio3D.classList.remove(
+    "activo"
+  );
+
+
+  botonConstelacion.classList.remove(
     "activo"
   );
 
@@ -4660,6 +4959,8 @@ function mostrarCapas() {
 
   pausarEspacio3D();
 
+  pausarConstelacion();
+
 
   visorLibro.classList.remove(
     "visible"
@@ -4682,6 +4983,11 @@ function mostrarCapas() {
 
 
   visorEspacio3D.classList.remove(
+    "visible"
+  );
+
+
+  visorConstelacion.classList.remove(
     "visible"
   );
 
@@ -4717,6 +5023,11 @@ function mostrarCapas() {
 
 
   botonEspacio3D.classList.remove(
+    "activo"
+  );
+
+
+  botonConstelacion.classList.remove(
     "activo"
   );
 
@@ -4773,6 +5084,8 @@ function mostrarFisica() {
 
   pausarEspacio3D();
 
+  pausarConstelacion();
+
 
   visorLibro.classList.remove(
     "visible"
@@ -4795,6 +5108,11 @@ function mostrarFisica() {
 
 
   visorEspacio3D.classList.remove(
+    "visible"
+  );
+
+
+  visorConstelacion.classList.remove(
     "visible"
   );
 
@@ -4825,6 +5143,11 @@ function mostrarFisica() {
 
 
   botonEspacio3D.classList.remove(
+    "activo"
+  );
+
+
+  botonConstelacion.classList.remove(
     "activo"
   );
 
@@ -4885,6 +5208,8 @@ function mostrarDetalle() {
 
   pausarEspacio3D();
 
+  pausarConstelacion();
+
 
   visorLibro.classList.remove(
     "visible"
@@ -4907,6 +5232,11 @@ function mostrarDetalle() {
 
 
   visorEspacio3D.classList.remove(
+    "visible"
+  );
+
+
+  visorConstelacion.classList.remove(
     "visible"
   );
 
@@ -4937,6 +5267,11 @@ function mostrarDetalle() {
 
 
   botonEspacio3D.classList.remove(
+    "activo"
+  );
+
+
+  botonConstelacion.classList.remove(
     "activo"
   );
 
@@ -5522,6 +5857,8 @@ function mostrarDeriva() {
 
   pausarEspacio3D();
 
+  pausarConstelacion();
+
 
   visorLibro.classList.remove(
     "visible"
@@ -5544,6 +5881,11 @@ function mostrarDeriva() {
 
 
   visorEspacio3D.classList.remove(
+    "visible"
+  );
+
+
+  visorConstelacion.classList.remove(
     "visible"
   );
 
@@ -5574,6 +5916,11 @@ function mostrarDeriva() {
 
 
   botonEspacio3D.classList.remove(
+    "activo"
+  );
+
+
+  botonConstelacion.classList.remove(
     "activo"
   );
 
@@ -7200,6 +7547,8 @@ function mostrarEspacio3D() {
 
   pausarDeriva();
 
+  pausarConstelacion();
+
 
   visorLibro.classList.remove(
     "visible"
@@ -7222,6 +7571,11 @@ function mostrarEspacio3D() {
 
 
   visorDeriva.classList.remove(
+    "visible"
+  );
+
+
+  visorConstelacion.classList.remove(
     "visible"
   );
 
@@ -7252,6 +7606,11 @@ function mostrarEspacio3D() {
 
 
   botonDeriva.classList.remove(
+    "activo"
+  );
+
+
+  botonConstelacion.classList.remove(
     "activo"
   );
 
@@ -8455,6 +8814,1723 @@ window.addEventListener(
   "blur",
   () =>
     teclasEspacio3D.clear()
+);
+
+
+/* =========================================================
+   MOSTRAR CONSTELACIÓN CONECTADA
+========================================================= */
+
+function mostrarConstelacion() {
+
+  modoPrincipal =
+    "constelacion";
+
+
+  pausarFisica();
+
+  pausarDeriva();
+
+  pausarEspacio3D();
+
+
+  visorLibro.classList.remove(
+    "visible"
+  );
+
+  visorCapas.classList.remove(
+    "visible"
+  );
+
+  visorFisica.classList.remove(
+    "visible"
+  );
+
+  visorDetalle.classList.remove(
+    "visible"
+  );
+
+  visorDeriva.classList.remove(
+    "visible"
+  );
+
+  visorEspacio3D.classList.remove(
+    "visible"
+  );
+
+  visorConstelacion.classList.add(
+    "visible"
+  );
+
+
+  botonLibro.classList.remove(
+    "activo"
+  );
+
+  botonCapas.classList.remove(
+    "activo"
+  );
+
+  botonFisica.classList.remove(
+    "activo"
+  );
+
+  botonDetalle.classList.remove(
+    "activo"
+  );
+
+  botonDeriva.classList.remove(
+    "activo"
+  );
+
+  botonEspacio3D.classList.remove(
+    "activo"
+  );
+
+  botonConstelacion.classList.add(
+    "activo"
+  );
+
+
+  descripcionModo.textContent =
+    "Cada imagen es un nodo: al desplazar una, las conexiones tensan y transforman toda la constelación.";
+
+
+  requestAnimationFrame(
+    () => {
+
+      if (
+        !constelacionPreparada
+      ) {
+
+        prepararConstelacion();
+
+      }
+
+      else {
+
+        ajustarLienzoConstelacion();
+
+        iniciarAnimacionConstelacion();
+
+      }
+
+    }
+  );
+
+}
+
+
+botonConstelacion.addEventListener(
+  "click",
+  mostrarConstelacion
+);
+
+
+/* =========================================================
+   RED ELÁSTICA DE LA CONSTELACIÓN
+========================================================= */
+
+function pausarConstelacion() {
+
+  if (
+    animacionConstelacion !== null
+  ) {
+
+    cancelAnimationFrame(
+      animacionConstelacion
+    );
+
+  }
+
+
+  animacionConstelacion =
+    null;
+
+  ultimoTiempoConstelacion =
+    null;
+
+}
+
+
+function limpiarConstelacion() {
+
+  pausarConstelacion();
+
+
+  if (
+    observadorConstelacion
+  ) {
+
+    observadorConstelacion.disconnect();
+
+  }
+
+
+  observadorConstelacion =
+    null;
+
+  imagenesConstelacion =
+    [];
+
+  nodosConstelacion =
+    [];
+
+  conexionesConstelacion =
+    [];
+
+  constelacionPreparada =
+    false;
+
+  nodoArrastradoConstelacion =
+    null;
+
+  punteroConstelacion = {
+    id: null,
+    x: 0,
+    y: 0,
+    anteriorX: 0,
+    anteriorY: 0,
+    tiempo: 0,
+    velocidadX: 0,
+    velocidadY: 0
+  };
+
+
+  escenarioConstelacion.classList.remove(
+    "arrastrando"
+  );
+
+
+  const contexto =
+    lienzoConstelacion.getContext(
+      "2d"
+    );
+
+
+  contexto.clearRect(
+    0,
+    0,
+    lienzoConstelacion.width,
+    lienzoConstelacion.height
+  );
+
+}
+
+
+function ajustarLienzoConstelacion() {
+
+  const ancho =
+    Math.max(
+      280,
+      Math.round(
+        escenarioConstelacion.clientWidth
+      )
+    );
+
+  const alto =
+    Math.max(
+      440,
+      Math.round(
+        escenarioConstelacion.clientHeight
+      )
+    );
+
+  const anchoAnterior =
+    Number(
+      lienzoConstelacion.dataset.ancho || 0
+    );
+
+  const altoAnterior =
+    Number(
+      lienzoConstelacion.dataset.alto || 0
+    );
+
+  const densidadPixeles =
+    Math.min(
+      window.devicePixelRatio || 1,
+      2
+    );
+
+
+  lienzoConstelacion.width =
+    Math.round(
+      ancho * densidadPixeles
+    );
+
+  lienzoConstelacion.height =
+    Math.round(
+      alto * densidadPixeles
+    );
+
+  lienzoConstelacion.dataset.ancho =
+    ancho;
+
+  lienzoConstelacion.dataset.alto =
+    alto;
+
+
+  if (
+    anchoAnterior > 0 &&
+    altoAnterior > 0 &&
+    (
+      anchoAnterior !== ancho ||
+      altoAnterior !== alto
+    )
+  ) {
+
+    const escalaX =
+      ancho / anchoAnterior;
+
+    const escalaY =
+      alto / altoAnterior;
+
+    const escalaRed =
+      Math.sqrt(
+        escalaX * escalaY
+      );
+
+
+    nodosConstelacion.forEach(
+      nodo => {
+
+        nodo.x *=
+          escalaX;
+
+        nodo.y *=
+          escalaY;
+
+      }
+    );
+
+
+    conexionesConstelacion.forEach(
+      conexion => {
+
+        conexion.longitud *=
+          escalaRed;
+
+      }
+    );
+
+  }
+
+
+  dibujarConstelacion();
+
+
+  return {
+    ancho,
+    alto
+  };
+
+}
+
+
+function calcularTamanoNodoConstelacion(
+  pagina,
+  anchoEscenario,
+  cantidad
+) {
+
+  const anchoBase =
+    Math.max(
+      56,
+      Math.min(
+        118,
+        anchoEscenario /
+          Math.max(
+            5.2,
+            Math.sqrt(cantidad) * 2.15
+          )
+      )
+    );
+
+  const proporcion =
+    pagina.height /
+    pagina.width;
+
+  let ancho =
+    anchoBase;
+
+  let alto =
+    ancho * proporcion;
+
+
+  if (
+    alto > 156
+  ) {
+
+    alto =
+      156;
+
+    ancho =
+      alto / proporcion;
+
+  }
+
+
+  return {
+    ancho,
+    alto
+  };
+
+}
+
+
+function posicionInicialConstelacion(
+  indice,
+  cantidad,
+  ancho,
+  alto
+) {
+
+  if (
+    cantidad <= 1
+  ) {
+
+    return {
+      x: ancho / 2,
+      y: alto / 2
+    };
+
+  }
+
+
+  const anguloDorado =
+    Math.PI * (
+      3 - Math.sqrt(5)
+    );
+
+  const angulo =
+    indice * anguloDorado -
+    Math.PI / 2;
+
+  const radioMaximo =
+    Math.min(
+      ancho * 0.42,
+      alto * 0.39
+    );
+
+  const radio =
+    Math.sqrt(
+      (
+        indice + 0.55
+      ) / cantidad
+    ) * radioMaximo;
+
+
+  return {
+    x:
+      ancho / 2 +
+      Math.cos(angulo) *
+        radio * 1.12,
+    y:
+      alto / 2 +
+      Math.sin(angulo) *
+        radio * 0.88
+  };
+
+}
+
+
+function crearConexionesConstelacion() {
+
+  conexionesConstelacion =
+    [];
+
+
+  const cantidad =
+    nodosConstelacion.length;
+
+
+  if (
+    cantidad < 2
+  ) {
+
+    return;
+
+  }
+
+
+  const conexionesCreadas =
+    new Set();
+
+
+  function agregarConexion(
+    indiceA,
+    indiceB
+  ) {
+
+    if (
+      indiceA === indiceB
+    ) {
+
+      return;
+
+    }
+
+
+    const menor =
+      Math.min(
+        indiceA,
+        indiceB
+      );
+
+    const mayor =
+      Math.max(
+        indiceA,
+        indiceB
+      );
+
+    const clave =
+      `${menor}-${mayor}`;
+
+
+    if (
+      conexionesCreadas.has(clave)
+    ) {
+
+      return;
+
+    }
+
+
+    conexionesCreadas.add(
+      clave
+    );
+
+
+    const nodoA =
+      nodosConstelacion[menor];
+
+    const nodoB =
+      nodosConstelacion[mayor];
+
+    const distancia =
+      Math.hypot(
+        nodoB.x - nodoA.x,
+        nodoB.y - nodoA.y
+      );
+
+
+    conexionesConstelacion.push({
+      a: menor,
+      b: mayor,
+      longitud: Math.max(
+        72,
+        distancia * 0.93
+      )
+    });
+
+  }
+
+
+  for (
+    let indice = 0;
+    indice < cantidad;
+    indice += 1
+  ) {
+
+    agregarConexion(
+      indice,
+      (
+        indice + 1
+      ) % cantidad
+    );
+
+
+    const cercanos =
+      nodosConstelacion
+        .map(
+          (
+            otro,
+            otroIndice
+          ) => ({
+            indice: otroIndice,
+            distancia:
+              otroIndice === indice
+                ? Infinity
+                : Math.hypot(
+                    otro.x -
+                      nodosConstelacion[indice].x,
+                    otro.y -
+                      nodosConstelacion[indice].y
+                  )
+          })
+        )
+        .sort(
+          (
+            primero,
+            segundo
+          ) =>
+            primero.distancia -
+            segundo.distancia
+        )
+        .slice(
+          0,
+          cantidad > 18
+            ? 2
+            : 3
+        );
+
+
+    cercanos.forEach(
+      cercano =>
+        agregarConexion(
+          indice,
+          cercano.indice
+        )
+    );
+
+  }
+
+}
+
+
+function distribuirConstelacion() {
+
+  const ancho =
+    Number(
+      lienzoConstelacion.dataset.ancho || 0
+    );
+
+  const alto =
+    Number(
+      lienzoConstelacion.dataset.alto || 0
+    );
+
+
+  nodosConstelacion.forEach(
+    (
+      nodo,
+      indice
+    ) => {
+
+      const posicion =
+        posicionInicialConstelacion(
+          indice,
+          nodosConstelacion.length,
+          ancho,
+          alto
+        );
+
+
+      nodo.x =
+        posicion.x;
+
+      nodo.y =
+        posicion.y;
+
+      nodo.velocidadX =
+        0;
+
+      nodo.velocidadY =
+        0;
+
+    }
+  );
+
+
+  crearConexionesConstelacion();
+
+  dibujarConstelacion();
+
+}
+
+
+function prepararConstelacion() {
+
+  const medidas =
+    ajustarLienzoConstelacion();
+
+  const paginas =
+    documentoActual.paginas;
+
+
+  imagenesConstelacion =
+    paginas.map(
+      pagina => {
+
+        const imagen =
+          new Image();
+
+
+        imagen.onload =
+          () => {
+
+            if (
+              modoPrincipal ===
+              "constelacion"
+            ) {
+
+              dibujarConstelacion();
+
+            }
+
+          };
+
+
+        imagen.src =
+          pagina.src;
+
+
+        return imagen;
+
+      }
+    );
+
+
+  nodosConstelacion =
+    paginas.map(
+      (
+        pagina,
+        indice
+      ) => {
+
+        const tamano =
+          calcularTamanoNodoConstelacion(
+            pagina,
+            medidas.ancho,
+            paginas.length
+          );
+
+        const posicion =
+          posicionInicialConstelacion(
+            indice,
+            paginas.length,
+            medidas.ancho,
+            medidas.alto
+          );
+
+
+        return {
+          indice,
+          x: posicion.x,
+          y: posicion.y,
+          velocidadX:
+            Math.sin(
+              indice * 1.91
+            ) * 0.12,
+          velocidadY:
+            Math.cos(
+              indice * 1.37
+            ) * 0.12,
+          ancho: tamano.ancho,
+          alto: tamano.alto
+        };
+
+      }
+    );
+
+
+  crearConexionesConstelacion();
+
+
+  constelacionPreparada =
+    true;
+
+
+  if (
+    !observadorConstelacion
+  ) {
+
+    observadorConstelacion =
+      new ResizeObserver(
+        () => {
+
+          if (
+            constelacionPreparada &&
+            modoPrincipal ===
+              "constelacion"
+          ) {
+
+            ajustarLienzoConstelacion();
+
+          }
+
+        }
+      );
+
+
+    observadorConstelacion.observe(
+      escenarioConstelacion
+    );
+
+  }
+
+
+  iniciarAnimacionConstelacion();
+
+}
+
+
+function actualizarConstelacion(
+  delta
+) {
+
+  const ancho =
+    Number(
+      lienzoConstelacion.dataset.ancho || 0
+    );
+
+  const alto =
+    Number(
+      lienzoConstelacion.dataset.alto || 0
+    );
+
+  const paso =
+    delta / (1000 / 60);
+
+  const tension =
+    Number(
+      controlTensionConstelacion.value
+    ) / 100;
+
+  const rigidez =
+    0.0032 * tension;
+
+
+  conexionesConstelacion.forEach(
+    conexion => {
+
+      const nodoA =
+        nodosConstelacion[
+          conexion.a
+        ];
+
+      const nodoB =
+        nodosConstelacion[
+          conexion.b
+        ];
+
+      const diferenciaX =
+        nodoB.x - nodoA.x;
+
+      const diferenciaY =
+        nodoB.y - nodoA.y;
+
+      const distancia =
+        Math.max(
+          0.001,
+          Math.hypot(
+            diferenciaX,
+            diferenciaY
+          )
+        );
+
+      const estiramiento =
+        distancia -
+        conexion.longitud;
+
+      const fuerza =
+        estiramiento *
+        rigidez *
+        paso;
+
+      const fuerzaX =
+        diferenciaX /
+        distancia *
+        fuerza;
+
+      const fuerzaY =
+        diferenciaY /
+        distancia *
+        fuerza;
+
+
+      if (
+        nodoA !==
+        nodoArrastradoConstelacion
+      ) {
+
+        nodoA.velocidadX +=
+          fuerzaX;
+
+        nodoA.velocidadY +=
+          fuerzaY;
+
+      }
+
+
+      if (
+        nodoB !==
+        nodoArrastradoConstelacion
+      ) {
+
+        nodoB.velocidadX -=
+          fuerzaX;
+
+        nodoB.velocidadY -=
+          fuerzaY;
+
+      }
+
+    }
+  );
+
+
+  for (
+    let indiceA = 0;
+    indiceA < nodosConstelacion.length;
+    indiceA += 1
+  ) {
+
+    const nodoA =
+      nodosConstelacion[indiceA];
+
+
+    for (
+      let indiceB = indiceA + 1;
+      indiceB < nodosConstelacion.length;
+      indiceB += 1
+    ) {
+
+      const nodoB =
+        nodosConstelacion[indiceB];
+
+      const diferenciaX =
+        nodoB.x - nodoA.x;
+
+      const diferenciaY =
+        nodoB.y - nodoA.y;
+
+      const distancia =
+        Math.max(
+          0.001,
+          Math.hypot(
+            diferenciaX,
+            diferenciaY
+          )
+        );
+
+      const distanciaMinima =
+        Math.max(
+          58,
+          (
+            nodoA.ancho +
+            nodoB.ancho
+          ) * 0.42
+        );
+
+
+      if (
+        distancia >= distanciaMinima
+      ) {
+
+        continue;
+
+      }
+
+
+      const fuerza =
+        (
+          1 -
+          distancia /
+            distanciaMinima
+        ) * 0.095 * paso;
+
+      const fuerzaX =
+        diferenciaX /
+        distancia *
+        fuerza;
+
+      const fuerzaY =
+        diferenciaY /
+        distancia *
+        fuerza;
+
+
+      if (
+        nodoA !==
+        nodoArrastradoConstelacion
+      ) {
+
+        nodoA.velocidadX -=
+          fuerzaX;
+
+        nodoA.velocidadY -=
+          fuerzaY;
+
+      }
+
+
+      if (
+        nodoB !==
+        nodoArrastradoConstelacion
+      ) {
+
+        nodoB.velocidadX +=
+          fuerzaX;
+
+        nodoB.velocidadY +=
+          fuerzaY;
+
+      }
+
+    }
+
+  }
+
+
+  const amortiguacion =
+    Math.pow(
+      0.955,
+      paso
+    );
+
+
+  nodosConstelacion.forEach(
+    nodo => {
+
+      if (
+        nodo ===
+        nodoArrastradoConstelacion
+      ) {
+
+        return;
+
+      }
+
+
+      nodo.velocidadX +=
+        (
+          ancho / 2 - nodo.x
+        ) * 0.000035 * paso;
+
+      nodo.velocidadY +=
+        (
+          alto / 2 - nodo.y
+        ) * 0.000035 * paso;
+
+      nodo.velocidadX *=
+        amortiguacion;
+
+      nodo.velocidadY *=
+        amortiguacion;
+
+
+      const velocidad =
+        Math.hypot(
+          nodo.velocidadX,
+          nodo.velocidadY
+        );
+
+
+      if (
+        velocidad > 7
+      ) {
+
+        nodo.velocidadX =
+          nodo.velocidadX /
+          velocidad * 7;
+
+        nodo.velocidadY =
+          nodo.velocidadY /
+          velocidad * 7;
+
+      }
+
+
+      nodo.x +=
+        nodo.velocidadX * paso;
+
+      nodo.y +=
+        nodo.velocidadY * paso;
+
+
+      const margenX =
+        nodo.ancho / 2 + 8;
+
+      const margenY =
+        nodo.alto / 2 + 8;
+
+
+      if (
+        nodo.x < margenX
+      ) {
+
+        nodo.x =
+          margenX;
+
+        nodo.velocidadX =
+          Math.abs(
+            nodo.velocidadX
+          ) * 0.45;
+
+      }
+
+      else if (
+        nodo.x > ancho - margenX
+      ) {
+
+        nodo.x =
+          ancho - margenX;
+
+        nodo.velocidadX =
+          -Math.abs(
+            nodo.velocidadX
+          ) * 0.45;
+
+      }
+
+
+      if (
+        nodo.y < margenY
+      ) {
+
+        nodo.y =
+          margenY;
+
+        nodo.velocidadY =
+          Math.abs(
+            nodo.velocidadY
+          ) * 0.45;
+
+      }
+
+      else if (
+        nodo.y > alto - margenY
+      ) {
+
+        nodo.y =
+          alto - margenY;
+
+        nodo.velocidadY =
+          -Math.abs(
+            nodo.velocidadY
+          ) * 0.45;
+
+      }
+
+    }
+  );
+
+}
+
+
+function dibujarConstelacion() {
+
+  const contexto =
+    lienzoConstelacion.getContext(
+      "2d"
+    );
+
+  const ancho =
+    Number(
+      lienzoConstelacion.dataset.ancho || 0
+    );
+
+  const alto =
+    Number(
+      lienzoConstelacion.dataset.alto || 0
+    );
+
+
+  if (
+    ancho === 0 ||
+    alto === 0
+  ) {
+
+    return;
+
+  }
+
+
+  const densidadPixeles =
+    lienzoConstelacion.width /
+    ancho;
+
+
+  contexto.setTransform(
+    densidadPixeles,
+    0,
+    0,
+    densidadPixeles,
+    0,
+    0
+  );
+
+  contexto.clearRect(
+    0,
+    0,
+    ancho,
+    alto
+  );
+
+
+  contexto.save();
+
+  contexto.lineCap =
+    "round";
+
+
+  conexionesConstelacion.forEach(
+    conexion => {
+
+      const nodoA =
+        nodosConstelacion[
+          conexion.a
+        ];
+
+      const nodoB =
+        nodosConstelacion[
+          conexion.b
+        ];
+
+      const distancia =
+        Math.hypot(
+          nodoB.x - nodoA.x,
+          nodoB.y - nodoA.y
+        );
+
+      const tensionVisible =
+        Math.min(
+          1,
+          Math.abs(
+            distancia -
+            conexion.longitud
+          ) /
+            Math.max(
+              1,
+              conexion.longitud
+            ) * 2.6
+        );
+
+
+      contexto.beginPath();
+
+      contexto.moveTo(
+        nodoA.x,
+        nodoA.y
+      );
+
+      contexto.lineTo(
+        nodoB.x,
+        nodoB.y
+      );
+
+      contexto.strokeStyle =
+        `rgba(107, 31, 72, ${0.22 + tensionVisible * 0.43})`;
+
+      contexto.lineWidth =
+        0.8 +
+        tensionVisible * 1.8;
+
+      contexto.shadowColor =
+        "rgba(195, 59, 128, 0.18)";
+
+      contexto.shadowBlur =
+        4 +
+        tensionVisible * 7;
+
+      contexto.stroke();
+
+    }
+  );
+
+
+  contexto.restore();
+
+
+  nodosConstelacion.forEach(
+    nodo => {
+
+      const imagen =
+        imagenesConstelacion[
+          nodo.indice
+        ];
+
+
+      if (
+        !imagen ||
+        !imagen.complete ||
+        imagen.naturalWidth === 0
+      ) {
+
+        return;
+
+      }
+
+
+      contexto.save();
+
+      contexto.translate(
+        nodo.x,
+        nodo.y
+      );
+
+
+      if (
+        nodo ===
+        nodoArrastradoConstelacion
+      ) {
+
+        contexto.beginPath();
+
+        contexto.ellipse(
+          0,
+          0,
+          nodo.ancho / 2 + 9,
+          nodo.alto / 2 + 9,
+          0,
+          0,
+          Math.PI * 2
+        );
+
+        contexto.strokeStyle =
+          "rgba(255, 255, 255, 0.92)";
+
+        contexto.lineWidth =
+          2;
+
+        contexto.shadowColor =
+          "rgba(107, 31, 72, 0.45)";
+
+        contexto.shadowBlur =
+          12;
+
+        contexto.stroke();
+
+      }
+
+
+      contexto.shadowColor =
+        "rgba(71, 16, 48, 0.3)";
+
+      contexto.shadowBlur =
+        nodo ===
+        nodoArrastradoConstelacion
+          ? 17
+          : 9;
+
+      contexto.shadowOffsetY =
+        4;
+
+
+      contexto.drawImage(
+        imagen,
+        -nodo.ancho / 2,
+        -nodo.alto / 2,
+        nodo.ancho,
+        nodo.alto
+      );
+
+
+      contexto.restore();
+
+    }
+  );
+
+}
+
+
+function pasoConstelacion(
+  tiempo
+) {
+
+  if (
+    modoPrincipal !==
+      "constelacion" ||
+    !constelacionPreparada
+  ) {
+
+    pausarConstelacion();
+
+    return;
+
+  }
+
+
+  const delta =
+    ultimoTiempoConstelacion === null
+      ? 1000 / 60
+      : Math.min(
+          32,
+          Math.max(
+            8,
+            tiempo -
+              ultimoTiempoConstelacion
+          )
+        );
+
+
+  ultimoTiempoConstelacion =
+    tiempo;
+
+
+  actualizarConstelacion(
+    delta
+  );
+
+  dibujarConstelacion();
+
+
+  animacionConstelacion =
+    requestAnimationFrame(
+      pasoConstelacion
+    );
+
+}
+
+
+function iniciarAnimacionConstelacion() {
+
+  if (
+    animacionConstelacion !== null ||
+    !constelacionPreparada
+  ) {
+
+    return;
+
+  }
+
+
+  ultimoTiempoConstelacion =
+    null;
+
+  animacionConstelacion =
+    requestAnimationFrame(
+      pasoConstelacion
+    );
+
+}
+
+
+function puntoConstelacionDesdeEvento(
+  evento
+) {
+
+  const rectangulo =
+    lienzoConstelacion.getBoundingClientRect();
+
+
+  return {
+    x:
+      evento.clientX -
+      rectangulo.left,
+    y:
+      evento.clientY -
+      rectangulo.top
+  };
+
+}
+
+
+function buscarNodoConstelacion(
+  punto
+) {
+
+  for (
+    let indice =
+      nodosConstelacion.length - 1;
+    indice >= 0;
+    indice -= 1
+  ) {
+
+    const nodo =
+      nodosConstelacion[indice];
+
+
+    if (
+      Math.abs(
+        punto.x - nodo.x
+      ) <= nodo.ancho / 2 + 9 &&
+      Math.abs(
+        punto.y - nodo.y
+      ) <= nodo.alto / 2 + 9
+    ) {
+
+      return nodo;
+
+    }
+
+  }
+
+
+  return null;
+
+}
+
+
+lienzoConstelacion.addEventListener(
+  "pointerdown",
+  evento => {
+
+    if (
+      evento.button !== 0
+    ) {
+
+      return;
+
+    }
+
+
+    const punto =
+      puntoConstelacionDesdeEvento(
+        evento
+      );
+
+    const nodo =
+      buscarNodoConstelacion(
+        punto
+      );
+
+
+    if (
+      !nodo
+    ) {
+
+      return;
+
+    }
+
+
+    evento.preventDefault();
+
+
+    nodoArrastradoConstelacion =
+      nodo;
+
+    nodo.velocidadX =
+      0;
+
+    nodo.velocidadY =
+      0;
+
+
+    punteroConstelacion = {
+      id: evento.pointerId,
+      x: punto.x,
+      y: punto.y,
+      anteriorX: punto.x,
+      anteriorY: punto.y,
+      tiempo: performance.now(),
+      velocidadX: 0,
+      velocidadY: 0
+    };
+
+
+    escenarioConstelacion.classList.add(
+      "arrastrando"
+    );
+
+    lienzoConstelacion.setPointerCapture(
+      evento.pointerId
+    );
+
+  }
+);
+
+
+lienzoConstelacion.addEventListener(
+  "pointermove",
+  evento => {
+
+    if (
+      !nodoArrastradoConstelacion ||
+      punteroConstelacion.id !==
+        evento.pointerId
+    ) {
+
+      return;
+
+    }
+
+
+    evento.preventDefault();
+
+
+    const punto =
+      puntoConstelacionDesdeEvento(
+        evento
+      );
+
+    const tiempo =
+      performance.now();
+
+    const delta =
+      Math.max(
+        8,
+        tiempo -
+          punteroConstelacion.tiempo
+      );
+
+    const ancho =
+      Number(
+        lienzoConstelacion.dataset.ancho || 0
+      );
+
+    const alto =
+      Number(
+        lienzoConstelacion.dataset.alto || 0
+      );
+
+    const margenX =
+      nodoArrastradoConstelacion.ancho /
+        2 + 8;
+
+    const margenY =
+      nodoArrastradoConstelacion.alto /
+        2 + 8;
+
+
+    nodoArrastradoConstelacion.x =
+      Math.max(
+        margenX,
+        Math.min(
+          ancho - margenX,
+          punto.x
+        )
+      );
+
+    nodoArrastradoConstelacion.y =
+      Math.max(
+        margenY,
+        Math.min(
+          alto - margenY,
+          punto.y
+        )
+      );
+
+
+    punteroConstelacion.velocidadX =
+      (
+        punto.x -
+        punteroConstelacion.anteriorX
+      ) /
+      delta *
+      (1000 / 60);
+
+    punteroConstelacion.velocidadY =
+      (
+        punto.y -
+        punteroConstelacion.anteriorY
+      ) /
+      delta *
+      (1000 / 60);
+
+    punteroConstelacion.x =
+      punto.x;
+
+    punteroConstelacion.y =
+      punto.y;
+
+    punteroConstelacion.anteriorX =
+      punto.x;
+
+    punteroConstelacion.anteriorY =
+      punto.y;
+
+    punteroConstelacion.tiempo =
+      tiempo;
+
+  }
+);
+
+
+function terminarArrastreConstelacion(
+  evento
+) {
+
+  if (
+    !nodoArrastradoConstelacion ||
+    punteroConstelacion.id !==
+      evento.pointerId
+  ) {
+
+    return;
+
+  }
+
+
+  const velocidad =
+    Math.hypot(
+      punteroConstelacion.velocidadX,
+      punteroConstelacion.velocidadY
+    );
+
+  const limite =
+    velocidad > 5.5
+      ? 5.5 / velocidad
+      : 1;
+
+
+  nodoArrastradoConstelacion.velocidadX =
+    punteroConstelacion.velocidadX *
+    limite;
+
+  nodoArrastradoConstelacion.velocidadY =
+    punteroConstelacion.velocidadY *
+    limite;
+
+
+  nodoArrastradoConstelacion =
+    null;
+
+  punteroConstelacion.id =
+    null;
+
+
+  escenarioConstelacion.classList.remove(
+    "arrastrando"
+  );
+
+
+  if (
+    lienzoConstelacion.hasPointerCapture(
+      evento.pointerId
+    )
+  ) {
+
+    lienzoConstelacion.releasePointerCapture(
+      evento.pointerId
+    );
+
+  }
+
+}
+
+
+lienzoConstelacion.addEventListener(
+  "pointerup",
+  terminarArrastreConstelacion
+);
+
+lienzoConstelacion.addEventListener(
+  "pointercancel",
+  terminarArrastreConstelacion
+);
+
+
+controlTensionConstelacion.addEventListener(
+  "input",
+  () => {
+
+    valorTensionConstelacion.textContent =
+      `${controlTensionConstelacion.value}%`;
+
+  }
+);
+
+
+restablecerConstelacion.addEventListener(
+  "click",
+  () => {
+
+    nodoArrastradoConstelacion =
+      null;
+
+    escenarioConstelacion.classList.remove(
+      "arrastrando"
+    );
+
+    distribuirConstelacion();
+
+    estadoConstelacion.textContent =
+      "Constelación restablecida · arrastrá una imagen para volver a tensar la red.";
+
+  }
 );
 
 
