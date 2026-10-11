@@ -793,6 +793,48 @@ body {
   line-height: 1.5;
 }
 
+.boton-sala {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-top: 16px;
+  padding: 9px 14px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.5);
+  color: var(--color-text);
+
+  font: inherit;
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.boton-sala:hover {
+  background: var(--color-surface-2);
+}
+
+.boton-sala.conectado {
+  background: var(--color-dark);
+  border-color: var(--color-dark);
+  color: var(--color-white);
+}
+
+.punto-sala {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-text-soft);
+}
+
+.boton-sala.conectado .punto-sala {
+  background: #a9f0c2;
+  box-shadow: 0 0 0 3px rgba(169,240,194,.2);
+}
+
 
 /* =========================================================
    CARGA
@@ -2191,6 +2233,255 @@ input[type="range"] {
 
 
 /* =========================================================
+   SALA COMPARTIDA
+========================================================= */
+
+.capa-sala {
+  position: fixed;
+  z-index: 30000;
+  inset: 0;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  padding: 22px;
+
+  background: rgba(71,16,48,.42);
+  backdrop-filter: blur(7px);
+}
+
+.capa-sala.visible {
+  display: flex;
+}
+
+.dialogo-sala {
+  width: min(440px, 100%);
+  padding: 24px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+
+  background: var(--color-bg);
+  box-shadow: 0 24px 70px rgba(71,16,48,.24);
+}
+
+.dialogo-sala h2,
+.panel-sala h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.dialogo-sala p {
+  margin: 0 0 18px;
+  color: var(--color-text-soft);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.campo-sala {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 16px;
+  color: var(--color-text-soft);
+  font-size: 12px;
+}
+
+.campo-sala input {
+  width: 100%;
+  padding: 11px 12px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+
+  background: var(--color-white);
+  color: var(--color-text);
+  font: inherit;
+
+  outline: none;
+}
+
+.campo-sala input:focus {
+  box-shadow: 0 0 0 3px var(--color-border-soft);
+}
+
+.acciones-sala {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.accion-sala {
+  padding: 9px 13px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+.accion-sala.principal {
+  background: var(--color-dark);
+  border-color: var(--color-dark);
+  color: var(--color-white);
+}
+
+.accion-sala:disabled {
+  cursor: wait;
+  opacity: .55;
+}
+
+.error-sala {
+  min-height: 18px;
+  margin: 12px 0 0;
+  color: #a72e62;
+  font-size: 12px;
+}
+
+.panel-sala {
+  position: fixed;
+  z-index: 25000;
+  top: 16px;
+  right: 16px;
+
+  display: none;
+
+  width: min(310px, calc(100vw - 32px));
+  padding: 16px;
+
+  border: 1px solid var(--color-border-soft);
+  border-radius: 12px;
+
+  background: rgba(255,244,255,.96);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 14px 45px rgba(71,16,48,.18);
+}
+
+.panel-sala.visible {
+  display: block;
+}
+
+.cabecera-panel-sala {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.nombre-sala {
+  color: var(--color-text-soft);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.cerrar-panel-sala {
+  padding: 2px 6px;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-soft);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.participantes-sala {
+  display: grid;
+  gap: 8px;
+  margin: 15px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.participante-sala {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 12px;
+}
+
+.estado-voz {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--color-border-soft);
+}
+
+.participante-sala.hablando .estado-voz {
+  background: #4eb877;
+  box-shadow: 0 0 0 3px rgba(78,184,119,.16);
+}
+
+.datos-persona {
+  min-width: 0;
+  flex: 1;
+}
+
+.datos-persona strong,
+.datos-persona small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.datos-persona strong {
+  font-weight: 600;
+}
+
+.datos-persona small {
+  color: var(--color-text-soft);
+  font-size: 10px;
+}
+
+.estado-documento-sala {
+  margin: 0 0 12px;
+  padding: 9px 10px;
+  border-radius: 7px;
+  background: var(--color-surface);
+  color: var(--color-text-soft);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.estado-documento-sala.alerta {
+  background: #fff0f5;
+  color: #9c2c5d;
+}
+
+.controles-sala {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+.controles-sala .accion-sala:last-child {
+  grid-column: 1 / -1;
+}
+
+.nota-sala {
+  margin: 12px 0 0;
+  color: var(--color-text-soft);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.audios-sala {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+
+/* =========================================================
    PIE
 ========================================================= */
 
@@ -2377,7 +2668,174 @@ input[type="range"] {
       No necesitás preparar previamente las páginas.
     </p>
 
+    <button
+      id="abrirSala"
+      class="boton-sala"
+      type="button"
+      aria-expanded="false"
+    >
+      <span class="punto-sala"></span>
+      <span id="textoBotonSala">Sala</span>
+    </button>
+
   </header>
+
+
+  <!-- =====================================================
+       SALA COMPARTIDA
+  ====================================================== -->
+
+  <div
+    id="capaSala"
+    class="capa-sala"
+    aria-hidden="true"
+  >
+
+    <div
+      class="dialogo-sala"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tituloEntradaSala"
+    >
+
+      <h2 id="tituloEntradaSala">
+        Entrar a la sala compartida
+      </h2>
+
+      <p>
+        Van a escucharse y podrán intervenir el mismo documento al mismo tiempo.
+        Cada persona debe cargar localmente el mismo PDF o las mismas imágenes.
+      </p>
+
+      <label class="campo-sala">
+        Tu nombre o apodo
+        <input
+          id="nombreParticipante"
+          type="text"
+          maxlength="32"
+          autocomplete="nickname"
+          placeholder="Escribí tu nombre"
+        >
+      </label>
+
+      <label class="campo-sala">
+        Nombre de la sala
+        <input
+          id="nombreSala"
+          type="text"
+          maxlength="42"
+          value="visor-investigacion"
+        >
+      </label>
+
+      <div class="acciones-sala">
+
+        <button
+          id="cancelarSala"
+          class="accion-sala"
+          type="button"
+        >
+          Cancelar
+        </button>
+
+        <button
+          id="entrarSala"
+          class="accion-sala principal"
+          type="button"
+        >
+          Entrar y activar voz
+        </button>
+
+      </div>
+
+      <div
+        id="errorSala"
+        class="error-sala"
+        role="status"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <aside
+    id="panelSala"
+    class="panel-sala"
+    aria-label="Sala compartida"
+  >
+
+    <div class="cabecera-panel-sala">
+
+      <div>
+        <h2>En la sala</h2>
+        <div id="etiquetaSala" class="nombre-sala"></div>
+      </div>
+
+      <button
+        id="cerrarPanelSala"
+        class="cerrar-panel-sala"
+        type="button"
+        aria-label="Cerrar panel"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <ul
+      id="participantesSala"
+      class="participantes-sala"
+    ></ul>
+
+    <div
+      id="estadoDocumentoSala"
+      class="estado-documento-sala"
+    >
+      Todavía no cargaste un documento.
+    </div>
+
+    <div class="controles-sala">
+
+      <button
+        id="alternarMicrofono"
+        class="accion-sala"
+        type="button"
+      >
+        Silenciar
+      </button>
+
+      <button
+        id="copiarInvitacion"
+        class="accion-sala"
+        type="button"
+      >
+        Invitar
+      </button>
+
+      <button
+        id="salirSala"
+        class="accion-sala"
+        type="button"
+      >
+        Salir de la sala
+      </button>
+
+    </div>
+
+    <p class="nota-sala">
+      Los modos, controles y láminas se comparten. La cámara del Espacio 3D,
+      la lupa y el punto de vista de Hojear siguen siendo individuales.
+    </p>
+
+  </aside>
+
+
+  <div
+    id="audiosSala"
+    class="audios-sala"
+    aria-hidden="true"
+  ></div>
 
 
   <!-- =====================================================
@@ -3255,6 +3713,26 @@ input[type="range"] {
 </main>
 
 
+<!--
+  Para activar la sala:
+  1. Publicá el servidor incluido en la carpeta livekit-token-server.
+  2. Pegá debajo la URL terminada en /api/token.
+  La clave privada de LiveKit nunca debe escribirse en este archivo.
+-->
+<script>
+
+window.CONFIG_SALA = {
+  tokenEndpoint: "",
+  roomName: "visor-investigacion"
+};
+
+</script>
+
+<script
+  src="https://cdn.jsdelivr.net/npm/livekit-client@2.22.4/dist/livekit-client.umd.min.js"
+></script>
+
+
 <script type="module">
 
 
@@ -3542,6 +4020,7 @@ const estadoConstelacion =
 let documentoActual = {
   tipo: null,
   nombre: null,
+  origen: null,
   paginas: []
 };
 
@@ -3940,6 +4419,7 @@ function limpiarAnterior() {
   documentoActual = {
     tipo: null,
     nombre: null,
+    origen: null,
     paginas: []
   };
 
@@ -4142,6 +4622,12 @@ async function procesarPDF(
 
       nombre:
         archivo.name,
+
+      origen:
+        [
+          archivo.name,
+          archivo.size
+        ].join(":"),
 
       paginas:
         []
@@ -4389,6 +4875,17 @@ async function procesarImagenes(
 
         `${archivos[0].name} … ${archivos[archivos.length - 1].name}`,
 
+      origen:
+        archivos
+          .map(
+            archivo =>
+              [
+                archivo.name,
+                archivo.size
+              ].join(":")
+          )
+          .join("|"),
+
       paginas:
         []
 
@@ -4596,6 +5093,16 @@ function prepararAplicacion() {
 
 
   mostrarLibro();
+
+
+  if (
+    typeof notificarDocumentoSala ===
+    "function"
+  ) {
+
+    notificarDocumentoSala();
+
+  }
 
 }
 
@@ -7261,10 +7768,17 @@ function pasoDeriva(
     tiempo;
 
 
-  actualizarDeriva(
-    tiempo,
-    delta
-  );
+  if (
+    !salaConectada ||
+    esAnfitrionSala()
+  ) {
+
+    actualizarDeriva(
+      tiempo,
+      delta
+    );
+
+  }
 
   dibujarDeriva(
     tiempo
@@ -10159,9 +10673,16 @@ function pasoConstelacion(
     tiempo;
 
 
-  actualizarConstelacion(
-    delta
-  );
+  if (
+    !salaConectada ||
+    esAnfitrionSala()
+  ) {
+
+    actualizarConstelacion(
+      delta
+    );
+
+  }
 
   dibujarConstelacion();
 
@@ -11377,39 +11898,46 @@ function pasoFisica(
     tiempo;
 
 
-  Matter.Engine.update(
-    motorFisica,
-    delta
-  );
+  if (
+    !salaConectada ||
+    esAnfitrionSala()
+  ) {
+
+    Matter.Engine.update(
+      motorFisica,
+      delta
+    );
 
 
-  cuerposFisica.forEach(
-    cuerpo => {
+    cuerposFisica.forEach(
+      cuerpo => {
 
-      const rapidez =
-        Matter.Vector.magnitude(
-          cuerpo.velocity
-        );
+        const rapidez =
+          Matter.Vector.magnitude(
+            cuerpo.velocity
+          );
 
 
-      if (
-        rapidez > 28
-      ) {
+        if (
+          rapidez > 28
+        ) {
 
-        Matter.Body.setVelocity(
-          cuerpo,
-          Matter.Vector.mult(
-            Matter.Vector.normalise(
-              cuerpo.velocity
-            ),
-            28
-          )
-        );
+          Matter.Body.setVelocity(
+            cuerpo,
+            Matter.Vector.mult(
+              Matter.Vector.normalise(
+                cuerpo.velocity
+              ),
+              28
+            )
+          );
+
+        }
 
       }
+    );
 
-    }
-  );
+  }
 
 
   dibujarFisica();
@@ -12511,6 +13039,3064 @@ controlTamano.addEventListener(
   "input",
   actualizarTamano
 );
+
+
+/* =========================================================
+   SALA COMPARTIDA: VOZ, PRESENCIA Y SINCRONIZACIÓN
+========================================================= */
+
+const configuracionSala = {
+  tokenEndpoint:
+    window.CONFIG_SALA?.tokenEndpoint || "",
+  roomName:
+    window.CONFIG_SALA?.roomName || "visor-investigacion"
+};
+
+const abrirSala =
+  document.getElementById("abrirSala");
+const textoBotonSala =
+  document.getElementById("textoBotonSala");
+const capaSala =
+  document.getElementById("capaSala");
+const nombreParticipante =
+  document.getElementById("nombreParticipante");
+const nombreSala =
+  document.getElementById("nombreSala");
+const entrarSala =
+  document.getElementById("entrarSala");
+const cancelarSala =
+  document.getElementById("cancelarSala");
+const errorSala =
+  document.getElementById("errorSala");
+const panelSala =
+  document.getElementById("panelSala");
+const cerrarPanelSala =
+  document.getElementById("cerrarPanelSala");
+const etiquetaSala =
+  document.getElementById("etiquetaSala");
+const participantesSala =
+  document.getElementById("participantesSala");
+const estadoDocumentoSala =
+  document.getElementById("estadoDocumentoSala");
+const alternarMicrofono =
+  document.getElementById("alternarMicrofono");
+const copiarInvitacion =
+  document.getElementById("copiarInvitacion");
+const salirSala =
+  document.getElementById("salirSala");
+const audiosSala =
+  document.getElementById("audiosSala");
+
+let salaRoom = null;
+let salaConectada = false;
+let microfonoSalaActivo = false;
+let salaAplicandoRemoto = false;
+let ultimoEnvioSala = 0;
+let temporizadorSala = null;
+
+const salaHablantes = new Set();
+const salaModos = new Map();
+const salaDocumentos = new Map();
+const codificadorSala = new TextEncoder();
+const decodificadorSala = new TextDecoder();
+
+const parametrosSala =
+  new URLSearchParams(window.location.search);
+
+nombreSala.value =
+  parametrosSala.get("sala") ||
+  configuracionSala.roomName;
+
+nombreParticipante.value =
+  localStorage.getItem("visorInvestigacionNombreSala") ||
+  "";
+
+
+function redondearSala(
+  valor,
+  decimales = 4
+) {
+
+  const factor =
+    Math.pow(10, decimales);
+
+  return Math.round(
+    Number(valor || 0) * factor
+  ) / factor;
+
+}
+
+
+function limpiarNombreSala(
+  valor,
+  alternativa
+) {
+
+  const limpio =
+    String(valor || "")
+      .trim()
+      .replace(
+        /[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ _-]/g,
+        ""
+      )
+      .slice(0, 42);
+
+  return limpio || alternativa;
+
+}
+
+
+function hashSala(
+  texto
+) {
+
+  let hash = 2166136261;
+
+  for (
+    let indice = 0;
+    indice < texto.length;
+    indice += 1
+  ) {
+
+    hash ^= texto.charCodeAt(indice);
+    hash = Math.imul(hash, 16777619);
+
+  }
+
+  return (hash >>> 0).toString(36);
+
+}
+
+
+function documentoSalaActual() {
+
+  if (
+    !documentoActual.paginas ||
+    documentoActual.paginas.length === 0
+  ) {
+    return null;
+  }
+
+  const dimensionesDocumento =
+    documentoActual.paginas
+      .map(
+        pagina =>
+          String(pagina.width) +
+          "x" +
+          String(pagina.height)
+      )
+      .join("|");
+
+  return {
+    firma:
+      hashSala(
+        String(documentoActual.tipo) +
+        "|" +
+        String(
+          documentoActual.origen ||
+          documentoActual.nombre ||
+          ""
+        ) +
+        "|" +
+        String(documentoActual.paginas.length) +
+        "|" +
+        dimensionesDocumento
+      ),
+    nombre:
+      documentoActual.nombre,
+    cantidad:
+      documentoActual.paginas.length
+  };
+
+}
+
+
+function documentosCompatiblesSala(
+  documentoRemoto
+) {
+
+  const local =
+    documentoSalaActual();
+
+  return Boolean(
+    local &&
+    documentoRemoto &&
+    local.firma === documentoRemoto.firma
+  );
+
+}
+
+
+function nombreVisibleModoSala(
+  modo
+) {
+
+  return {
+    libro: "Hojear",
+    capas: "Superponer capas",
+    fisica: "Caer y rebotar",
+    detalle: "Recorte y detalle",
+    deriva: "Corriente o deriva",
+    espacio3d: "Espacio 3D",
+    constelacion: "Constelación conectada"
+  }[modo] || "Explorando";
+
+}
+
+
+function abrirEntradaSala() {
+
+  errorSala.textContent = "";
+  capaSala.classList.add("visible");
+  capaSala.setAttribute("aria-hidden", "false");
+
+  requestAnimationFrame(
+    () => nombreParticipante.focus()
+  );
+
+}
+
+
+function cerrarEntradaSala() {
+
+  capaSala.classList.remove("visible");
+  capaSala.setAttribute("aria-hidden", "true");
+
+}
+
+
+function esAnfitrionSala() {
+
+  if (
+    !salaConectada ||
+    !salaRoom
+  ) {
+    return true;
+  }
+
+  const identidades = [
+    salaRoom.localParticipant.identity,
+    ...Array.from(
+      salaRoom.remoteParticipants.keys()
+    )
+  ].sort();
+
+  return (
+    identidades[0] ===
+    salaRoom.localParticipant.identity
+  );
+
+}
+
+
+function esResponsableEstadoPara(
+  identidadSolicitante
+) {
+
+  if (
+    !salaRoom
+  ) {
+    return false;
+  }
+
+  const identidades = [
+    salaRoom.localParticipant.identity,
+    ...Array.from(
+      salaRoom.remoteParticipants.keys()
+    )
+  ]
+    .filter(
+      identidad =>
+        identidad !== identidadSolicitante
+    )
+    .sort();
+
+  return (
+    identidades[0] ===
+    salaRoom.localParticipant.identity
+  );
+
+}
+
+
+function actualizarBotonSala() {
+
+  abrirSala.classList.toggle(
+    "conectado",
+    salaConectada
+  );
+
+  abrirSala.setAttribute(
+    "aria-expanded",
+    panelSala.classList.contains("visible")
+      ? "true"
+      : "false"
+  );
+
+  if (
+    salaConectada &&
+    salaRoom
+  ) {
+
+    textoBotonSala.textContent =
+      "Sala · " +
+      String(
+        salaRoom.remoteParticipants.size + 1
+      );
+
+  }
+  else {
+
+    textoBotonSala.textContent =
+      "Sala";
+
+  }
+
+}
+
+
+function actualizarEstadoDocumentoSala() {
+
+  const local =
+    documentoSalaActual();
+
+  estadoDocumentoSala.classList.remove(
+    "alerta"
+  );
+
+  if (
+    !local
+  ) {
+
+    estadoDocumentoSala.textContent =
+      "Cargá el documento que usarán en la sala para activar la sincronización visual.";
+
+    return;
+
+  }
+
+  if (
+    !salaRoom ||
+    salaRoom.remoteParticipants.size === 0
+  ) {
+
+    estadoDocumentoSala.textContent =
+      "Documento listo · esperando a otras personas.";
+
+    return;
+
+  }
+
+  const identidades =
+    Array.from(
+      salaRoom.remoteParticipants.keys()
+    );
+
+  const conocidos =
+    identidades.filter(
+      identidad =>
+        salaDocumentos.has(identidad)
+    );
+
+  const incompatibles =
+    conocidos.filter(
+      identidad =>
+        !documentosCompatiblesSala(
+          salaDocumentos.get(identidad)
+        )
+    );
+
+  if (
+    incompatibles.length > 0
+  ) {
+
+    estadoDocumentoSala.textContent =
+      "Hay alguien con otro documento. Las voces funcionan, pero sus láminas no se sincronizan.";
+
+    estadoDocumentoSala.classList.add(
+      "alerta"
+    );
+
+  }
+  else if (
+    conocidos.length < identidades.length
+  ) {
+
+    estadoDocumentoSala.textContent =
+      "Comprobando los documentos de la sala…";
+
+  }
+  else {
+
+    estadoDocumentoSala.textContent =
+      "Todos tienen el mismo documento · sincronización visual activa.";
+
+  }
+
+}
+
+
+function actualizarParticipantesSala() {
+
+  participantesSala.replaceChildren();
+
+  if (
+    !salaRoom
+  ) {
+    return;
+  }
+
+  const personas = [
+    salaRoom.localParticipant,
+    ...Array.from(
+      salaRoom.remoteParticipants.values()
+    )
+  ];
+
+  personas.forEach(
+    participante => {
+
+      const esLocal =
+        participante ===
+        salaRoom.localParticipant;
+
+      const item =
+        document.createElement("li");
+
+      item.className =
+        "participante-sala";
+
+      item.classList.toggle(
+        "hablando",
+        salaHablantes.has(
+          participante.identity
+        )
+      );
+
+      const punto =
+        document.createElement("span");
+
+      punto.className =
+        "estado-voz";
+
+      const datos =
+        document.createElement("span");
+
+      datos.className =
+        "datos-persona";
+
+      const nombrePersona =
+        document.createElement("strong");
+
+      nombrePersona.textContent =
+        participante.name ||
+        participante.identity;
+
+      if (
+        esLocal
+      ) {
+
+        nombrePersona.textContent +=
+          " (vos)";
+
+      }
+
+      const detallePersona =
+        document.createElement("small");
+
+      const modoPersona =
+        esLocal
+          ? modoPrincipal
+          : salaModos.get(
+              participante.identity
+            );
+
+      const documentoPersona =
+        esLocal
+          ? documentoSalaActual()
+          : salaDocumentos.get(
+              participante.identity
+            );
+
+      let estadoDocumento =
+        "sin documento";
+
+      if (
+        esLocal &&
+        documentoPersona
+      ) {
+
+        estadoDocumento =
+          "documento local";
+
+      }
+      else if (
+        documentoPersona &&
+        documentosCompatiblesSala(
+          documentoPersona
+        )
+      ) {
+
+        estadoDocumento =
+          "mismo documento";
+
+      }
+      else if (
+        documentoPersona
+      ) {
+
+        estadoDocumento =
+          "otro documento";
+
+      }
+
+      detallePersona.textContent =
+        nombreVisibleModoSala(
+          modoPersona
+        ) +
+        " · " +
+        estadoDocumento;
+
+      datos.append(
+        nombrePersona,
+        detallePersona
+      );
+
+      item.append(
+        punto,
+        datos
+      );
+
+      participantesSala.appendChild(
+        item
+      );
+
+    }
+  );
+
+  actualizarBotonSala();
+  actualizarEstadoDocumentoSala();
+
+}
+
+
+function adjuntarAudioSala(
+  pista
+) {
+
+  const elemento =
+    pista.attach();
+
+  elemento.autoplay = true;
+
+  audiosSala.appendChild(
+    elemento
+  );
+
+}
+
+
+function retirarAudioSala(
+  pista
+) {
+
+  pista.detach().forEach(
+    elemento => elemento.remove()
+  );
+
+}
+
+
+async function enviarSala(
+  mensaje,
+  confiable = true
+) {
+
+  if (
+    !salaConectada ||
+    !salaRoom
+  ) {
+    return;
+  }
+
+  const paquete = {
+    ...mensaje,
+    autor:
+      salaRoom.localParticipant.identity,
+    enviado:
+      Date.now()
+  };
+
+  const bytes =
+    codificadorSala.encode(
+      JSON.stringify(paquete)
+    );
+
+  if (
+    bytes.byteLength > 14000
+  ) {
+
+    console.warn(
+      "El estado compartido es demasiado grande para enviarse en un solo mensaje."
+    );
+
+    return;
+
+  }
+
+  try {
+
+    await salaRoom.localParticipant
+      .publishData(
+        bytes,
+        {
+          reliable: confiable,
+          topic: "visor-investigacion-sync"
+        }
+      );
+
+  }
+  catch (
+    errorEnvio
+  ) {
+
+    console.warn(
+      "No se pudo compartir la acción.",
+      errorEnvio
+    );
+
+  }
+
+}
+
+
+function capturarEstadoModoSala(
+  modo = modoPrincipal
+) {
+
+  const estadoModo = {
+    modo,
+    titulo:
+      tituloProyecto.value
+  };
+
+  if (
+    modo === "capas"
+  ) {
+
+    const laminas = [
+      ...mesa.querySelectorAll(
+        ".lamina"
+      )
+    ];
+
+    estadoModo.datos = {
+      visualizacion:
+        modoCapas,
+      paginas:
+        Number(controlPaginas.value),
+      opacidad:
+        Number(controlOpacidad.value),
+      tamano:
+        Number(controlTamano.value),
+      posiciones:
+        posiciones.map(
+          (
+            posicion,
+            indice
+          ) => [
+            redondearSala(
+              posicion.x,
+              2
+            ),
+            redondearSala(
+              posicion.y,
+              2
+            ),
+            Number(
+              laminas[indice]?.style.zIndex ||
+              indice + 1
+            )
+          ]
+        )
+    };
+
+  }
+
+  else if (
+    modo === "fisica"
+  ) {
+
+    const ancho =
+      Number(
+        lienzoFisica.dataset.ancho || 1
+      );
+
+    const alto =
+      Number(
+        lienzoFisica.dataset.alto || 1
+      );
+
+    estadoModo.datos = {
+      gravedad:
+        Number(controlGravedad.value),
+      cuerpos:
+        cuerposFisica.map(
+          cuerpo => [
+            redondearSala(
+              cuerpo.position.x / ancho
+            ),
+            redondearSala(
+              cuerpo.position.y / alto
+            ),
+            redondearSala(
+              cuerpo.velocity.x / ancho,
+              5
+            ),
+            redondearSala(
+              cuerpo.velocity.y / alto,
+              5
+            ),
+            redondearSala(
+              cuerpo.angle
+            ),
+            redondearSala(
+              cuerpo.angularVelocity
+            ),
+            cuerpo.plugin.visible
+              ? 1
+              : 0,
+            cuerpo.isStatic
+              ? 1
+              : 0
+          ]
+        )
+    };
+
+  }
+
+  else if (
+    modo === "detalle"
+  ) {
+
+    estadoModo.datos = {
+      pagina:
+        indiceDetalle,
+      lupa:
+        Number(controlLupa.value)
+    };
+
+  }
+
+  else if (
+    modo === "deriva"
+  ) {
+
+    const ancho =
+      Number(
+        lienzoDeriva.dataset.ancho || 1
+      );
+
+    const alto =
+      Number(
+        lienzoDeriva.dataset.alto || 1
+      );
+
+    estadoModo.datos = {
+      corriente:
+        Number(controlCorriente.value),
+      interaccion:
+        modoInteraccionDeriva,
+      particulas:
+        particulasDeriva.map(
+          particula => [
+            redondearSala(
+              particula.x / ancho
+            ),
+            redondearSala(
+              particula.y / alto
+            ),
+            redondearSala(
+              particula.velocidadX / ancho,
+              6
+            ),
+            redondearSala(
+              particula.velocidadY / alto,
+              6
+            ),
+            redondearSala(
+              particula.angulo
+            ),
+            redondearSala(
+              particula.giro,
+              6
+            )
+          ]
+        )
+    };
+
+  }
+
+  else if (
+    modo === "espacio3d"
+  ) {
+
+    estadoModo.datos = {
+      laminas:
+        laminasEspacio3D.map(
+          lamina => [
+            redondearSala(
+              lamina.x,
+              2
+            ),
+            redondearSala(
+              lamina.y,
+              2
+            ),
+            redondearSala(
+              lamina.z,
+              2
+            ),
+            redondearSala(
+              lamina.giroY,
+              2
+            )
+          ]
+        )
+    };
+
+  }
+
+  else if (
+    modo === "constelacion"
+  ) {
+
+    const ancho =
+      Number(
+        lienzoConstelacion.dataset.ancho || 1
+      );
+
+    const alto =
+      Number(
+        lienzoConstelacion.dataset.alto || 1
+      );
+
+    estadoModo.datos = {
+      tension:
+        Number(
+          controlTensionConstelacion.value
+        ),
+      nodos:
+        nodosConstelacion.map(
+          nodo => [
+            redondearSala(
+              nodo.x / ancho
+            ),
+            redondearSala(
+              nodo.y / alto
+            ),
+            redondearSala(
+              nodo.velocidadX / ancho,
+              6
+            ),
+            redondearSala(
+              nodo.velocidadY / alto,
+              6
+            )
+          ]
+        )
+    };
+
+  }
+
+  else {
+
+    estadoModo.datos = {};
+
+  }
+
+  return estadoModo;
+
+}
+
+
+function mostrarModoDesdeSala(
+  modo
+) {
+
+  const funciones = {
+    libro:
+      mostrarLibro,
+    capas:
+      mostrarCapas,
+    fisica:
+      mostrarFisica,
+    detalle:
+      mostrarDetalle,
+    deriva:
+      mostrarDeriva,
+    espacio3d:
+      mostrarEspacio3D,
+    constelacion:
+      mostrarConstelacion
+  };
+
+  if (
+    funciones[modo]
+  ) {
+
+    funciones[modo]();
+
+  }
+
+}
+
+
+function asegurarModoPreparadoSala(
+  modo
+) {
+
+  if (
+    modo === "fisica" &&
+    !fisicaPreparada
+  ) {
+
+    reiniciarSimulacionFisica();
+
+  }
+
+  if (
+    modo === "detalle" &&
+    !detallePreparado
+  ) {
+
+    prepararDetalle();
+
+  }
+
+  if (
+    modo === "deriva" &&
+    !derivaPreparada
+  ) {
+
+    prepararDeriva();
+
+  }
+
+  if (
+    modo === "espacio3d" &&
+    !espacio3DPreparado
+  ) {
+
+    prepararEspacio3D();
+
+  }
+
+  if (
+    modo === "constelacion" &&
+    !constelacionPreparada
+  ) {
+
+    prepararConstelacion();
+
+  }
+
+}
+
+
+function aplicarEstadoModoSala(
+  estadoModo
+) {
+
+  if (
+    !estadoModo ||
+    !estadoModo.modo
+  ) {
+    return;
+  }
+
+  const modo =
+    estadoModo.modo;
+
+  const datos =
+    estadoModo.datos || {};
+
+  salaAplicandoRemoto = true;
+
+  if (
+    typeof estadoModo.titulo ===
+      "string" &&
+    tituloProyecto.value !==
+      estadoModo.titulo
+  ) {
+
+    tituloProyecto.value =
+      estadoModo.titulo;
+
+  }
+
+  mostrarModoDesdeSala(
+    modo
+  );
+
+  requestAnimationFrame(
+    () => {
+
+      asegurarModoPreparadoSala(
+        modo
+      );
+
+      if (
+        modo === "capas"
+      ) {
+
+        modoCapas =
+          datos.visualizacion ===
+            "individual"
+            ? "individual"
+            : "acumulacion";
+
+        modoAcumulacion.classList.toggle(
+          "activo",
+          modoCapas === "acumulacion"
+        );
+
+        modoIndividual.classList.toggle(
+          "activo",
+          modoCapas === "individual"
+        );
+
+        if (
+          Number.isFinite(
+            Number(datos.paginas)
+          )
+        ) {
+          controlPaginas.value =
+            datos.paginas;
+        }
+
+        if (
+          Number.isFinite(
+            Number(datos.opacidad)
+          )
+        ) {
+          controlOpacidad.value =
+            datos.opacidad;
+        }
+
+        if (
+          Number.isFinite(
+            Number(datos.tamano)
+          )
+        ) {
+          controlTamano.value =
+            datos.tamano;
+        }
+
+        if (
+          Array.isArray(
+            datos.posiciones
+          )
+        ) {
+
+          const laminas = [
+            ...mesa.querySelectorAll(
+              ".lamina"
+            )
+          ];
+
+          datos.posiciones.forEach(
+            (
+              posicion,
+              indice
+            ) => {
+
+              if (
+                !posiciones[indice] ||
+                !Array.isArray(posicion)
+              ) {
+                return;
+              }
+
+              posiciones[indice].x =
+                Number(posicion[0]) || 0;
+
+              posiciones[indice].y =
+                Number(posicion[1]) || 0;
+
+              if (
+                laminas[indice]
+              ) {
+
+                laminas[indice].style.zIndex =
+                  Number(posicion[2]) ||
+                  indice + 1;
+
+              }
+
+            }
+          );
+
+        }
+
+        actualizarCapas();
+
+      }
+
+      if (
+        modo === "fisica"
+      ) {
+
+        if (
+          Number.isFinite(
+            Number(datos.gravedad)
+          )
+        ) {
+
+          controlGravedad.value =
+            datos.gravedad;
+
+          valorGravedad.textContent =
+            String(datos.gravedad) + "%";
+
+          if (
+            motorFisica
+          ) {
+
+            motorFisica.gravity.y =
+              Number(datos.gravedad) /
+              100;
+
+          }
+
+        }
+
+        const ancho =
+          Number(
+            lienzoFisica.dataset.ancho || 1
+          );
+
+        const alto =
+          Number(
+            lienzoFisica.dataset.alto || 1
+          );
+
+        if (
+          Array.isArray(
+            datos.cuerpos
+          )
+        ) {
+
+          datos.cuerpos.forEach(
+            (
+              dato,
+              indice
+            ) => {
+
+              const cuerpo =
+                cuerposFisica[indice];
+
+              if (
+                !cuerpo ||
+                !Array.isArray(dato)
+              ) {
+                return;
+              }
+
+              Matter.Body.setPosition(
+                cuerpo,
+                {
+                  x:
+                    Number(dato[0]) *
+                    ancho,
+                  y:
+                    Number(dato[1]) *
+                    alto
+                }
+              );
+
+              Matter.Body.setVelocity(
+                cuerpo,
+                {
+                  x:
+                    Number(dato[2]) *
+                    ancho,
+                  y:
+                    Number(dato[3]) *
+                    alto
+                }
+              );
+
+              Matter.Body.setAngle(
+                cuerpo,
+                Number(dato[4]) || 0
+              );
+
+              Matter.Body.setAngularVelocity(
+                cuerpo,
+                Number(dato[5]) || 0
+              );
+
+              cuerpo.plugin.visible =
+                Boolean(dato[6]);
+
+              Matter.Body.setStatic(
+                cuerpo,
+                Boolean(dato[7])
+              );
+
+            }
+          );
+
+        }
+
+        dibujarFisica();
+
+      }
+
+      if (
+        modo === "detalle"
+      ) {
+
+        if (
+          Number.isFinite(
+            Number(datos.pagina)
+          )
+        ) {
+
+          indiceDetalle =
+            Math.max(
+              0,
+              Math.min(
+                imagenesDetalle.length - 1,
+                Number(datos.pagina)
+              )
+            );
+
+        }
+
+        if (
+          Number.isFinite(
+            Number(datos.lupa)
+          )
+        ) {
+
+          controlLupa.value =
+            datos.lupa;
+
+          valorLupa.textContent =
+            String(datos.lupa) + " px";
+
+        }
+
+        actualizarNavegacionDetalle();
+        dibujarDetalle();
+
+      }
+
+      if (
+        modo === "deriva"
+      ) {
+
+        if (
+          Number.isFinite(
+            Number(datos.corriente)
+          )
+        ) {
+
+          controlCorriente.value =
+            datos.corriente;
+
+          valorCorriente.textContent =
+            String(datos.corriente) +
+            "%";
+
+        }
+
+        if (
+          [
+            "atraer",
+            "remolino",
+            "repeler"
+          ].includes(
+            datos.interaccion
+          )
+        ) {
+
+          seleccionarInteraccionDeriva(
+            datos.interaccion
+          );
+
+        }
+
+        const ancho =
+          Number(
+            lienzoDeriva.dataset.ancho || 1
+          );
+
+        const alto =
+          Number(
+            lienzoDeriva.dataset.alto || 1
+          );
+
+        if (
+          Array.isArray(
+            datos.particulas
+          )
+        ) {
+
+          datos.particulas.forEach(
+            (
+              dato,
+              indice
+            ) => {
+
+              const particula =
+                particulasDeriva[indice];
+
+              if (
+                !particula ||
+                !Array.isArray(dato)
+              ) {
+                return;
+              }
+
+              particula.x =
+                Number(dato[0]) *
+                ancho;
+
+              particula.y =
+                Number(dato[1]) *
+                alto;
+
+              particula.velocidadX =
+                Number(dato[2]) *
+                ancho;
+
+              particula.velocidadY =
+                Number(dato[3]) *
+                alto;
+
+              particula.angulo =
+                Number(dato[4]) || 0;
+
+              particula.giro =
+                Number(dato[5]) || 0;
+
+            }
+          );
+
+        }
+
+        dibujarDeriva(
+          performance.now()
+        );
+
+      }
+
+      if (
+        modo === "espacio3d" &&
+        Array.isArray(
+          datos.laminas
+        )
+      ) {
+
+        datos.laminas.forEach(
+          (
+            dato,
+            indice
+          ) => {
+
+            const lamina =
+              laminasEspacio3D[indice];
+
+            if (
+              !lamina ||
+              !Array.isArray(dato)
+            ) {
+              return;
+            }
+
+            lamina.x =
+              Number(dato[0]) || 0;
+
+            lamina.y =
+              Number(dato[1]) || 0;
+
+            lamina.z =
+              Number(dato[2]) || 0;
+
+            lamina.giroY =
+              Number(dato[3]) || 0;
+
+            actualizarLaminaEspacio3D(
+              lamina
+            );
+
+          }
+        );
+
+      }
+
+      if (
+        modo === "constelacion"
+      ) {
+
+        if (
+          Number.isFinite(
+            Number(datos.tension)
+          )
+        ) {
+
+          controlTensionConstelacion.value =
+            datos.tension;
+
+          valorTensionConstelacion.textContent =
+            String(datos.tension) +
+            "%";
+
+        }
+
+        const ancho =
+          Number(
+            lienzoConstelacion.dataset.ancho ||
+            1
+          );
+
+        const alto =
+          Number(
+            lienzoConstelacion.dataset.alto ||
+            1
+          );
+
+        if (
+          Array.isArray(
+            datos.nodos
+          )
+        ) {
+
+          datos.nodos.forEach(
+            (
+              dato,
+              indice
+            ) => {
+
+              const nodo =
+                nodosConstelacion[indice];
+
+              if (
+                !nodo ||
+                !Array.isArray(dato)
+              ) {
+                return;
+              }
+
+              nodo.x =
+                Number(dato[0]) *
+                ancho;
+
+              nodo.y =
+                Number(dato[1]) *
+                alto;
+
+              nodo.velocidadX =
+                Number(dato[2]) *
+                ancho;
+
+              nodo.velocidadY =
+                Number(dato[3]) *
+                alto;
+
+            }
+          );
+
+        }
+
+        dibujarConstelacion();
+
+      }
+
+      salaAplicandoRemoto = false;
+
+    }
+  );
+
+}
+
+
+function enviarEstadoModoSala(
+  modo = modoPrincipal,
+  confiable = false
+) {
+
+  if (
+    salaAplicandoRemoto ||
+    !documentoSalaActual()
+  ) {
+    return;
+  }
+
+  enviarSala(
+    {
+      tipo:
+        "estado-modo",
+      documento:
+        documentoSalaActual(),
+      ...capturarEstadoModoSala(
+        modo
+      )
+    },
+    confiable
+  );
+
+}
+
+
+function enviarEstadoModoLimitadoSala(
+  modo = modoPrincipal,
+  intervalo = 70
+) {
+
+  const ahora =
+    performance.now();
+
+  if (
+    ahora - ultimoEnvioSala <
+      intervalo
+  ) {
+    return;
+  }
+
+  ultimoEnvioSala =
+    ahora;
+
+  enviarEstadoModoSala(
+    modo,
+    false
+  );
+
+}
+
+
+function notificarDocumentoSala() {
+
+  if (
+    salaRoom
+  ) {
+
+    salaDocumentos.set(
+      salaRoom.localParticipant.identity,
+      documentoSalaActual()
+    );
+
+    salaModos.set(
+      salaRoom.localParticipant.identity,
+      modoPrincipal
+    );
+
+  }
+
+  actualizarParticipantesSala();
+
+  enviarSala(
+    {
+      tipo:
+        "documento",
+      documento:
+        documentoSalaActual(),
+      modo:
+        modoPrincipal
+    },
+    true
+  );
+
+  if (
+    documentoSalaActual()
+  ) {
+
+    setTimeout(
+      () => {
+
+        enviarSala(
+          {
+            tipo:
+              "solicitar-estado",
+            documento:
+              documentoSalaActual()
+          },
+          true
+        );
+
+      },
+      180
+    );
+
+  }
+
+}
+
+
+function manejarPunteroDerivaSala(
+  mensaje
+) {
+
+  if (
+    !documentosCompatiblesSala(
+      mensaje.documento
+    )
+  ) {
+    return;
+  }
+
+  if (
+    modoPrincipal !== "deriva"
+  ) {
+
+    mostrarDeriva();
+
+  }
+
+  requestAnimationFrame(
+    () => {
+
+      asegurarModoPreparadoSala(
+        "deriva"
+      );
+
+      const ancho =
+        Number(
+          lienzoDeriva.dataset.ancho || 1
+        );
+
+      const alto =
+        Number(
+          lienzoDeriva.dataset.alto || 1
+        );
+
+      punteroDeriva.activo =
+        Boolean(mensaje.activo);
+
+      punteroDeriva.presionado =
+        Boolean(mensaje.presionado);
+
+      punteroDeriva.x =
+        Number(mensaje.x) * ancho;
+
+      punteroDeriva.y =
+        Number(mensaje.y) * alto;
+
+      if (
+        [
+          "atraer",
+          "remolino",
+          "repeler"
+        ].includes(
+          mensaje.interaccion
+        )
+      ) {
+
+        seleccionarInteraccionDeriva(
+          mensaje.interaccion
+        );
+
+      }
+
+      if (
+        mensaje.efecto
+      ) {
+
+        efectosInteraccionDeriva.push({
+          x:
+            punteroDeriva.x,
+          y:
+            punteroDeriva.y,
+          modo:
+            modoInteraccionDeriva,
+          inicio:
+            performance.now()
+        });
+
+      }
+
+    }
+  );
+
+}
+
+
+function manejarDatosSala(
+  carga,
+  participante,
+  _clase,
+  tema
+) {
+
+  if (
+    tema &&
+    tema !==
+      "visor-investigacion-sync"
+  ) {
+    return;
+  }
+
+  let mensaje;
+
+  try {
+
+    mensaje =
+      JSON.parse(
+        decodificadorSala.decode(
+          carga
+        )
+      );
+
+  }
+  catch (
+    errorDatos
+  ) {
+    return;
+  }
+
+  const identidad =
+    participante?.identity ||
+    mensaje.autor;
+
+  if (
+    identidad &&
+    mensaje.modo
+  ) {
+
+    salaModos.set(
+      identidad,
+      mensaje.modo
+    );
+
+  }
+
+  if (
+    identidad &&
+    Object.prototype.hasOwnProperty.call(
+      mensaje,
+      "documento"
+    )
+  ) {
+
+    salaDocumentos.set(
+      identidad,
+      mensaje.documento
+    );
+
+  }
+
+  actualizarParticipantesSala();
+
+  if (
+    mensaje.tipo ===
+      "documento"
+  ) {
+    return;
+  }
+
+  if (
+    mensaje.tipo ===
+      "solicitar-estado"
+  ) {
+
+    if (
+      esResponsableEstadoPara(
+        mensaje.autor
+      ) &&
+      documentoSalaActual()
+    ) {
+
+      enviarSala(
+        {
+          tipo:
+            "estado-modo",
+          destinatario:
+            mensaje.autor,
+          documento:
+            documentoSalaActual(),
+          ...capturarEstadoModoSala()
+        },
+        true
+      );
+
+    }
+
+    return;
+
+  }
+
+  if (
+    mensaje.destinatario &&
+    mensaje.destinatario !==
+      salaRoom?.localParticipant.identity
+  ) {
+    return;
+  }
+
+  if (
+    mensaje.tipo ===
+      "modo"
+  ) {
+
+    if (
+      documentosCompatiblesSala(
+        mensaje.documento
+      )
+    ) {
+
+      salaAplicandoRemoto = true;
+
+      mostrarModoDesdeSala(
+        mensaje.modo
+      );
+
+      salaAplicandoRemoto = false;
+
+    }
+
+    return;
+
+  }
+
+  if (
+    mensaje.tipo ===
+      "estado-modo"
+  ) {
+
+    if (
+      documentosCompatiblesSala(
+        mensaje.documento
+      )
+    ) {
+
+      aplicarEstadoModoSala(
+        mensaje
+      );
+
+    }
+
+    return;
+
+  }
+
+  if (
+    mensaje.tipo ===
+      "deriva-puntero"
+  ) {
+
+    manejarPunteroDerivaSala(
+      mensaje
+    );
+
+  }
+
+}
+
+
+function configurarEventosRoom(
+  room
+) {
+
+  const eventos =
+    window.LivekitClient.RoomEvent;
+
+  const tipoPista =
+    window.LivekitClient.Track.Kind;
+
+  room.on(
+    eventos.ParticipantConnected,
+    participante => {
+
+      salaModos.set(
+        participante.identity,
+        modoPrincipal
+      );
+
+      actualizarParticipantesSala();
+
+      notificarDocumentoSala();
+
+      if (
+        esResponsableEstadoPara(
+          participante.identity
+        ) &&
+        documentoSalaActual()
+      ) {
+
+        setTimeout(
+          () => {
+
+            enviarSala(
+              {
+                tipo:
+                  "estado-modo",
+                destinatario:
+                  participante.identity,
+                documento:
+                  documentoSalaActual(),
+                ...capturarEstadoModoSala()
+              },
+              true
+            );
+
+          },
+          300
+        );
+
+      }
+
+    }
+  );
+
+  room.on(
+    eventos.ParticipantDisconnected,
+    participante => {
+
+      salaModos.delete(
+        participante.identity
+      );
+
+      salaDocumentos.delete(
+        participante.identity
+      );
+
+      salaHablantes.delete(
+        participante.identity
+      );
+
+      actualizarParticipantesSala();
+
+    }
+  );
+
+  room.on(
+    eventos.TrackSubscribed,
+    pista => {
+
+      if (
+        pista.kind ===
+          tipoPista.Audio
+      ) {
+
+        adjuntarAudioSala(
+          pista
+        );
+
+      }
+
+    }
+  );
+
+  room.on(
+    eventos.TrackUnsubscribed,
+    pista => {
+
+      if (
+        pista.kind ===
+          tipoPista.Audio
+      ) {
+
+        retirarAudioSala(
+          pista
+        );
+
+      }
+
+    }
+  );
+
+  room.on(
+    eventos.ActiveSpeakersChanged,
+    participantes => {
+
+      salaHablantes.clear();
+
+      participantes.forEach(
+        participante => {
+
+          salaHablantes.add(
+            participante.identity
+          );
+
+        }
+      );
+
+      actualizarParticipantesSala();
+
+    }
+  );
+
+  room.on(
+    eventos.DataReceived,
+    manejarDatosSala
+  );
+
+  room.on(
+    eventos.Disconnected,
+    () => limpiarSalaDesconectada()
+  );
+
+}
+
+
+async function conectarSala() {
+
+  const nombrePersona =
+    limpiarNombreSala(
+      nombreParticipante.value,
+      "Visitante"
+    );
+
+  const sala =
+    limpiarNombreSala(
+      nombreSala.value,
+      configuracionSala.roomName
+    )
+      .replace(/\s+/g, "-")
+      .toLowerCase();
+
+  errorSala.textContent = "";
+
+  if (
+    !configuracionSala
+      .tokenEndpoint
+      .trim()
+  ) {
+
+    errorSala.textContent =
+      "La sala todavía no está activada. Falta agregar la dirección del servidor de acceso en CONFIG_SALA.";
+
+    return;
+
+  }
+
+  if (
+    !window.LivekitClient
+  ) {
+
+    errorSala.textContent =
+      "No se pudo cargar el sistema de voz. Revisá la conexión a internet y volvé a intentar.";
+
+    return;
+
+  }
+
+  localStorage.setItem(
+    "visorInvestigacionNombreSala",
+    nombrePersona
+  );
+
+  entrarSala.disabled = true;
+  entrarSala.textContent =
+    "Conectando…";
+
+  try {
+
+    const separador =
+      configuracionSala
+        .tokenEndpoint
+        .includes("?")
+        ? "&"
+        : "?";
+
+    const respuesta =
+      await fetch(
+        configuracionSala.tokenEndpoint +
+        separador +
+        new URLSearchParams({
+          roomName: sala,
+          participantName:
+            nombrePersona
+        })
+      );
+
+    if (
+      !respuesta.ok
+    ) {
+
+      throw new Error(
+        "El servidor respondió " +
+        String(respuesta.status) +
+        "."
+      );
+
+    }
+
+    const acceso =
+      await respuesta.json();
+
+    const serverUrl =
+      acceso.serverUrl ||
+      acceso.url;
+
+    const token =
+      acceso.participantToken ||
+      acceso.token;
+
+    if (
+      !serverUrl ||
+      !token
+    ) {
+
+      throw new Error(
+        "El servidor no devolvió un acceso válido."
+      );
+
+    }
+
+    const room =
+      new window.LivekitClient.Room({
+        adaptiveStream: true,
+        dynacast: true
+      });
+
+    configurarEventosRoom(
+      room
+    );
+
+    salaRoom =
+      room;
+
+    await room.connect(
+      serverUrl,
+      token
+    );
+
+    salaConectada = true;
+
+    salaModos.set(
+      room.localParticipant.identity,
+      modoPrincipal
+    );
+
+    salaDocumentos.set(
+      room.localParticipant.identity,
+      documentoSalaActual()
+    );
+
+    try {
+
+      await room.localParticipant
+        .setMicrophoneEnabled(true);
+
+      microfonoSalaActivo = true;
+
+    }
+    catch (
+      errorMicrofono
+    ) {
+
+      microfonoSalaActivo = false;
+
+      console.warn(
+        "La sala se conectó sin micrófono.",
+        errorMicrofono
+      );
+
+    }
+
+    alternarMicrofono.textContent =
+      microfonoSalaActivo
+        ? "Silenciar"
+        : "Activar micrófono";
+
+    etiquetaSala.textContent =
+      sala;
+
+    nombreSala.value =
+      sala;
+
+    cerrarEntradaSala();
+    panelSala.classList.add("visible");
+
+    actualizarParticipantesSala();
+    actualizarBotonSala();
+    notificarDocumentoSala();
+
+  }
+  catch (
+    errorConexion
+  ) {
+
+    if (
+      salaRoom
+    ) {
+
+      salaRoom.disconnect();
+
+    }
+
+    salaRoom = null;
+    salaConectada = false;
+
+    errorSala.textContent =
+      "No se pudo entrar a la sala. " +
+      errorConexion.message;
+
+  }
+  finally {
+
+    entrarSala.disabled = false;
+    entrarSala.textContent =
+      "Entrar y activar voz";
+
+  }
+
+}
+
+
+function limpiarSalaDesconectada() {
+
+  salaConectada = false;
+  microfonoSalaActivo = false;
+  salaRoom = null;
+
+  salaHablantes.clear();
+  salaModos.clear();
+  salaDocumentos.clear();
+
+  audiosSala.replaceChildren();
+  panelSala.classList.remove("visible");
+
+  actualizarBotonSala();
+  actualizarEstadoDocumentoSala();
+
+}
+
+
+async function desconectarSala() {
+
+  const room =
+    salaRoom;
+
+  limpiarSalaDesconectada();
+
+  if (
+    room
+  ) {
+
+    await room.disconnect();
+
+  }
+
+}
+
+
+abrirSala.addEventListener(
+  "click",
+  () => {
+
+    if (
+      salaConectada
+    ) {
+
+      panelSala.classList.toggle(
+        "visible"
+      );
+
+      actualizarBotonSala();
+
+    }
+    else {
+
+      abrirEntradaSala();
+
+    }
+
+  }
+);
+
+
+cancelarSala.addEventListener(
+  "click",
+  cerrarEntradaSala
+);
+
+
+cerrarPanelSala.addEventListener(
+  "click",
+  () => {
+
+    panelSala.classList.remove(
+      "visible"
+    );
+
+    actualizarBotonSala();
+
+  }
+);
+
+
+entrarSala.addEventListener(
+  "click",
+  conectarSala
+);
+
+
+nombreParticipante.addEventListener(
+  "keydown",
+  evento => {
+
+    if (
+      evento.key === "Enter"
+    ) {
+
+      conectarSala();
+
+    }
+
+  }
+);
+
+
+capaSala.addEventListener(
+  "pointerdown",
+  evento => {
+
+    if (
+      evento.target === capaSala
+    ) {
+
+      cerrarEntradaSala();
+
+    }
+
+  }
+);
+
+
+document.addEventListener(
+  "keydown",
+  evento => {
+
+    if (
+      evento.key === "Escape"
+    ) {
+
+      cerrarEntradaSala();
+      panelSala.classList.remove(
+        "visible"
+      );
+      actualizarBotonSala();
+
+    }
+
+  }
+);
+
+
+alternarMicrofono.addEventListener(
+  "click",
+  async () => {
+
+    if (
+      !salaRoom
+    ) {
+      return;
+    }
+
+    alternarMicrofono.disabled =
+      true;
+
+    try {
+
+      await salaRoom.localParticipant
+        .setMicrophoneEnabled(
+          !microfonoSalaActivo
+        );
+
+      microfonoSalaActivo =
+        !microfonoSalaActivo;
+
+      alternarMicrofono.textContent =
+        microfonoSalaActivo
+          ? "Silenciar"
+          : "Activar micrófono";
+
+    }
+    catch (
+      errorMicrofono
+    ) {
+
+      console.warn(
+        "No se pudo cambiar el micrófono.",
+        errorMicrofono
+      );
+
+    }
+    finally {
+
+      alternarMicrofono.disabled =
+        false;
+
+    }
+
+  }
+);
+
+
+copiarInvitacion.addEventListener(
+  "click",
+  async () => {
+
+    const url =
+      new URL(window.location.href);
+
+    url.searchParams.set(
+      "sala",
+      nombreSala.value
+    );
+
+    try {
+
+      await navigator.clipboard
+        .writeText(
+          url.toString()
+        );
+
+      copiarInvitacion.textContent =
+        "Enlace copiado";
+
+      setTimeout(
+        () => {
+
+          copiarInvitacion.textContent =
+            "Invitar";
+
+        },
+        1600
+      );
+
+    }
+    catch (
+      errorPortapapeles
+    ) {
+
+      window.prompt(
+        "Copiá este enlace:",
+        url.toString()
+      );
+
+    }
+
+  }
+);
+
+
+salirSala.addEventListener(
+  "click",
+  desconectarSala
+);
+
+
+const botonesModoSala = [
+  [botonLibro, "libro"],
+  [botonCapas, "capas"],
+  [botonFisica, "fisica"],
+  [botonDetalle, "detalle"],
+  [botonDeriva, "deriva"],
+  [botonEspacio3D, "espacio3d"],
+  [botonConstelacion, "constelacion"]
+];
+
+botonesModoSala.forEach(
+  (
+    [
+      boton,
+      modo
+    ]
+  ) => {
+
+    boton.addEventListener(
+      "click",
+      () => {
+
+        if (
+          salaAplicandoRemoto
+        ) {
+          return;
+        }
+
+        if (
+          salaRoom
+        ) {
+
+          salaModos.set(
+            salaRoom.localParticipant.identity,
+            modo
+          );
+
+        }
+
+        actualizarParticipantesSala();
+
+        enviarSala(
+          {
+            tipo:
+              "modo",
+            modo,
+            documento:
+              documentoSalaActual()
+          },
+          true
+        );
+
+        setTimeout(
+          () =>
+            enviarEstadoModoSala(
+              modo,
+              true
+            ),
+          80
+        );
+
+      }
+    );
+
+  }
+);
+
+
+tituloProyecto.addEventListener(
+  "change",
+  () =>
+    enviarEstadoModoSala(
+      modoPrincipal,
+      true
+    )
+);
+
+
+[
+  controlPaginas,
+  controlOpacidad,
+  controlTamano
+].forEach(
+  control => {
+
+    control.addEventListener(
+      "input",
+      () =>
+        enviarEstadoModoLimitadoSala(
+          "capas"
+        )
+    );
+
+    control.addEventListener(
+      "change",
+      () =>
+        enviarEstadoModoSala(
+          "capas",
+          true
+        )
+    );
+
+  }
+);
+
+
+[
+  modoAcumulacion,
+  modoIndividual,
+  restablecer
+].forEach(
+  boton => {
+
+    boton.addEventListener(
+      "click",
+      () =>
+        setTimeout(
+          () =>
+            enviarEstadoModoSala(
+              "capas",
+              true
+            ),
+          0
+        )
+    );
+
+  }
+);
+
+
+mesa.addEventListener(
+  "pointermove",
+  evento => {
+
+    if (
+      evento.buttons & 1
+    ) {
+
+      enviarEstadoModoLimitadoSala(
+        "capas",
+        55
+      );
+
+    }
+
+  }
+);
+
+
+mesa.addEventListener(
+  "pointerup",
+  () =>
+    enviarEstadoModoSala(
+      "capas",
+      true
+    )
+);
+
+
+[
+  detalleAnterior,
+  detalleSiguiente
+].forEach(
+  boton => {
+
+    boton.addEventListener(
+      "click",
+      () =>
+        setTimeout(
+          () =>
+            enviarEstadoModoSala(
+              "detalle",
+              true
+            ),
+          0
+        )
+    );
+
+  }
+);
+
+
+controlLupa.addEventListener(
+  "input",
+  () =>
+    enviarEstadoModoLimitadoSala(
+      "detalle"
+    )
+);
+
+
+controlLupa.addEventListener(
+  "change",
+  () =>
+    enviarEstadoModoSala(
+      "detalle",
+      true
+    )
+);
+
+
+[
+  derivaAtraer,
+  derivaRemolino,
+  derivaRepeler
+].forEach(
+  boton => {
+
+    boton.addEventListener(
+      "click",
+      () =>
+        setTimeout(
+          () =>
+            enviarEstadoModoSala(
+              "deriva",
+              true
+            ),
+          0
+        )
+    );
+
+  }
+);
+
+
+controlCorriente.addEventListener(
+  "input",
+  () =>
+    enviarEstadoModoLimitadoSala(
+      "deriva"
+    )
+);
+
+
+controlCorriente.addEventListener(
+  "change",
+  () =>
+    enviarEstadoModoSala(
+      "deriva",
+      true
+    )
+);
+
+
+function enviarPunteroDerivaSala(
+  evento,
+  activo,
+  presionado,
+  efecto = false
+) {
+
+  if (
+    !salaConectada ||
+    salaAplicandoRemoto
+  ) {
+    return;
+  }
+
+  const rect =
+    lienzoDeriva.getBoundingClientRect();
+
+  if (
+    rect.width <= 0 ||
+    rect.height <= 0
+  ) {
+    return;
+  }
+
+  enviarSala(
+    {
+      tipo:
+        "deriva-puntero",
+      modo:
+        "deriva",
+      documento:
+        documentoSalaActual(),
+      x:
+        redondearSala(
+          (
+            evento.clientX -
+            rect.left
+          ) /
+          rect.width
+        ),
+      y:
+        redondearSala(
+          (
+            evento.clientY -
+            rect.top
+          ) /
+          rect.height
+        ),
+      activo,
+      presionado,
+      efecto,
+      interaccion:
+        modoInteraccionDeriva
+    },
+    efecto
+  );
+
+}
+
+
+lienzoDeriva.addEventListener(
+  "pointermove",
+  evento => {
+
+    if (
+      performance.now() -
+      ultimoEnvioSala > 55
+    ) {
+
+      ultimoEnvioSala =
+        performance.now();
+
+      enviarPunteroDerivaSala(
+        evento,
+        true,
+        Boolean(evento.buttons & 1)
+      );
+
+    }
+
+  }
+);
+
+
+lienzoDeriva.addEventListener(
+  "pointerdown",
+  evento =>
+    enviarPunteroDerivaSala(
+      evento,
+      true,
+      true,
+      true
+    )
+);
+
+
+lienzoDeriva.addEventListener(
+  "pointerup",
+  evento =>
+    enviarPunteroDerivaSala(
+      evento,
+      true,
+      false
+    )
+);
+
+
+lienzoDeriva.addEventListener(
+  "pointerleave",
+  evento =>
+    enviarPunteroDerivaSala(
+      evento,
+      false,
+      false
+    )
+);
+
+
+controlGravedad.addEventListener(
+  "input",
+  () =>
+    enviarEstadoModoLimitadoSala(
+      "fisica"
+    )
+);
+
+
+controlGravedad.addEventListener(
+  "change",
+  () =>
+    enviarEstadoModoSala(
+      "fisica",
+      true
+    )
+);
+
+
+reiniciarFisica.addEventListener(
+  "click",
+  () =>
+    setTimeout(
+      () =>
+        enviarEstadoModoSala(
+          "fisica",
+          true
+        ),
+      80
+    )
+);
+
+
+lienzoFisica.addEventListener(
+  "pointermove",
+  evento => {
+
+    if (
+      evento.buttons & 1
+    ) {
+
+      enviarEstadoModoLimitadoSala(
+        "fisica",
+        55
+      );
+
+    }
+
+  }
+);
+
+
+lienzoFisica.addEventListener(
+  "pointerup",
+  () =>
+    enviarEstadoModoSala(
+      "fisica",
+      true
+    )
+);
+
+
+escenarioEspacio3D.addEventListener(
+  "pointermove",
+  evento => {
+
+    if (
+      modoActualEspacio3D === "editar" &&
+      arrastreEspacio3D.lamina &&
+      evento.buttons & 1
+    ) {
+
+      enviarEstadoModoLimitadoSala(
+        "espacio3d",
+        55
+      );
+
+    }
+
+  }
+);
+
+
+escenarioEspacio3D.addEventListener(
+  "pointerup",
+  () => {
+
+    if (
+      modoActualEspacio3D === "editar"
+    ) {
+
+      enviarEstadoModoSala(
+        "espacio3d",
+        true
+      );
+
+    }
+
+  }
+);
+
+
+escenarioEspacio3D.addEventListener(
+  "wheel",
+  () => {
+
+    if (
+      modoActualEspacio3D === "editar"
+    ) {
+
+      setTimeout(
+        () =>
+          enviarEstadoModoSala(
+            "espacio3d",
+            true
+          ),
+        0
+      );
+
+    }
+
+  }
+);
+
+
+restablecerEspacio3D.addEventListener(
+  "click",
+  () =>
+    setTimeout(
+      () =>
+        enviarEstadoModoSala(
+          "espacio3d",
+          true
+        ),
+      0
+    )
+);
+
+
+controlTensionConstelacion.addEventListener(
+  "input",
+  () =>
+    enviarEstadoModoLimitadoSala(
+      "constelacion"
+    )
+);
+
+
+controlTensionConstelacion.addEventListener(
+  "change",
+  () =>
+    enviarEstadoModoSala(
+      "constelacion",
+      true
+    )
+);
+
+
+restablecerConstelacion.addEventListener(
+  "click",
+  () =>
+    setTimeout(
+      () =>
+        enviarEstadoModoSala(
+          "constelacion",
+          true
+        ),
+      0
+    )
+);
+
+
+lienzoConstelacion.addEventListener(
+  "pointermove",
+  evento => {
+
+    if (
+      evento.buttons & 1
+    ) {
+
+      enviarEstadoModoLimitadoSala(
+        "constelacion",
+        55
+      );
+
+    }
+
+  }
+);
+
+
+lienzoConstelacion.addEventListener(
+  "pointerup",
+  () =>
+    enviarEstadoModoSala(
+      "constelacion",
+      true
+    )
+);
+
+
+botonNuevo.addEventListener(
+  "click",
+  () =>
+    setTimeout(
+      notificarDocumentoSala,
+      0
+    )
+);
+
+
+temporizadorSala =
+  window.setInterval(
+    () => {
+
+      if (
+        !salaConectada ||
+        !esAnfitrionSala() ||
+        !documentoSalaActual()
+      ) {
+        return;
+      }
+
+      if (
+        [
+          "fisica",
+          "deriva",
+          "constelacion"
+        ].includes(
+          modoPrincipal
+        )
+      ) {
+
+        enviarEstadoModoSala(
+          modoPrincipal,
+          false
+        );
+
+      }
+
+    },
+    120
+  );
 
 
 </script>
