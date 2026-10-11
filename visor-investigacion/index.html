@@ -7768,17 +7768,10 @@ function pasoDeriva(
     tiempo;
 
 
-  if (
-    !salaConectada ||
-    esAnfitrionSala()
-  ) {
-
-    actualizarDeriva(
-      tiempo,
-      delta
-    );
-
-  }
+  actualizarDeriva(
+    tiempo,
+    delta
+  );
 
   dibujarDeriva(
     tiempo
@@ -10673,16 +10666,9 @@ function pasoConstelacion(
     tiempo;
 
 
-  if (
-    !salaConectada ||
-    esAnfitrionSala()
-  ) {
-
-    actualizarConstelacion(
-      delta
-    );
-
-  }
+  actualizarConstelacion(
+    delta
+  );
 
   dibujarConstelacion();
 
@@ -11898,19 +11884,14 @@ function pasoFisica(
     tiempo;
 
 
-  if (
-    !salaConectada ||
-    esAnfitrionSala()
-  ) {
-
-    Matter.Engine.update(
-      motorFisica,
-      delta
-    );
+  Matter.Engine.update(
+    motorFisica,
+    delta
+  );
 
 
-    cuerposFisica.forEach(
-      cuerpo => {
+  cuerposFisica.forEach(
+    cuerpo => {
 
         const rapidez =
           Matter.Vector.magnitude(
@@ -11934,10 +11915,8 @@ function pasoFisica(
 
         }
 
-      }
-    );
-
-  }
+    }
+  );
 
 
   dibujarFisica();
@@ -13093,6 +13072,7 @@ let microfonoSalaActivo = false;
 let salaAplicandoRemoto = false;
 let ultimoEnvioSala = 0;
 let temporizadorSala = null;
+let actualizacionParticipantesSalaPendiente = null;
 
 const salaHablantes = new Set();
 const salaModos = new Map();
@@ -13580,6 +13560,30 @@ function actualizarParticipantesSala() {
 }
 
 
+function programarActualizacionParticipantesSala() {
+
+  if (
+    actualizacionParticipantesSalaPendiente !==
+      null
+  ) {
+    return;
+  }
+
+  actualizacionParticipantesSalaPendiente =
+    requestAnimationFrame(
+      () => {
+
+        actualizacionParticipantesSalaPendiente =
+          null;
+
+        actualizarParticipantesSala();
+
+      }
+    );
+
+}
+
+
 function adjuntarAudioSala(
   pista
 ) {
@@ -14035,9 +14039,15 @@ function aplicarEstadoModoSala(
 
   }
 
-  mostrarModoDesdeSala(
-    modo
-  );
+  if (
+    modoPrincipal !== modo
+  ) {
+
+    mostrarModoDesdeSala(
+      modo
+    );
+
+  }
 
   requestAnimationFrame(
     () => {
@@ -14761,15 +14771,21 @@ function manejarDatosSala(
     participante?.identity ||
     mensaje.autor;
 
+  let cambioPresencia = false;
+
   if (
     identidad &&
-    mensaje.modo
+    mensaje.modo &&
+    salaModos.get(identidad) !==
+      mensaje.modo
   ) {
 
     salaModos.set(
       identidad,
       mensaje.modo
     );
+
+    cambioPresencia = true;
 
   }
 
@@ -14781,14 +14797,40 @@ function manejarDatosSala(
     )
   ) {
 
-    salaDocumentos.set(
-      identidad,
-      mensaje.documento
-    );
+    const documentoAnterior =
+      salaDocumentos.get(
+        identidad
+      );
+
+    const firmaAnterior =
+      documentoAnterior?.firma || null;
+
+    const firmaNueva =
+      mensaje.documento?.firma || null;
+
+    if (
+      firmaAnterior !== firmaNueva
+    ) {
+
+      salaDocumentos.set(
+        identidad,
+        mensaje.documento
+      );
+
+      cambioPresencia = true;
+
+    }
 
   }
 
-  actualizarParticipantesSala();
+  if (
+    cambioPresencia ||
+    mensaje.tipo === "documento"
+  ) {
+
+    programarActualizacionParticipantesSala();
+
+  }
 
   if (
     mensaje.tipo ===
@@ -14915,7 +14957,7 @@ function configurarEventosRoom(
         modoPrincipal
       );
 
-      actualizarParticipantesSala();
+      programarActualizacionParticipantesSala();
 
       notificarDocumentoSala();
 
@@ -15024,7 +15066,7 @@ function configurarEventosRoom(
         }
       );
 
-      actualizarParticipantesSala();
+      programarActualizacionParticipantesSala();
 
     }
   );
@@ -16095,7 +16137,7 @@ temporizadorSala =
       }
 
     },
-    120
+    180
   );
 
 
